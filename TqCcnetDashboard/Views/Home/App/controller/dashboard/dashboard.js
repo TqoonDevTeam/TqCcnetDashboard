@@ -39,7 +39,7 @@
             $scope.projectList = [];
             $scope.categoryList = [];
 
-            $rootScope.$watch('_ProjectStatus', refreshProjectList);
+            $rootScope.$watch('_ProjectStatus', refreshProjectList, true);
             $rootScope.$watch('_cookie', refreshProjectList, true);
 
             function refreshProjectList() {
@@ -70,7 +70,7 @@
                         return { 'color': '#337ab7' };
                     case 1:
                     case 2:
-                        return { 'color': '#337AB7' };
+                        return { 'color': 'red' };
                     case 4:
                         return { 'color': '#f0ad4e' };
                     default:
@@ -115,6 +115,8 @@
                     });
                 }
             }
+
+            refreshProjectList();
         }]);
         app.controller('dashboard.table.ctrl', ['$scope', '$rootScope', function ($scope, $rootScope) {
         }]);
