@@ -13,7 +13,7 @@ namespace TqCcnetDashboard.Controllers.Api
         {
             using (var ccnet = new CCNET())
             {
-                var list = ccnet.Server.GetProjectStatus().ToList();
+                var list = ccnet.Server.GetProjectStatus().OrderBy(t => t.ServerName).ThenBy(t => t.Name).ToList();
                 return list;
             }
         }
