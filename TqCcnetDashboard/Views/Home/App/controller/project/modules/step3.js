@@ -151,6 +151,14 @@
             }
         }();
     }])
+    .controller('project.step3.triggers.projectTrigger.ctrl', ['$scope', function ($scope) {
+        var defaultValue = { serverUri: 'tcp://localhost:21234/CruiseManager.rem' };
+
+        this.init = function () {
+            var defaultMerge = {};
+            angular.extend($scope.trigger, angular.extend({}, defaultValue, $scope.trigger));
+        }();
+    }])
     .controller('project.step3.triggers.multiTrigger.ctrl', ['$scope', '$uibModal', 'pathUtil', function ($scope, $uibModal, pathUtil) {
         var defaultValue = { operator: 'Or', triggers: [] };
         this.getDesc = function (item) {
