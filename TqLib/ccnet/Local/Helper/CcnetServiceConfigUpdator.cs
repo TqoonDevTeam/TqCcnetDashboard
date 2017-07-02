@@ -33,7 +33,7 @@ namespace TqLib.ccnet.Local.Helper
             elm.SetAttributeValue("value", "../plugin");
 
             // runtimeVersion
-            XElement supportedRuntime = XElement.Parse("<supportedRuntime version=\"v4.0\" sku=\".NETFramework,Version=v4.6\" />");
+            XElement supportedRuntime = XElement.Parse("<supportedRuntime version=\"v4.0\" sku=\".NETFramework,Version=v4.5\" />");
             var elm_startup = doc.Element("configuration").Element("startup");
             if (elm_startup != null)
             {
