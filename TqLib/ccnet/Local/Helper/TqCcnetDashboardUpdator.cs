@@ -11,6 +11,7 @@ namespace TqLib.ccnet.Local.Helper
 {
     public class TqCcnetDashboardUpdator
     {
+        public readonly object lock_msg = new object();
         public bool IsBysy = false;
         public string Owner { get; set; } = "TqoonDevTeam";
         public string Name { get; set; } = "TqCcnetDashboard";
@@ -148,6 +149,7 @@ namespace TqLib.ccnet.Local.Helper
                 {
                     OnProcessChanged(new TqCcnetDashboardUpdatorEventArgs { Desc = "기본플러그인설치", FileName = "plugins", ProgressPercentage = 0 });
                     var pluginUpdator = new CcnetPluginInstaller(extractZipFolder, PluginFolder, ServiceFolder);
+                    pluginUpdator.DisAllowFIleNames = new[] { "ThoughtWorks.CruiseControl.Core.dll", "ThoughtWorks.CruiseControl.Remote" };
                     pluginUpdator.Install();
                     OnProcessChanged(new TqCcnetDashboardUpdatorEventArgs { Desc = "기본플러그인설치", FileName = "plugins", ProgressPercentage = 100 });
                 }
@@ -177,17 +179,20 @@ namespace TqLib.ccnet.Local.Helper
 
         private void OnProcessChanged(TqCcnetDashboardUpdatorEventArgs e)
         {
-            CurrentMessage = e;
-            var find = AllMessage.FirstOrDefault(t => t.Desc == e.Desc);
-            if (find == null)
+            lock (lock_msg)
             {
-                AllMessage.Add(e);
+                CurrentMessage = e;
+                var find = AllMessage.FirstOrDefault(t => t.Desc == e.Desc);
+                if (find == null)
+                {
+                    AllMessage.Add(e);
+                }
+                else
+                {
+                    find.Merge(e);
+                }
+                ProcessChanged?.Invoke(this, AllMessage);
             }
-            else
-            {
-                find.Merge(e);
-            }
-            ProcessChanged?.Invoke(this, AllMessage);
         }
 
         public class AssetDownloader

@@ -8,6 +8,7 @@ namespace TqLib.ccnet.Local.Helper
     public class CcnetPluginInstaller
     {
         public string[] AllowExtensions { get; set; } = new[] { ".dll", ".exe" };
+        public string[] DisAllowFIleNames { get; set; } = new string[] { };
         private string SrcDirectory, PluginDirectory, ServiceDirecotry;
 
         public CcnetPluginInstaller(string srcDirectory, string pluginDirectory, string serviceDirecotry)
@@ -41,6 +42,8 @@ namespace TqLib.ccnet.Local.Helper
 
             foreach (var pluginReference in pluginReferenceFiles)
             {
+                if (DisAllowFIleNames.Contains(pluginReference.FileName)) continue;
+
                 foreach (var plugin in pluginFiles)
                 {
                     if (ExistsPluginReferenceModuleInfo(pdoc, plugin.AssemblyName, pluginReference.AssemblyName))
