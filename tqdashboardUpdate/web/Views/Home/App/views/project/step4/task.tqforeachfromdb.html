@@ -1,0 +1,29 @@
+﻿<div style="padding-top:15px" ng-controller="project.step4.tasks.add.tqforeachfromdb.ctrl as tqforeachfromdbCtrl">
+    <reflector-type model="task" type-source="attrs_required_forced"></reflector-type>
+    <reflector-type model="task" type-source="attrs_required"></reflector-type>
+    <div class="form-group">
+        <label class="control-label col-sm-2">Query</label>
+        <div class="col-sm-10">
+            <textarea class="form-control" name="query" ng-model="task.query" style="min-height:150px"></textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-12">
+            <button type="button" class="btn btn-success btn-sm" uib-tooltip="Task 추가" ng-click="tqforeachfromdbCtrl.onTasksAddClick()"><i class="fa fa-plus"></i></button>
+        </div>
+    </div>
+    <div class="list-group">
+        <div class="list-group">
+            <div class="list-group-item" ng-repeat="item in task.tasks">
+                <span class="label label-primary">{{item['@type']}}</span>
+                <span>{{tqforeachfromdbCtrl.getDesc(item)}}</span>
+                <div class="pull-right">
+                    <button type="button" ng-click="tqforeachfromdbCtrl.onTasksModClick(item)" class="btn btn-xs btn-warning"><i class="fa fa-pencil"></i></button>
+                    <button type="button" ng-click="tqforeachfromdbCtrl.onTasksDelClick(item)" class="btn btn-xs btn-danger"><i class="fa fa-times"></i></button>
+                    <button type="button" uib-tooltip="순서변경" ng-disabled="$index === 0" class="btn btn-default btn-xs" ng-click="tqforeachfromdbCtrl.onOrderUpClick(item)"><i class="fa fa-arrow-circle-up"></i></button>
+                    <button type="button" uib-tooltip="순서변경" ng-disabled="($index + 1) === p.tasks.length" class="btn btn-default btn-xs" ng-click="tqforeachfromdbCtrl.onOrderDownClick(item)"><i class="fa fa-arrow-circle-down"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

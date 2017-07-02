@@ -1,0 +1,30 @@
+﻿<div ng-controller="project.step3.triggers.scheduleTrigger.ctrl">
+    <div class="form-group">
+        <label class="control-label col-sm-2">시간</label>
+        <div class="col-sm-10">
+            <div uib-timepicker ng-model="time" minute-step="15" show-meridian="false"></div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2">요일</label>
+        <div class="col-sm-10">
+            <div class="btn-group">
+                <label class="btn" ng-class="{'btn-default': !weeks.Sunday, 'btn-success': weeks.Sunday}" uib-btn-checkbox ng-model="weeks.Sunday">Sunday</label>
+                <label class="btn" ng-class="{'btn-default': !weeks.Monday, 'btn-success': weeks.Monday}" uib-btn-checkbox ng-model="weeks.Monday">Monday</label>
+                <label class="btn" ng-class="{'btn-default': !weeks.Tuesday, 'btn-success': weeks.Tuesday}" uib-btn-checkbox ng-model="weeks.Tuesday">Tuesday</label>
+                <label class="btn" ng-class="{'btn-default': !weeks.Wednesday, 'btn-success': weeks.Wednesday}" uib-btn-checkbox ng-model="weeks.Wednesday">Wednesday</label>
+                <label class="btn" ng-class="{'btn-default': !weeks.Thursday, 'btn-success': weeks.Thursday}" uib-btn-checkbox ng-model="weeks.Thursday">Thursday</label>
+                <label class="btn" ng-class="{'btn-default': !weeks.Friday, 'btn-success': weeks.Friday}" uib-btn-checkbox ng-model="weeks.Friday">Friday</label>
+                <label class="btn" ng-class="{'btn-default': !weeks.Saturday, 'btn-success': weeks.Saturday}" uib-btn-checkbox ng-model="weeks.Saturday">Saturday</label>
+                <input type="hidden" ng-model="trigger.weekDays" name="weekDays" required />
+                <span class="help-block"><span ng-if="!trigger.weekDays">요일을 선택 하십시오.</span>{{trigger.weekDays}}</span>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2">동작조건</label>
+        <div class="col-sm-10">
+            <select class="form-control" ng-model="trigger.buildCondition" ng-options="item.val as item.key for item in buildConditions"></select>
+        </div>
+    </div>
+</div>

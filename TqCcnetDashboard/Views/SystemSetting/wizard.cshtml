@@ -1,0 +1,136 @@
+﻿@{
+    bool showDownloadBtn = (bool)ViewData["showDownloadBtn"];
+    string dns = Request.Url.DnsSafeHost;
+}
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.1/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/URI.js/1.18.10/URI.min.js"></script>
+    <script>
+        var pdata = @(Html.Raw(ViewData["jObject"].ToString()));
+    </script>
+    <script>
+        (function () {
+            var app = angular.module('app', [])
+            .controller('defaultCtrl', ['$scope', '$http', '$filter', function ($scope, $http, $filter) {
+                $scope.pdata = pdata.project;
+                $scope.gitAccount = { id:'', pw:'' };
+
+                $scope.$watch('gitAccount', function(newVal){
+                    if(newVal){
+                        gitUrlChanger.checkAndChange($scope.pdata.sourcecontrol, $scope.gitAccount.id, $scope.gitAccount.pw);
+                    }
+                }, true);
+
+                this.onSubmit = function(){
+                    var string = $filter('json')($scope.pdata);
+                    $.post('http://@(dns)/SystemSetting/ProjectRegFromWizard', {value:string}, function(res){
+                        if(res.error){
+                            alert('실패\n' + res.msg);
+                        }else{
+                            alert('성공');
+                        }
+                    }).fail(function(){
+                        alert('실패 - 서버오류');
+                    });
+                }
+                this.onDownload = function(){
+                    var uri = new URI(location.href).search({toFile:'html'});
+                    location.href = uri.toString();
+                }
+            }]);
+
+            var gitUrlChanger = {
+                checkAndChange:function(obj, id, pw){
+                    if(obj['@@type'] === 'git'){
+                        if(obj.repository){
+                            var uri = URI(obj.repository);
+                            if(id){
+                                uri.username(id);
+                            }
+                            if(pw){
+                                uri.password(pw);
+                            }
+                            obj.repository = uri.toString();
+                        }
+
+                    }else if(obj['@@type'] === 'multi'){
+                        _.each(obj.sourceControls, function(v, p){
+                            gitUrlChanger.checkAndChange(v, id, pw);
+                        });
+                    }
+                }
+            };
+        })();
+    </script>
+    <title>마법사</title>
+</head>
+<body ng-cloak ng-controller="defaultCtrl as ctrl">
+    <div class="container">
+        <br />
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        마법사 - {{pdata.description}}
+                        <div class="pull-right">
+                            <label><input type="checkbox" ng-model="_modeDebug" /> 디버그모드</label>
+                        </div>
+                    </div>
+                    <div class="panel-body">
+                        <form class="form-horizontal" name="frmPdata">
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">name</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" name="name" ng-model="pdata.name" required />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">description</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" name="description" ng-model="pdata.description" required />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">workingDirectory</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" name="description" ng-model="pdata.workingDirectory" required />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label">Git Account</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control" name="id" ng-model="gitAccount.id" required placeholder="ID" />
+                                </div>
+                                <div class="col-sm-5">
+                                    <input type="password" class="form-control" name="pw" ng-model="gitAccount.pw" required placeholder="Password" />
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="panel-footer">
+                        <button type="button" class="btn btn-primary" ng-click="ctrl.onSubmit()">등록</button>
+                        @if (showDownloadBtn)
+                        {
+                            <button type="button" class="btn btn-default" ng-click="ctrl.onDownload()">다운로드</button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row" ng-if="_modeDebug">
+            <div class="col-md-12">
+                <div class="panel pane"></div>
+                <pre>{{pdata|json}}</pre>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

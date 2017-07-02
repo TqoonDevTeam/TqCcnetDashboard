@@ -1,0 +1,24 @@
+﻿<form name="frmFile" novalidate form-check>
+    <div class="modal-header">
+        <h3 class="modal-title">{{title || 'Search'}}</h3>
+    </div>
+    <div class="modal-body">
+        <div class="panel panel-success">
+            <div class="panel-heading">추천</div>
+            <div class="list-group dir-list">
+                <a href="javascript:;" class="list-group-item" ng-class="ctrl.ngClass(item)" ng-repeat="item in suggestList" ng-click="ctrl.onSuggestClick(item)">
+                    <img class="icon" alt="icon" ng-src="{{item.icon}}" />
+                    <span>{{item.path}}</span>
+                </a>
+            </div>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">찾기</div>
+            <dir-view ng-model="selected" current-dir="dir" sel-filter="{{filter}}"></dir-view>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-default" type="button" ng-click="ctrl.cancel()">취소</button>
+        <button class="btn btn-primary" type="submit" ng-click="ctrl.ok()">확인</button>
+    </div>
+</form>

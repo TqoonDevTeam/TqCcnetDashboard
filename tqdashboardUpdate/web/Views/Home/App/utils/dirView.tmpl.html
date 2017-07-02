@@ -1,0 +1,10 @@
+﻿<div class='list-group dir-list'>
+    <div class='list-group-item'>
+        <span ng-repeat='item in dirPath'>{{$index > 0 ? ' / ' : ''}}<a href='javascript:;' ng-click='ctrl.onDirChange(item)'>{{dirPath.length === 1 ? '/' : item.name}}</a></span>
+    </div>
+    <a href='javascript:;' ng-if='currentDir.parent' class='list-group-item' ng-click='ctrl.onItemClick(currentDir.parent)'><span class='to-parent'>...</span></a>
+    <a href='javascript:;' ng-repeat='item in currentDir.subs' class='list-group-item' ng-class='ctrl.ngClass(item)' ng-click='ctrl.onItemClick(item)'>
+        <img class='icon' alt='icon' ng-src='{{item.icon}}' />
+        <span>{{item.name}}</span>
+    </a>
+</div>

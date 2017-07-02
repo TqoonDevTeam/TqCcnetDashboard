@@ -1,0 +1,19 @@
+﻿<div style="padding-top:15px" ng-controller="project.step4.ctrl as ctrl4">
+    <div class="form-group">
+        <button type="button" class="btn btn-success btn-sm" uib-tooltip="Task 추가" ng-click="ctrl4.onTasksAddClick()"><i class="fa fa-plus"></i></button>
+    </div>
+    <div class="list-group">
+        <div class="list-group">
+            <div class="list-group-item" ng-repeat="item in p.tasks">
+                <span class="label label-primary">{{item['@type']}}</span>
+                <span>{{ctrl4.getDesc(item)}}</span>
+                <div class="pull-right">
+                    <button type="button" ng-click="ctrl4.onTasksModClick(item)" class="btn btn-xs btn-warning"><i class="fa fa-pencil"></i></button>
+                    <button type="button" ng-click="ctrl4.onTasksDelClick(item)" class="btn btn-xs btn-danger"><i class="fa fa-times"></i></button>
+                    <button type="button" uib-tooltip="순서변경" ng-disabled="$index === 0" class="btn btn-default btn-xs" ng-click="ctrl4.onOrderUpClick(item)"><i class="fa fa-arrow-circle-up"></i></button>
+                    <button type="button" uib-tooltip="순서변경" ng-disabled="($index + 1) === p.tasks.length" class="btn btn-default btn-xs" ng-click="ctrl4.onOrderDownClick(item)"><i class="fa fa-arrow-circle-down"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

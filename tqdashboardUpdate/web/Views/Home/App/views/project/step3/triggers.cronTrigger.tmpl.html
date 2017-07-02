@@ -1,0 +1,13 @@
+﻿<div class="form-group">
+    <label class="control-label col-sm-2">CronExpression</label>
+    <div class="col-sm-10">
+        <input class="form-control" type="text" name="cronExpression" ng-model="trigger.cronExpression" required />
+        <div class="help-block"><a href="http://www.cronmaker.com/" target="_blank">CronMaker</a></div>
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label col-sm-2">동작조건</label>
+    <div class="col-sm-10">
+        <select class="form-control" ng-model="trigger.buildCondition" ng-options="item.val as item.key for item in buildConditions"></select>
+    </div>
+</div>

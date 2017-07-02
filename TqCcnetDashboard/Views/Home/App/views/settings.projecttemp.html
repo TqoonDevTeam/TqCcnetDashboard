@@ -1,0 +1,44 @@
+﻿<div layout="row" layout-xs="column">
+    <md-card flex="33">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Project</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="addProjectTemp($event)">
+                    <md-tooltip>추가</md-tooltip>
+                    <md-icon md-svg-src="content:add_circle_outline"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-card-content>
+            <md-list style="margin:-16px">
+                <md-list-item ng-repeat="item in projecttemplist" ng-click="selectProject(item)">
+                    <md-icon md-svg-icon="device:usb"></md-icon>
+                    <p>{{item.name}} {{item.version}}</p>
+                    <md-button class="md-secondary" ng-click="deleteProjectTemp($event, item)">삭제</md-button>
+                </md-list-item>
+            </md-list>
+        </md-card-content>
+    </md-card>
+    <md-card flex ng-if="selectedProject">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>{{selectedProject.name}} > Tasks</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="addTasksTemp($event)">
+                    <md-tooltip>추가</md-tooltip>
+                    <md-icon md-svg-src="content:add_circle_outline"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <md-card-content>
+            <md-list style="margin:-16px">
+                <md-list-item ng-repeat="item in tasktemplist" ng-click="null">
+                    <md-icon md-svg-icon="device:usb"></md-icon>
+                    <p>{{item.name}} {{item.version}}</p>
+                    <md-button class="md-secondary" ng-click="null">삭제</md-button>
+                </md-list-item>
+            </md-list>
+        </md-card-content>
+    </md-card>
+</div>

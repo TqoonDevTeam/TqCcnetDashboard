@@ -1,0 +1,23 @@
+﻿<div class="row">
+    <h3 class="page-header">프로젝트 관리 > 생성</h3>
+</div>
+<div class="row">
+    <form name="frmProject" form-check novalidate>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                프로젝트 생성 템플릿
+            </div>
+            <div class="panel-body">
+                <uib-tabset active="activeTab">
+                    <uib-tab ng-repeat="item in step" index="$index" heading="{{$index + 1}}.{{item.heading}}">
+                        <ng-include src="item.include"></ng-include>
+                    </uib-tab>
+                </uib-tabset>
+                <pre ng-if="_cookie.modeDebug === '1'">{{p|json}}</pre>
+            </div>
+            <div class="panel-footer">
+                <button class="btn btn-primary" type="submit" ng-click="ctrl.ok()">등록</button>
+            </div>
+        </div>
+    </form>
+</div>

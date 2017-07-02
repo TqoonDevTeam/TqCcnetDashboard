@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>시스템준비</title>
+    @Styles.Render("~/bundles/commoncss")
+    <script data-main="/Views/SystemSetting/App/main" src="/Scripts/require.js"></script>
+    <style>
+        .btn-default-fix:hover, .btn-default-fix:active {
+            color: #fff !important;
+            background-color: #5cb85c !important;
+            border-color: #4cae4c !important;
+            box-shadow: inherit !important;
+            cursor: default !important;
+        }
+    </style>
+</head>
+<body ng-cloak ng-controller="settingCtrl as ctrl">
+    <div class="container">
+        <div class="row">
+            <div class="page-header">
+                <h1>시스템을 준비중 입니다.</h1>
+            </div>
+            <div class="col-md-12">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <span class="btn btn-success btn-circle btn-default-fix"><i class="fa fa-check"></i></span> 관리자설정
+                    </li>
+                    <li class="list-group-item">
+                        <span class="btn btn-success btn-circle btn-default-fix"><i class="fa fa-check"></i></span> 기본그룹설정
+                    </li>
+                </ul>
+            </div>
+            <br />
+            <div class="col-md-12">
+                <div class="alert alert-success" role="alert">
+                    <strong>Well done!</strong> 준비가 완료되었습니다.
+                </div>
+            </div>
+            <div class="col-md-12">
+                <button ng-click="ctrl.onStart()" class="btn btn-success btn-lg center-block"> 시작 </button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

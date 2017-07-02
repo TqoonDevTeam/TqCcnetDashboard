@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TqCcnetDashboard", "TqCcnetDashboard\TqCcnetDashboard.csproj", "{74F35AE2-B0EA-49E1-AA9B-614CC7D7339B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TqLib", "TqLib\TqLib.csproj", "{2F096830-5DA5-4A69-9CD2-ACDD4D4A6F58}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Installer", "Installer\Installer.csproj", "{F2AEA6E3-C349-43BA-B6A7-71DCA9F680CF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{74F35AE2-B0EA-49E1-AA9B-614CC7D7339B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74F35AE2-B0EA-49E1-AA9B-614CC7D7339B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74F35AE2-B0EA-49E1-AA9B-614CC7D7339B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74F35AE2-B0EA-49E1-AA9B-614CC7D7339B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F096830-5DA5-4A69-9CD2-ACDD4D4A6F58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F096830-5DA5-4A69-9CD2-ACDD4D4A6F58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F096830-5DA5-4A69-9CD2-ACDD4D4A6F58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F096830-5DA5-4A69-9CD2-ACDD4D4A6F58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2AEA6E3-C349-43BA-B6A7-71DCA9F680CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2AEA6E3-C349-43BA-B6A7-71DCA9F680CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2AEA6E3-C349-43BA-B6A7-71DCA9F680CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2AEA6E3-C349-43BA-B6A7-71DCA9F680CF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
