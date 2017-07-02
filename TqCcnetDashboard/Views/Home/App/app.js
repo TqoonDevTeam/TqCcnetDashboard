@@ -65,6 +65,11 @@ define(['angularAMD', 'json!/SystemSetting/CheckEnvironmentVariable'], function 
         function extend_ProjectStatus(res) {
             $rootScope.$apply(function () {
                 angular.extend($rootScope._ProjectStatus, res);
+                _.each($rootScope._ProjectStatus, function (v, p) {
+                    _.each(v, function (item) {
+                        item.$host = p;
+                    });
+                });
             });
         }
         function extend_SystemUpdate(res) {

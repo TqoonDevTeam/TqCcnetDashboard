@@ -14,16 +14,9 @@
 </div>
 <div class="row">
     <div class="btn-group">
-        <button class="btn btn-success btn-sm"
-                ng-click="ctrl.onAllClick()"
-                uib-tooltip="전체">
-            All
-        </button>
-    </div>
-    <div class="btn-group">
         <label class="btn btn-default btn-sm"
                ng-repeat="(k, v) in _ProjectStatus"
-               ng-model="_cookie['dashboard.table:' + k]"
+               ng-model="_cookie['dashboard.server:' + k]"
                uib-btn-checkbox
                btn-checkbox-true="'true'"
                btn-checkbox-false="'false'"

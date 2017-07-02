@@ -13,7 +13,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="p in tableCtrl.getFilteredList()">
+                    <tr ng-repeat="p in projectList">
                         <td class="block">
                             <span uib-tooltip="프로젝트 상태 : {{p.Status | ccnetStatus}}">
                                 <i ng-if="p.Status === 0" style="color:#337ab7" class="fa fa-play-circle"></i>

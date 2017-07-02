@@ -36,6 +36,33 @@
         }]);
         app.controller('dashboard.ctrl', ['$scope', '$rootScope', '$http', 'dashboard.svc', function ($scope, $rootScope, $http, svc) {
             $scope.align = 'list';
+            $scope.projectList = [];
+            $scope.categoryList = [];
+
+            $rootScope.$watch('_ProjectStatus', refreshProjectList);
+            $rootScope.$watch('_cookie', refreshProjectList, true);
+
+            function refreshProjectList() {
+                var dashboardCookieEmpty = isEmptyDashboardServerCookie();
+                var projectListTemp = [];
+                _.each($rootScope._cookie, function (v, p) {
+                    if (p.startsWith('dashboard.server:')) {
+                        if (v === 'true' || dashboardCookieEmpty) {
+                            var key = p.replace('dashboard.server:', '');
+                            _.each($rootScope._ProjectStatus[key], function (v) {
+                                projectListTemp.push(v);
+                            })
+                        }
+                    }
+                });
+                $scope.projectList = projectListTemp;
+            }
+
+            function isEmptyDashboardServerCookie() {
+                return !_.some($rootScope._cookie, function (v, p) {
+                    return p.startsWith('dashboard.server:') && v === 'true';
+                })
+            }
 
             this.getHeartBeatStype = function (item) {
                 switch (item.BuildStatus) {
@@ -56,7 +83,7 @@
                 else return false;
             }
 
-            this.onAllClick = function () {
+            this.onAllServerClick = function () {
                 _.each($rootScope._cookie, function (v, p) {
                     if (p.startsWith('dashboard.table:')) {
                         $rootScope._cookie[p] = 'true';
@@ -90,21 +117,6 @@
             }
         }]);
         app.controller('dashboard.table.ctrl', ['$scope', '$rootScope', function ($scope, $rootScope) {
-            this.getFilteredList = function () {
-                var tempList = [];
-                _.each($rootScope._cookie, function (v, p) {
-                    if (p.startsWith('dashboard.table:')) {
-                        if (v === 'true') {
-                            var key = p.replace('dashboard.table:', '');
-                            _.each($rootScope._ProjectStatus[key], function (v) {
-                                v.$host = key;
-                                tempList.push(v);
-                            })
-                        }
-                    }
-                });
-                return tempList;
-            }
         }]);
         app.controller('dashboard.panel.ctrl', ['$scope', '$rootScope', function ($scope, $rootScope) {
             this.getFilteredList = function () {
