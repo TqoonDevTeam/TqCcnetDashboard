@@ -253,4 +253,5 @@ paket-files/
 
 selfUpdate/
 Deploy/
-/pluginTemp
+pluginTemp/
+TqCcnetDashboard/Config/Config.xml
