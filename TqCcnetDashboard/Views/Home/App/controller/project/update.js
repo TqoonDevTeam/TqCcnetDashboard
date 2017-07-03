@@ -1,9 +1,10 @@
 ﻿define(['app', 'md5', 'urijs/URI',
+    'projectdataChecker',
     'controller/project/modules/svc',
     'controller/project/modules/step1',
     'controller/project/modules/step2',
     'controller/project/modules/step3',
-    'controller/project/modules/step4'], function (app, md5, URI) {
+    'controller/project/modules/step4'], function (app, md5, URI, checker) {
         app.controller('project.update.ctrl', ['$scope', '$rootScope', '$http', '$uibModal', 'project.svc', 'pathUtil', '$location', function ($scope, $rootScope, $http, $uibModal, svc, pathUtil, $location) {
             var projectName = '';
             $scope.p = {};
@@ -35,6 +36,7 @@
                 $scope.activeTab = find;
                 svc.CcnetProject.get(query.id || 0).then(function (res) {
                     angular.extend($scope.p, res.data.project);
+                    checker.checkAndFix($scope.p);
                     projectName = res.data.project.name;
                 });
             }();

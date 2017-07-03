@@ -327,3 +327,29 @@ define('guid', function () {
         }
     };
 });
+define('projectdataChecker', ['underscore'], function (_) {
+    var checker = {
+        checkAndFix: function (project) {
+            if (project.triggers) {
+                if (_.isArray(project.triggers)) {
+                    _.each(project.triggers, function (v) { checkTrigger(v); });
+                }
+            }
+        }
+    };
+
+    function checkTrigger(data) {
+        var type = data['@type'];
+        if (type === 'scheduleTrigger') {
+            if (!_.isArray(data.weekDays)) {
+                if (data.weekDays.string) {
+                    data.weekDays.string = [data.weekDays.string];
+                }
+            }
+        } else if (type === 'multiTrigger') {
+            _.each(data.triggers, function (v) { checkTrigger(v); });
+        }
+    }
+
+    return checker;
+});
