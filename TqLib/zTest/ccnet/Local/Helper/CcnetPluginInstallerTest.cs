@@ -6,6 +6,7 @@ namespace TqLib.zTest.ccnet.Local.Helper
     internal class CcnetPluginInstallerTest
     {
         [Test]
+        [Ignore("로컬전용")]
         public void Test()
         {
             string srcDirectory = @"C:\DEV\TqoonCcnetPlugin\deploy\TqoonCcnetPlugin";
