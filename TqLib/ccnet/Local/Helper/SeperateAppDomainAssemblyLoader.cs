@@ -13,6 +13,16 @@ namespace TqLib.ccnet.Local.Helper
     {
         public string CCNETServiceDirectory { get; set; } = string.Empty;
 
+        public static bool IsDefinedAttributeData<T>(Type type)
+        {
+            return type.GetCustomAttributesData().Any(t => t.AttributeType.Equals(typeof(T)));
+        }
+
+        public static bool IsDefinedAttributeData<T>(PropertyInfo type)
+        {
+            return type.GetCustomAttributesData().Any(t => t.AttributeType.Equals(typeof(T)));
+        }
+
         public PluginTypeInfo[] GetAssemblyTypes(FileInfo assemblyLocation)
         {
             PluginTypeInfo[] types = new PluginTypeInfo[] { };
@@ -91,11 +101,11 @@ namespace TqLib.ccnet.Local.Helper
                             e, directory);
                     };
 
-                AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += resolveEventHandler;
+                AppDomain.CurrentDomain.AssemblyResolve += resolveEventHandler;
 
-                types = Assembly.LoadFile(dll).GetTypes().Where(t => t.IsDefined(typeof(ReflectorTypeAttribute), false)).Select(t => new PluginTypeInfo(t)).ToArray();
+                types = Assembly.LoadFrom(dll).GetTypes().Where(t => IsDefinedAttributeData<ReflectorTypeAttribute>(t)).Select(t => new PluginTypeInfo(t)).ToArray();
 
-                AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve -= resolveEventHandler;
+                AppDomain.CurrentDomain.AssemblyResolve -= resolveEventHandler;
 
                 return types;
             }
@@ -115,17 +125,17 @@ namespace TqLib.ccnet.Local.Helper
 
                 if (File.Exists(dependentAssemblyFilename))
                 {
-                    return Assembly.LoadFile(dependentAssemblyFilename);
+                    return Assembly.LoadFrom(dependentAssemblyFilename);
                 }
 
                 dependentAssemblyFilename = Path.Combine(CCNETServiceDirectory, assemblyName.Name + ".dll");
 
                 if (File.Exists(dependentAssemblyFilename))
                 {
-                    return Assembly.LoadFile(dependentAssemblyFilename);
+                    return Assembly.LoadFrom(dependentAssemblyFilename);
                 }
 
-                return Assembly.LoadFile(args.Name);
+                return Assembly.LoadFrom(args.Name);
             }
 
             [SuppressMessage("Microsoft.Performance",
@@ -134,7 +144,7 @@ namespace TqLib.ccnet.Local.Helper
             {
                 try
                 {
-                    Assembly.LoadFile(assemblyPath);
+                    Assembly.LoadFrom(assemblyPath);
                 }
                 catch (FileNotFoundException)
                 {
@@ -154,8 +164,14 @@ namespace TqLib.ccnet.Local.Helper
 
         public PluginTypeInfo(Type pluginType)
         {
-            PluginName = pluginType.GetCustomAttribute<ReflectorTypeAttribute>().Name;
-            PropertyInfos = pluginType.GetProperties().Where(t => t.IsDefined(typeof(ReflectorPropertyAttribute))).Select(t => new PropertyAttributeInfo(t)).ToArray();
+            PluginName = GetPluginName(pluginType);
+            PropertyInfos = pluginType.GetProperties().Where(t => SeperateAppDomainAssemblyLoader.IsDefinedAttributeData<ReflectorPropertyAttribute>(t)).Select(t => new PropertyAttributeInfo(t)).ToArray();
+        }
+
+        private string GetPluginName(Type pluginType)
+        {
+            var attr = pluginType.GetCustomAttributesData().First(t => typeof(ReflectorTypeAttribute).Equals(t.AttributeType));
+            return attr.ConstructorArguments[0].Value.ToString();
         }
 
         [Serializable]
@@ -167,22 +183,19 @@ namespace TqLib.ccnet.Local.Helper
             public PropertyAttributeInfo(PropertyInfo prop)
             {
                 PropertyTypeName = prop.PropertyType.Name;
-                Attribute = new AttributeData(prop.GetCustomAttribute<ReflectorPropertyAttribute>());
+                var attrData = prop.GetCustomAttributesData().FirstOrDefault(t => typeof(ReflectorPropertyAttribute).Equals(t.AttributeType));
+                Attribute = new AttributeData();
+                Attribute.Name = attrData.ConstructorArguments[0].Value.ToString();
+                Attribute.Description = attrData.NamedArguments.FirstOrDefault(t => t.MemberName == "Description").TypedValue.Value?.ToString() ?? string.Empty;
+                Attribute.Required = (bool)(attrData.NamedArguments.FirstOrDefault(t => t.MemberName == "Required").TypedValue.Value ?? false);
             }
 
             [Serializable]
             public class AttributeData
             {
-                public string Description { get; private set; }
-                public string Name { get; private set; }
-                public bool Required { get; private set; }
-
-                public AttributeData(ReflectorPropertyAttribute attr)
-                {
-                    this.Description = attr.Description;
-                    this.Name = attr.Name;
-                    this.Required = attr.Required;
-                }
+                public string Description { get; set; }
+                public string Name { get; set; }
+                public bool Required { get; set; }
             }
         }
     }
