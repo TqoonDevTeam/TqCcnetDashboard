@@ -26,8 +26,20 @@ namespace TqLib.ccnet.Local.Helper
             var files = Directory.GetFiles(SrcDirectory, "*.*").Where(file => AllowExtensions.Any(ext => ext.Equals(Path.GetExtension(file), StringComparison.OrdinalIgnoreCase))).Select(t => new ExternalDll(t)).ToList();
             var pluginFiles = files.Where(t => t.IsCcnetPlugin).ToList();
             var pluginReferenceFiles = files.Except(pluginFiles).ToList();
+            var installedFiles = Directory.GetFiles(ServiceDirecotry, "*.dll").Select(t => new ExternalDll(t));
 
             PluginDependency pluginDependency = GetPluginDependency();
+            foreach (var file in installedFiles)
+            {
+                if (ExistsPluginReferenceModuleInfo(pluginDependency, "Installed", file.AssemblyName))
+                {
+                    UpdatePluginReferenceModuleInfo(pluginDependency, "Installed", file);
+                }
+                else
+                {
+                    CreatePluginReferenceModuleInfo(pluginDependency, "Installed", file);
+                }
+            }
 
             foreach (var plugin in pluginFiles)
             {
