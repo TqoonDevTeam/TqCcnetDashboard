@@ -254,4 +254,5 @@ paket-files/
 selfUpdate/
 Deploy/
 pluginTemp/
+/TqCcnetDashboard/logs
 /TqCcnetDashboard/Config/Config.xml
