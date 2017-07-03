@@ -24,10 +24,10 @@ namespace TqLib.ccnet.Local.Helper
 
         public void Install()
         {
-            var files = Directory.GetFiles(SrcDirectory, "*.*").Where(file => AllowExtensions.Any(ext => ext.Equals(Path.GetExtension(file), StringComparison.OrdinalIgnoreCase))).Select(t => new ExternalDll(t)).ToList();
+            var files = Directory.GetFiles(SrcDirectory, "*.*").Where(file => AllowExtensions.Any(ext => ext.Equals(Path.GetExtension(file), StringComparison.OrdinalIgnoreCase))).Select(t => new ExternalDll(t)).Where(t => t.PublicKeyToken != "PASS").ToList();
             var pluginFiles = files.Where(t => t.IsCcnetPlugin).ToList();
             var pluginReferenceFiles = files.Except(pluginFiles).ToList();
-            var installedFiles = Directory.GetFiles(ServiceDirecotry, "*.dll").Select(t => new ExternalDll(t));
+            var installedFiles = Directory.GetFiles(ServiceDirecotry, "*.dll").Select(t => new ExternalDll(t)).Where(t => t.PublicKeyToken != "PASS");
 
             PluginDependency pluginDependency = GetPluginDependency();
             if (ExistsPluginInfo(pluginDependency, "Installed"))
@@ -254,12 +254,19 @@ namespace TqLib.ccnet.Local.Helper
             FilePath = filePath;
             FileName = Path.GetFileName(FilePath);
 
-            var assemblyName = System.Reflection.AssemblyName.GetAssemblyName(FilePath);
-            AssemblyName = assemblyName.Name;
-            AssemblyVersion = assemblyName.Version.ToString();
-            PublicKeyToken = GetPublicKeyToken(assemblyName.GetPublicKeyToken());
-            Culture = string.IsNullOrEmpty(assemblyName.CultureName) ? "neutral" : "assemblyName.CultureName";
-            IsCcnetPlugin = IsPlugin(AssemblyName);
+            try
+            {
+                var assemblyName = System.Reflection.AssemblyName.GetAssemblyName(FilePath);
+                AssemblyName = assemblyName.Name;
+                AssemblyVersion = assemblyName.Version.ToString();
+                PublicKeyToken = GetPublicKeyToken(assemblyName.GetPublicKeyToken());
+                Culture = string.IsNullOrEmpty(assemblyName.CultureName) ? "neutral" : "assemblyName.CultureName";
+            }
+            catch
+            {
+                PublicKeyToken = "PASS";
+            }
+            IsCcnetPlugin = IsPlugin(AssemblyName ?? string.Empty);
         }
 
         private string GetPublicKeyToken(byte[] bytes)
