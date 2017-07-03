@@ -6,15 +6,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using ThoughtWorks.CruiseControl.Remote;
 using TqLib.ccnet.Local.Helper;
+using static TqLib.ccnet.Local.Helper.CcnetPluginFInder;
 
 namespace TqLib.ccnet.Local
 {
     public class CCNET : IDisposable
     {
-        private static Type[] pluginReflectorTypes;
+        private static PluginTypeInfo[] pluginReflectorTypes;
         private static ICruiseServerClientFactory fac = new CruiseServerClientFactory();
 
-        public static Type[] PluginReflectorTypes
+        public static PluginTypeInfo[] PluginReflectorTypes
         {
             get
             {
@@ -22,7 +23,7 @@ namespace TqLib.ccnet.Local
                 {
                     var ccnetPluginFInder = new CcnetPluginFInder(ServiceDirectory);
                     PluginDirectory = ccnetPluginFInder.CcnetPluginDirectory;
-                    pluginReflectorTypes = ccnetPluginFInder.GetPluginTypes();
+                    pluginReflectorTypes = ccnetPluginFInder.GetPluginTypeInfo();
                 }
                 return pluginReflectorTypes;
             }

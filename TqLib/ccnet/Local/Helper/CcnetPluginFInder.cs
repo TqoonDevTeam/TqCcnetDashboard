@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Xml.Linq;
 using ThoughtWorks.CruiseControl.Core.Tasks;
+using TqLib.ccnet.Core;
 
 namespace TqLib.ccnet.Local.Helper
 {
@@ -33,47 +34,49 @@ namespace TqLib.ccnet.Local.Helper
             return Directory.GetFiles(CcnetPluginDirectory, "*.dll").Select(t => new ExternalDll(t)).Where(t => t.IsCcnetPlugin && t.FileName != CcnetPluginFInder.TqDashboardDefaultPluginFileName).ToList();
         }
 
-        public Type[] GetPluginTypes()
+        public PluginTypeInfo[] GetPluginTypeInfo()
         {
             var types = GetPluginTypes_ccnet();
             types = types.Union(GetPluginTypes_custom()).ToArray();
-
-            return types.Distinct().ToArray();
+            return types;
         }
 
-        private Type[] GetPluginTypes_ccnet()
+        private PluginTypeInfo[] GetPluginTypes_ccnet()
         {
-            return typeof(TaskBase).Assembly.GetTypes().Where(t => t.IsDefined(typeof(ReflectorTypeAttribute), false)).ToArray();
+            return typeof(TaskBase).Assembly.GetTypes().Where(t => t.IsDefined(typeof(ReflectorTypeAttribute), false)).Select(t => new PluginTypeInfo(t)).ToArray();
         }
 
-        private Type[] GetPluginTypes_custom()
+        private PluginTypeInfo[] GetPluginTypes_custom()
         {
             var dir = new DirectoryInfo(CcnetPluginDirectory);
             if (dir.Exists)
             {
-                return dir.GetFiles("*.dll").Select(t => t.FullName).SelectMany(t => GetAssemblyTypes(t)).ToArray();
+                return dir.GetFiles("*.dll").Select(t => t.FullName).SelectMany(t => GetPluginTypeInfo(t)).ToArray();
             }
             else
             {
-                return new Type[] { };
+                return new PluginTypeInfo[] { };
             }
         }
 
-        private IList<Type> GetAssemblyTypes(string dllPath)
+        private IList<PluginTypeInfo> GetPluginTypeInfo(string dllPath)
         {
             if (File.Exists(dllPath))
             {
-                AppDomain dom = AppDomain.CreateDomain(Guid.NewGuid().ToString());
-                AssemblyName assemblyName = new AssemblyName();
-                assemblyName.CodeBase = dllPath;
-                Assembly assembly = dom.Load(assemblyName);
-                var types = assembly.GetTypes().Where(t => t.IsDefined(typeof(ReflectorTypeAttribute))).ToList();
-                AppDomain.Unload(dom);
-                return types;
+                var typeofReflectorTypeAttribute = typeof(ReflectorTypeAttribute);
+                if (Constants.Key.DefaultPluginName.Equals(Path.GetFileNameWithoutExtension(dllPath)))
+                {
+                    return typeof(Constants).Assembly.GetTypes().Where(t => t.IsDefined(typeofReflectorTypeAttribute)).Select(t => new PluginTypeInfo(t)).ToList();
+                }
+                else
+                {
+                    var typeLoader = new SeperateAppDomainAssemblyLoader() { CCNETServiceDirectory = CCNET.ServiceDirectory };
+                    return typeLoader.GetAssemblyTypes(new FileInfo(dllPath)).ToList();
+                }
             }
             else
             {
-                return new List<Type>();
+                return new List<PluginTypeInfo>();
             }
         }
 

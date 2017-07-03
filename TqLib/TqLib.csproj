@@ -195,6 +195,7 @@
     <Compile Include="ccnet\Local\Helper\CcnetServiceFinder.cs" />
     <Compile Include="ccnet\Local\Helper\CcnetPluginFInder.cs" />
     <Compile Include="ccnet\Local\EnviromentVariableChecker.cs" />
+    <Compile Include="ccnet\Local\Helper\SeperateAppDomainAssemblyLoader.cs" />
     <Compile Include="ccnet\Local\Helper\TqCcnetDashboardUpdator.cs" />
     <Compile Include="ccnet\Local\Helper\TqDashboardRemoteVersionChecker.cs" />
     <Compile Include="Exceptions\Exceptions.cs" />
