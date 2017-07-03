@@ -1,4 +1,5 @@
 ﻿using Quartz;
+using System.Linq;
 using TqLib.ccnet.Local;
 
 namespace TqCcnetDashboard.Quartz.Job
@@ -13,7 +14,7 @@ namespace TqCcnetDashboard.Quartz.Job
             {
                 using (var ccnet = new CCNET(host))
                 {
-                    var projects = ccnet.Server.GetProjectStatus();
+                    var projects = ccnet.Server.GetProjectStatus().OrderBy(t => t.ServerName).ThenBy(t => t.Name).ToArray();
                     CurrentSite.ProjectStatusCollection[host] = projects;
                     CurrentSite.OnProjectChagned(host);
                 }
