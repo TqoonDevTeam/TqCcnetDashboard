@@ -3,10 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Xml.Linq;
 using ThoughtWorks.CruiseControl.Core.Tasks;
-using TqLib.ccnet.Core;
 
 namespace TqLib.ccnet.Local.Helper
 {
@@ -63,16 +61,18 @@ namespace TqLib.ccnet.Local.Helper
         {
             if (File.Exists(dllPath))
             {
-                var typeofReflectorTypeAttribute = typeof(ReflectorTypeAttribute);
-                if (Constants.Key.DefaultPluginName.Equals(Path.GetFileNameWithoutExtension(dllPath)))
-                {
-                    return typeof(Constants).Assembly.GetTypes().Where(t => t.IsDefined(typeofReflectorTypeAttribute)).Select(t => new PluginTypeInfo(t)).ToList();
-                }
-                else
-                {
-                    var typeLoader = new SeperateAppDomainAssemblyLoader() { CCNETServiceDirectory = CCNET.ServiceDirectory };
-                    return typeLoader.GetAssemblyTypes(new FileInfo(dllPath)).ToList();
-                }
+                //var typeofReflectorTypeAttribute = typeof(ReflectorTypeAttribute);
+                //if (Constants.Key.DefaultPluginName.Equals(Path.GetFileNameWithoutExtension(dllPath)))
+                //{
+                //    return typeof(Constants).Assembly.GetTypes().Where(t => t.IsDefined(typeofReflectorTypeAttribute)).Select(t => new PluginTypeInfo(t)).ToList();
+                //}
+                //else
+                //{
+                //    var typeLoader = new SeperateAppDomainAssemblyLoader() { CCNETServiceDirectory = CCNET.ServiceDirectory };
+                //    return typeLoader.GetAssemblyTypes(new FileInfo(dllPath)).ToList();
+                //}
+                var typeLoader = new SeperateAppDomainAssemblyLoader() { CCNETServiceDirectory = CCNET.ServiceDirectory };
+                return typeLoader.GetAssemblyTypes(new FileInfo(dllPath)).ToList();
             }
             else
             {

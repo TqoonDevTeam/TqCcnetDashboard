@@ -187,7 +187,7 @@ namespace TqLib.ccnet.Local.Helper
                 Attribute = new AttributeData();
                 Attribute.Name = attrData.ConstructorArguments[0].Value.ToString();
                 Attribute.Description = attrData.NamedArguments.FirstOrDefault(t => t.MemberName == "Description").TypedValue.Value?.ToString() ?? string.Empty;
-                Attribute.Required = (bool)(attrData.NamedArguments.FirstOrDefault(t => t.MemberName == "Required").TypedValue.Value ?? false);
+                Attribute.Required = (bool)(attrData.NamedArguments.FirstOrDefault(t => t.MemberName == "Required").TypedValue.Value ?? true);
             }
 
             [Serializable]
