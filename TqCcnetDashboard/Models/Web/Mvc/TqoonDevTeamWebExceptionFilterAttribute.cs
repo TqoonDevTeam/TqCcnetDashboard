@@ -12,6 +12,8 @@ namespace TqCcnetDashboard.Web.Mvc
     {
         public override void OnException(HttpActionExecutedContext context)
         {
+            TqLogger.Web.Error(context.Exception);
+
             if (context.Exception is ITqoonDevTeamException)
             {
                 var ex = context.Exception as ITqoonDevTeamException;
@@ -30,6 +32,8 @@ namespace TqCcnetDashboard.Web.Mvc
     {
         public override void OnException(ExceptionContext context)
         {
+            TqLogger.Web.Error(context.Exception);
+
             if (context.Exception is ITqoonDevTeamException)
             {
                 var ex = context.Exception as ITqoonDevTeamException;

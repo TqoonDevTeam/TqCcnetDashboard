@@ -264,6 +264,7 @@
     <Compile Include="Controllers\Api\SourceControlTemplateController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\DirViewController.cs" />
+    <Compile Include="Models\TqLogger.cs" />
     <Compile Include="Models\Web\Mvc\AbstractApiController.cs" />
     <Compile Include="Controllers\SystemSettingController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
