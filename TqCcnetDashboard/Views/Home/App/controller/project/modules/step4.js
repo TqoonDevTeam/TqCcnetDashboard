@@ -334,7 +334,7 @@
         }();
     }])
     .controller('project.step4.tasks.add.tqtext.ctrl', ['$scope', 'project.svc', function ($scope, svc) {
-        var defaultValue = { saveType: 'Text' };
+        var defaultValue = { saveType: 'Text', saveCondition: 'IfChanged' };
         var attrs_required_forced_key = ['description'];
         $scope.attrs = [];
         $scope.attrs_required = [];

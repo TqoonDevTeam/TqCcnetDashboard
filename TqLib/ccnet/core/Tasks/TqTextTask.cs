@@ -19,6 +19,9 @@ namespace TqLib.ccnet.Core.Tasks
         [ReflectorProperty("saveType", Required = false)]
         public SaveType FileSaveType { get; set; } = SaveType.Text;
 
+        [ReflectorProperty("saveCondition", Required = false)]
+        public SaveCondition FileSaveCondition { get; set; } = SaveCondition.IfChanged;
+
         protected override bool Execute(IIntegrationResult result)
         {
             var savePath = GetSavePath(result);
@@ -38,7 +41,21 @@ namespace TqLib.ccnet.Core.Tasks
                 saveData = Source;
             }
 
-            File.WriteAllText(savePath, saveData);
+            bool canSave = true;
+            if (FileSaveCondition == SaveCondition.IfChanged)
+            {
+                if (File.Exists(savePath))
+                {
+                    var oldData = File.ReadAllText(savePath).Trim();
+                    var newData = saveData.Trim();
+                    canSave = !oldData.Equals(newData);
+                }
+            }
+
+            if (canSave)
+            {
+                File.WriteAllText(savePath, saveData);
+            }
 
             return true;
         }
@@ -51,6 +68,11 @@ namespace TqLib.ccnet.Core.Tasks
         public enum SaveType
         {
             Text, Xml
+        }
+
+        public enum SaveCondition
+        {
+            IfChanged, Force
         }
     }
 }
