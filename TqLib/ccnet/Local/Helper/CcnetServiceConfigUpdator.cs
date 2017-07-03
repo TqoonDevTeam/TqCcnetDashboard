@@ -24,6 +24,14 @@ namespace TqLib.ccnet.Local.Helper
             Update(config_console);
         }
 
+        public void UpdateDependancy(PluginDependency pluginDependency)
+        {
+            string config = PathUtil.Combine(ServiceDirectory, "ccservice.exe.config");
+            string config_console = PathUtil.Combine(ServiceDirectory, "ccnet.exe.config");
+            UpdatePluginDependancy(config, pluginDependency);
+            UpdatePluginDependancy(config_console, pluginDependency);
+        }
+
         private void Update(string path)
         {
             var doc = XDocument.Load(path);
@@ -47,6 +55,27 @@ namespace TqLib.ccnet.Local.Helper
             }
 
             DependentAssemblyUpdate(doc);
+
+            doc.Save(path);
+        }
+
+        private void UpdatePluginDependancy(string path, PluginDependency pluginDependency)
+        {
+            var doc = XDocument.Load(path);
+
+            // configuration
+            XElement configuration = doc.Element("configuration");
+
+            // runtime
+            XElement runtime = FindElementIfNotExistsCreate(configuration, "runtime");
+
+            // assemblyBinding
+            XElement assemblyBinding = FindElementIfNotExistsCreate(runtime, "assemblyBinding", assemblyBindingNamespace);
+
+            foreach (var p in pluginDependency.GetAllModuleInfos())
+            {
+                CheckAndAppendDependentAssembly(assemblyBinding, p.name, p.publicKeyToken, p.culture, p.version);
+            }
 
             doc.Save(path);
         }
@@ -103,22 +132,26 @@ namespace TqLib.ccnet.Local.Helper
             string name = assemblyName.Name;
             string publicKeyToken = GetPublicKeyToken(assemblyName.GetPublicKeyToken());
             string culture = string.IsNullOrEmpty(assemblyName.CultureName) ? "neutral" : "assemblyName.CultureName";
-            string versioin = assemblyName.Version.ToString();
+            string version = assemblyName.Version.ToString();
+            CheckAndAppendDependentAssembly(assemblyBinding, name, publicKeyToken, culture, version);
+        }
 
-            var dependentAssembly = FindDependentAssembly(assemblyBinding, name, publicKeyToken);
+        private void CheckAndAppendDependentAssembly(XElement assemblyBinding, string assemblyName, string publicKeyToken, string culture, string version)
+        {
+            var dependentAssembly = FindDependentAssembly(assemblyBinding, assemblyName, publicKeyToken);
 
             if (dependentAssembly == null)
             {
                 dependentAssembly = new XElement(XName.Get("dependentAssembly", assemblyBindingNamespace),
-                    new XElement(XName.Get("assemblyIdentity", assemblyBindingNamespace), new XAttribute("name", name), new XAttribute("publicKeyToken", publicKeyToken), new XAttribute("culture", culture)),
-                    new XElement(XName.Get("bindingRedirect", assemblyBindingNamespace), new XAttribute("oldVersion", "0.0.0.0-99.9.9.9"), new XAttribute("newVersion", versioin)));
+                    new XElement(XName.Get("assemblyIdentity", assemblyBindingNamespace), new XAttribute("name", assemblyName), new XAttribute("publicKeyToken", publicKeyToken), new XAttribute("culture", culture)),
+                    new XElement(XName.Get("bindingRedirect", assemblyBindingNamespace), new XAttribute("oldVersion", "0.0.0.0-99.9.9.9"), new XAttribute("newVersion", version)));
                 assemblyBinding.Add(dependentAssembly);
             }
             else
             {
                 var bindingRedirect = dependentAssembly.Element(XName.Get("bindingRedirect", assemblyBindingNamespace));
                 bindingRedirect.SetAttributeValue("oldVersion", "0.0.0.0-99.9.9.9");
-                bindingRedirect.SetAttributeValue("newVersion", versioin);
+                bindingRedirect.SetAttributeValue("newVersion", version);
             }
         }
 

@@ -212,6 +212,7 @@
     <Compile Include="zTest\ccnet\Core\Tasks\TqTextTaskTest.cs" />
     <Compile Include="zTest\ccnet\Core\Util\StringDictionaryMapper.cs" />
     <Compile Include="zTest\ccnet\Core\Util\SpringContextHelperTest.cs" />
+    <Compile Include="zTest\ccnet\Local\Helper\CcnetPluginInstallerTest.cs" />
     <Compile Include="zTest\ccnet\Local\Helper\CcnetServiceConfigUpdatorTest.cs" />
     <Compile Include="zTest\Utils\ExecuteableUtilTest.cs" />
     <Compile Include="zTest\ccnet\Local\Helper\TqCcnetDashboardUpdatorTest.cs" />

@@ -70,6 +70,53 @@ namespace TqLib.ccnet.Local.Helper
             }
         }
 
+        public AssemblyName[] GetReferencedAssemblyNames(FileInfo assemblyLocation)
+        {
+            AssemblyName[] types = new AssemblyName[] { };
+
+            if (string.IsNullOrEmpty(assemblyLocation.Directory.FullName))
+            {
+                throw new InvalidOperationException(
+                    "Directory can't be null or empty.");
+            }
+
+            if (!Directory.Exists(assemblyLocation.Directory.FullName))
+            {
+                throw new InvalidOperationException(
+                   string.Format(CultureInfo.CurrentCulture,
+                   "Directory not found {0}",
+                   assemblyLocation.Directory.FullName));
+            }
+
+            AppDomain childDomain = BuildChildDomain(
+                AppDomain.CurrentDomain);
+
+            try
+            {
+                Type loaderType = typeof(AssemblyLoader);
+                if (loaderType.Assembly != null)
+                {
+                    var loader =
+                        (AssemblyLoader)childDomain.
+                            CreateInstanceFrom(
+                            loaderType.Assembly.Location,
+                            loaderType.FullName).Unwrap();
+                    loader.SetCCNETServiceDirectory(CCNETServiceDirectory);
+                    loader.LoadAssembly(
+                        assemblyLocation.FullName);
+
+                    types =
+                        loader.GetReferencedAssemblyNames(
+                        assemblyLocation.Directory.FullName, assemblyLocation.FullName);
+                }
+                return types;
+            }
+            finally
+            {
+                AppDomain.Unload(childDomain);
+            }
+        }
+
         private AppDomain BuildChildDomain(AppDomain parentDomain)
         {
             Evidence evidence = new Evidence(parentDomain.Evidence);
@@ -108,6 +155,29 @@ namespace TqLib.ccnet.Local.Helper
                 AppDomain.CurrentDomain.AssemblyResolve -= resolveEventHandler;
 
                 return types;
+            }
+
+            [SuppressMessage("Microsoft.Performance",
+                "CA1822:MarkMembersAsStatic")]
+            internal AssemblyName[] GetReferencedAssemblyNames(string path, string dll)
+            {
+                AssemblyName[] assemblyNames = new AssemblyName[] { };
+
+                DirectoryInfo directory = new DirectoryInfo(path);
+                ResolveEventHandler resolveEventHandler =
+                    (s, e) =>
+                    {
+                        return OnReflectionOnlyResolve(
+                            e, directory);
+                    };
+
+                AppDomain.CurrentDomain.AssemblyResolve += resolveEventHandler;
+
+                assemblyNames = Assembly.LoadFrom(dll).GetReferencedAssemblies();
+
+                AppDomain.CurrentDomain.AssemblyResolve -= resolveEventHandler;
+
+                return assemblyNames;
             }
 
             private Assembly OnReflectionOnlyResolve(ResolveEventArgs args, DirectoryInfo directory)

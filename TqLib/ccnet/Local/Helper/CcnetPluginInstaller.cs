@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Xml.Linq;
+using System.Xml.Serialization;
 
 namespace TqLib.ccnet.Local.Helper
 {
@@ -24,17 +27,17 @@ namespace TqLib.ccnet.Local.Helper
             var pluginFiles = files.Where(t => t.IsCcnetPlugin).ToList();
             var pluginReferenceFiles = files.Except(pluginFiles).ToList();
 
-            XDocument pdoc = GetPluginDependencyXml();
+            PluginDependency pluginDependency = GetPluginDependency();
 
             foreach (var plugin in pluginFiles)
             {
-                if (ExistsPluginReferenceInfo(pdoc, plugin.AssemblyName))
+                if (ExistsPluginInfo(pluginDependency, plugin.AssemblyName))
                 {
-                    UpdatePluginReferenceInfo(pdoc, plugin.AssemblyName, plugin.AssemblyVersion);
+                    UpdatePluginInfo(pluginDependency, plugin.AssemblyName, plugin.AssemblyVersion);
                 }
                 else
                 {
-                    CreatePluginReferenceInfo(pdoc, plugin.AssemblyName, plugin.AssemblyVersion);
+                    CreatePluginInfo(pluginDependency, plugin.AssemblyName, plugin.AssemblyVersion);
                 }
 
                 File.Copy(plugin.FilePath, Path.Combine(PluginDirectory, plugin.FileName), true);
@@ -46,89 +49,161 @@ namespace TqLib.ccnet.Local.Helper
 
                 foreach (var plugin in pluginFiles)
                 {
-                    if (ExistsPluginReferenceModuleInfo(pdoc, plugin.AssemblyName, pluginReference.AssemblyName))
+                    if (ExistsPluginReferenceModuleInfo(pluginDependency, plugin.AssemblyName, pluginReference.AssemblyName))
                     {
-                        UpdatePluginReferenceModuleInfo(pdoc, plugin.AssemblyName, pluginReference.AssemblyName, pluginReference.AssemblyVersion);
+                        UpdatePluginReferenceModuleInfo(pluginDependency, plugin.AssemblyName, pluginReference);
                     }
                     else
                     {
-                        CreatePluginReferenceModuleInfo(pdoc, plugin.AssemblyName, pluginReference.AssemblyName, pluginReference.AssemblyVersion);
+                        CreatePluginReferenceModuleInfo(pluginDependency, plugin.AssemblyName, pluginReference);
                     }
                 }
-                File.Copy(pluginReference.FilePath, Path.Combine(ServiceDirecotry, pluginReference.FileName), true);
+
+                if (IsNewVersion(pluginDependency, pluginReference))
+                {
+                    File.Copy(pluginReference.FilePath, Path.Combine(ServiceDirecotry, pluginReference.FileName), true);
+                }
             }
 
-            pdoc.Save(GetPluginDependencyXmlPath());
+            SavePluginDependency(pluginDependency);
+            var configUpdator = new CcnetServiceConfigUpdator(ServiceDirecotry);
+            configUpdator.UpdateDependancy(pluginDependency);
         }
 
-        private XDocument GetPluginDependencyXml()
+        private PluginDependency GetPluginDependency()
         {
             string pluginDependencyXmlPath = GetPluginDependencyXmlPath();
             if (File.Exists(pluginDependencyXmlPath))
             {
-                return XDocument.Load(pluginDependencyXmlPath);
+                try
+                {
+                    XmlSerializer serializer = new XmlSerializer(typeof(PluginDependency));
+                    using (var sr = new StreamReader(pluginDependencyXmlPath))
+                    {
+                        return serializer.Deserialize(sr) as PluginDependency;
+                    }
+                }
+                catch
+                {
+                    return new PluginDependency();
+                }
             }
             else
             {
-                var doc = new XDocument();
-                doc.Add(new XElement("PluginDependency"));
-                return doc;
+                return new PluginDependency();
             }
         }
 
-        private bool ExistsPluginReferenceInfo(XDocument pdoc, string assemblyName)
+        private void SavePluginDependency(PluginDependency pluginDependency)
         {
-            return GetPluginReferenceInfo(pdoc, assemblyName) != null;
+            XmlSerializer serializer = new XmlSerializer(typeof(PluginDependency));
+            string xml;
+            using (StringWriter textWriter = new StringWriter())
+            {
+                serializer.Serialize(textWriter, pluginDependency);
+                xml = textWriter.ToString();
+            }
+            var doc = XDocument.Parse(xml);
+            doc.Save(GetPluginDependencyXmlPath());
         }
 
-        private bool ExistsPluginReferenceModuleInfo(XDocument pdoc, string pluginAssemblyName, string referenceAssemblyName)
+        private bool ExistsPluginInfo(PluginDependency pluginDependency, string assemblyName)
         {
-            return GetPluginReferenceModuleInfo(pdoc, pluginAssemblyName, referenceAssemblyName) != null;
+            return pluginDependency.Plugin.Any(t => t.name.Equals(assemblyName));
         }
 
-        private void CreatePluginReferenceInfo(XDocument pdoc, string assemblyName, string assemblyVersion)
+        private void UpdatePluginInfo(PluginDependency pluginDependency, string assemblyName, string assemblyVersion)
         {
-            pdoc.Element("PluginDependency").Add(
-                new XElement("PluginReferenceInfo",
-                    new XAttribute("name", assemblyName),
-                    new XAttribute("version", assemblyVersion)
-                    )
-                );
+            pluginDependency.Plugin.First(t => t.name.Equals(assemblyName)).version = assemblyVersion;
         }
 
-        private void CreatePluginReferenceModuleInfo(XDocument pdoc, string pluginAssemblyName, string referenceAssemblyName, string referenceAssemblyVersion)
+        private void CreatePluginInfo(PluginDependency pluginDependency, string assemblyName, string assemblyVersion)
         {
-            var element = GetPluginReferenceInfo(pdoc, pluginAssemblyName);
-            element.Add(new XElement("Module",
-                    new XAttribute("name", referenceAssemblyName),
-                    new XAttribute("version", referenceAssemblyVersion)));
+            pluginDependency.Plugin.Add(new PluginDependency.PluginInfo() { name = assemblyName, version = assemblyVersion });
         }
 
-        private void UpdatePluginReferenceInfo(XDocument pdoc, string assemblyName, string assemblyVersion)
+        private bool ExistsPluginReferenceModuleInfo(PluginDependency pluginDependency, string pluginAssemblyName, string referenceAssemblyName)
         {
-            var element = GetPluginReferenceInfo(pdoc, assemblyName);
-            element.SetAttributeValue("version", assemblyVersion);
+            return pluginDependency.Plugin.First(t => t.name.Equals(pluginAssemblyName)).Installed.Any(t => t.name.Equals(referenceAssemblyName));
         }
 
-        private void UpdatePluginReferenceModuleInfo(XDocument pdoc, string pluginAssemblyName, string referenceAssemblyName, string referenceAssemblyVersion)
+        private void UpdatePluginReferenceModuleInfo(PluginDependency pluginDependency, string pluginAssemblyName, ExternalDll dll)
         {
-            var element = GetPluginReferenceModuleInfo(pdoc, pluginAssemblyName, referenceAssemblyName);
-            element.SetAttributeValue("version", referenceAssemblyVersion);
+            pluginDependency.Plugin.First(t => t.name.Equals(pluginAssemblyName)).Installed.First(t => t.name.Equals(dll.AssemblyName)).version = dll.AssemblyVersion;
         }
 
-        private XElement GetPluginReferenceInfo(XDocument pdoc, string assemblyName)
+        private void CreatePluginReferenceModuleInfo(PluginDependency pluginDependency, string pluginAssemblyName, ExternalDll dll)
         {
-            return pdoc.Element("PluginDependency").Elements("PluginReferenceInfo").SingleOrDefault(t => assemblyName.Equals(t.Attribute("name")?.Value));
+            pluginDependency.Plugin.First(t => t.name.Equals(pluginAssemblyName)).Installed.Add(new PluginDependency.ModuleInfo(dll));
         }
 
-        private XElement GetPluginReferenceModuleInfo(XDocument pdoc, string pluginAssemblyName, string referenceAssemblyName)
+        private bool IsNewVersion(PluginDependency pluginDependency, ExternalDll dll)
         {
-            return GetPluginReferenceInfo(pdoc, pluginAssemblyName).Elements("Module").SingleOrDefault(t => referenceAssemblyName.Equals(t.Attribute("name")?.Value));
+            var find = pluginDependency.GetAllModuleInfos().Where(t => t.name.Equals(dll.AssemblyName)).OrderByDescending(t => t.version).FirstOrDefault();
+            if (find != null)
+            {
+                return !(new[] { find.version, dll.AssemblyVersion }.OrderByDescending(t => t).First().Equals(dll.AssemblyVersion));
+            }
+            else
+            {
+                return true;
+            }
         }
 
         private string GetPluginDependencyXmlPath()
         {
             return Path.Combine(PluginDirectory, "PluginDependency.xml");
+        }
+    }
+
+    [XmlRoot]
+    public class PluginDependency
+    {
+        [XmlElement]
+        public List<PluginInfo> Plugin { get; set; } = new List<PluginInfo>();
+
+        public class PluginInfo
+        {
+            [XmlAttribute]
+            public string name { get; set; }
+
+            [XmlAttribute]
+            public string version { get; set; }
+
+            [XmlElement]
+            public List<ModuleInfo> Installed { get; set; } = new List<ModuleInfo>();
+        }
+
+        public class ModuleInfo
+        {
+            [XmlAttribute]
+            public string name { get; set; }
+
+            [XmlAttribute]
+            public string version { get; set; }
+
+            [XmlAttribute]
+            public string publicKeyToken { get; set; }
+
+            [XmlAttribute]
+            public string culture { get; set; }
+
+            public ModuleInfo()
+            {
+            }
+
+            public ModuleInfo(ExternalDll dll)
+            {
+                name = dll.AssemblyName;
+                version = dll.AssemblyVersion;
+                publicKeyToken = dll.PublicKeyToken;
+                culture = dll.Culture;
+            }
+        }
+
+        public IEnumerable<ModuleInfo> GetAllModuleInfos()
+        {
+            return Plugin.SelectMany(t => t.Installed);
         }
     }
 
@@ -138,7 +213,8 @@ namespace TqLib.ccnet.Local.Helper
         public string FileName { get; private set; }
         public string AssemblyName { get; private set; }
         public string AssemblyVersion { get; private set; }
-
+        public string PublicKeyToken { get; private set; }
+        public string Culture { get; private set; }
         public bool IsCcnetPlugin { get; private set; }
 
         public ExternalDll(string filePath)
@@ -147,10 +223,21 @@ namespace TqLib.ccnet.Local.Helper
             FileName = Path.GetFileName(FilePath);
 
             var assemblyName = System.Reflection.AssemblyName.GetAssemblyName(FilePath);
-
             AssemblyName = assemblyName.Name;
             AssemblyVersion = assemblyName.Version.ToString();
+            PublicKeyToken = GetPublicKeyToken(assemblyName.GetPublicKeyToken());
+            Culture = string.IsNullOrEmpty(assemblyName.CultureName) ? "neutral" : "assemblyName.CultureName";
             IsCcnetPlugin = IsPlugin(AssemblyName);
+        }
+
+        private string GetPublicKeyToken(byte[] bytes)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < bytes.GetLength(0); i++)
+            {
+                sb.AppendFormat("{0:x2}", bytes[i]);
+            }
+            return sb.ToString();
         }
 
         private bool IsPlugin(string shortAssemblyName)
