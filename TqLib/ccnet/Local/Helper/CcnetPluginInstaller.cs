@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
@@ -29,6 +30,14 @@ namespace TqLib.ccnet.Local.Helper
             var installedFiles = Directory.GetFiles(ServiceDirecotry, "*.dll").Select(t => new ExternalDll(t));
 
             PluginDependency pluginDependency = GetPluginDependency();
+            if (ExistsPluginInfo(pluginDependency, "Installed"))
+            {
+                UpdatePluginInfo(pluginDependency, "Installed", "");
+            }
+            else
+            {
+                CreatePluginInfo(pluginDependency, "Installed", "");
+            }
             foreach (var file in installedFiles)
             {
                 if (ExistsPluginReferenceModuleInfo(pluginDependency, "Installed", file.AssemblyName))
@@ -115,8 +124,19 @@ namespace TqLib.ccnet.Local.Helper
                 serializer.Serialize(textWriter, pluginDependency);
                 xml = textWriter.ToString();
             }
+
             var doc = XDocument.Parse(xml);
-            doc.Save(GetPluginDependencyXmlPath());
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.OmitXmlDeclaration = true;
+            settings.Indent = true;
+            settings.IndentChars = "    ";
+
+            StringWriter sw = new StringWriter();
+            using (var stream = File.Create(GetPluginDependencyXmlPath()))
+            using (XmlWriter xw = XmlWriter.Create(stream, settings))
+            {
+                doc.Save(xw);
+            }
         }
 
         private bool ExistsPluginInfo(PluginDependency pluginDependency, string assemblyName)
