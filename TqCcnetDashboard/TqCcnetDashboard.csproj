@@ -1181,6 +1181,7 @@
     <Content Include="Views\Home\App\views\project\step3\triggers.default.tmpl.html" />
     <Content Include="Views\Home\App\views\project\step3\triggers.projectTrigger.tmpl.html" />
     <Content Include="Views\Home\App\views\project\step3\triggers.multiTrigger.tmpl.html" />
+    <Content Include="Views\Home\App\views\project\step4\task.forcebuild.html" />
     <Content Include="Views\Home\App\views\project\step4\task.tqrsync.html" />
     <Content Include="Views\Home\App\views\project\step4\task.tqdbexecutor.html" />
     <Content Include="Views\Home\App\views\project\step4\task.tqtext.html" />

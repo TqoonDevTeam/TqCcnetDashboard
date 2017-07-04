@@ -1,0 +1,16 @@
+﻿<div ng-controller="project.step4.tasks.add.forcebuild.ctrl">
+    <reflector-type model="task" type-source="attrs_required"></reflector-type>
+    <reflector-type model="task" type-source="attrs_required_forced"></reflector-type>
+    <div class="form-group">
+        <label class="control-label col-sm-2">integrationStatus</label>
+        <div class="col-sm-10">
+            <select class="form-control" name="integrationStatus" ng-model="task.integrationStatus" required>
+                <option value="Success">Success</option>
+                <option value="Failure">Failure</option>
+                <option value="Exception">Exception</option>
+                <option value="Unknown">Unknown</option>
+                <option value="Cancelled">Cancelled</option>
+            </select>
+        </div>
+    </div>
+</div>
