@@ -60,6 +60,7 @@
 /// <reference path="../views/home/app/controller/project/modules/step2.js" />
 /// <reference path="../views/home/app/controller/project/modules/step3.js" />
 /// <reference path="../views/home/app/controller/project/modules/step4.js" />
+/// <reference path="../views/home/app/controller/project/modules/step5.js" />
 /// <reference path="../views/home/app/controller/project/modules/svc.js" />
 /// <reference path="../views/home/app/controller/project/update.js" />
 /// <reference path="../views/home/app/controller/settings.plugins.js" />

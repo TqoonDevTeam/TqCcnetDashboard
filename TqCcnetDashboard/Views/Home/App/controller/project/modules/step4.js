@@ -95,7 +95,6 @@
             nuget: pathUtil.GetTemplate('/project/step4/task.nuget.html'),
             msbuild: pathUtil.GetTemplate('/project/step4/task.msbuild.html'),
             exec: pathUtil.GetTemplate('/project/step4/task.exec.html'),
-            forcebuild: pathUtil.GetTemplate('/project/step4/task.forcebuild.html'),
             TqForeachFromDB: pathUtil.GetTemplate('/project/step4/task.tqforeachfromdb.html'),
             TqDBExecutor: pathUtil.GetTemplate('/project/step4/task.tqdbexecutor.html'),
             TqText: pathUtil.GetTemplate('/project/step4/task.tqtext.html'),
@@ -361,23 +360,6 @@
     .controller('project.step4.tasks.add.tqrsync.ctrl', ['$scope', 'project.svc', function ($scope, svc) {
         var defaultValue = { options: '-avrzP --chmod=ugo=rwX' };
         var attrs_required_forced_key = ['description', 'workingDirectory'];
-        $scope.attrs = [];
-        $scope.attrs_required = [];
-        $scope.attrs_required_forced_key = [];
-
-        this.init = function () {
-            svc.SourceControlTemplate.get($scope.task['@type']).then(function (res) {
-                $scope.attrs = res.data;
-                $scope.attrs_required = _.filter(res.data, function (item) { return item.attr.Required; });
-                $scope.attrs_required_forced = _.filter(res.data, function (item) { return _.contains(attrs_required_forced_key, item.attr.Name); });
-                _.each($scope.attrs_required_forced, function (v) { v.attr.Required = true });
-            });
-            angular.extend($scope.task, angular.extend({}, defaultValue, $scope.task));
-        }();
-    }])
-    .controller('project.step4.tasks.add.forcebuild.ctrl', ['$scope', 'project.svc', function ($scope, svc) {
-        var defaultValue = { integrationStatus: 'Success', enforcerName: 'Forcer' };
-        var attrs_required_forced_key = ['description', 'serverUri', 'enforcerName'];
         $scope.attrs = [];
         $scope.attrs_required = [];
         $scope.attrs_required_forced_key = [];

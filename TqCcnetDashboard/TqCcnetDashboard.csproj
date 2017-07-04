@@ -1155,6 +1155,7 @@
     <Content Include="Scripts\_references.js" />
     <Content Include="Views\Home\App\app.js" />
     <Content Include="Views\Home\App\controller\dashboard\modules\svc.js" />
+    <Content Include="Views\Home\App\controller\project\modules\step5.js" />
     <Content Include="Views\Home\App\controller\project\modules\svc.js" />
     <Content Include="Views\Home\App\controller\project\update.js" />
     <Content Include="Views\Home\App\controller\project\list.js" />
@@ -1181,7 +1182,7 @@
     <Content Include="Views\Home\App\views\project\step3\triggers.default.tmpl.html" />
     <Content Include="Views\Home\App\views\project\step3\triggers.projectTrigger.tmpl.html" />
     <Content Include="Views\Home\App\views\project\step3\triggers.multiTrigger.tmpl.html" />
-    <Content Include="Views\Home\App\views\project\step4\task.forcebuild.html" />
+    <Content Include="Views\Home\App\views\project\step5\publishers.forcebuild.html" />
     <Content Include="Views\Home\App\views\project\step4\task.tqrsync.html" />
     <Content Include="Views\Home\App\views\project\step4\task.tqdbexecutor.html" />
     <Content Include="Views\Home\App\views\project\step4\task.tqtext.html" />
@@ -1191,6 +1192,11 @@
     <Content Include="Views\Home\App\views\project\step4\task.nuget.html" />
     <Content Include="Views\Home\App\views\project\step4\task.msbuild.html" />
     <Content Include="Views\Home\App\views\project\step4\task.tqiis.html" />
+    <Content Include="Views\Home\App\views\project\step5\publishers.artifactcleanup.html" />
+    <Content Include="Views\Home\App\views\project\step5\publishers.xmllogger.html" />
+    <Content Include="Views\Home\App\views\project\step5\publishers.default.html" />
+    <Content Include="Views\Home\App\views\project\step5\publishers.add.tmpl.html" />
+    <Content Include="Views\Home\App\views\project\step5\tmpl.html" />
     <Content Include="Views\Home\App\views\project\update.html" />
     <Content Include="Views\Home\App\views\project\list.html" />
     <Content Include="Views\Home\App\views\project\step4\task.tqnunit.html" />

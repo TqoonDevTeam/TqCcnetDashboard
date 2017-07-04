@@ -4,7 +4,8 @@
     'controller/project/modules/step1',
     'controller/project/modules/step2',
     'controller/project/modules/step3',
-    'controller/project/modules/step4'], function (app, md5, URI, checker) {
+    'controller/project/modules/step4',
+    'controller/project/modules/step5'], function (app, md5, URI, checker) {
         app.controller('project.update.ctrl', ['$scope', '$rootScope', '$http', '$uibModal', 'project.svc', 'pathUtil', '$location', function ($scope, $rootScope, $http, $uibModal, svc, pathUtil, $location) {
             var projectName = '';
             $scope.p = {};
@@ -14,6 +15,7 @@
                 { heading: 'SourceControl', include: pathUtil.GetTemplate('project/step2/tmpl.html') },
                 { heading: 'Triggers', include: pathUtil.GetTemplate('project/step3/tmpl.html') },
                 { heading: 'Tasks', include: pathUtil.GetTemplate('project/step4/tmpl.html') },
+                { heading: 'Publishers', include: pathUtil.GetTemplate('project/step5/tmpl.html') },
             ];
 
             this.tabSelect = function (item) {
