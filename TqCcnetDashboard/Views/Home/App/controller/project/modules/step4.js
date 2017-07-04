@@ -345,7 +345,12 @@
         this.init = function () {
             svc.SourceControlTemplate.get($scope.task['@type']).then(function (res) {
                 $scope.attrs = res.data;
-                _.each($scope.attrs_un_required_forced_key, function (v) { if (res.data[v]) res.data[v].Required = false; });
+                _.each($scope.attrs_un_required_forced_key, function (v) {
+                    var find = _.find(res.data, function (item) {  return item.attr.Name === v; });
+                    if (find) {
+                        find.attr.Required = false;
+                    }
+                });
                 $scope.attrs_required = _.filter(res.data, function (item) { return item.attr.Required; });
                 $scope.attrs_required_forced = _.filter(res.data, function (item) { return _.contains(attrs_required_forced_key, item.attr.Name); });
                 _.each($scope.attrs_required_forced, function (v) { v.attr.Required = true });
