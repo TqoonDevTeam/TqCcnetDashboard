@@ -1,7 +1,6 @@
 ﻿using Exortech.NetReflector;
 using System.IO;
 using System.Text;
-using System.Xml.Linq;
 using ThoughtWorks.CruiseControl.Core;
 using ThoughtWorks.CruiseControl.Core.Tasks;
 
@@ -16,8 +15,8 @@ namespace TqLib.ccnet.Core.Tasks
         [ReflectorProperty("savePath")]
         public string SavePath { get; set; }
 
-        [ReflectorProperty("saveType", Required = false)]
-        public SaveType FileSaveType { get; set; } = SaveType.Text;
+        [ReflectorProperty("saveEncoding", Required = false)]
+        public string SaveEncoding { get; set; } = "UTF-8";
 
         [ReflectorProperty("saveCondition", Required = false)]
         public SaveCondition FileSaveCondition { get; set; } = SaveCondition.IfChanged;
@@ -25,36 +24,19 @@ namespace TqLib.ccnet.Core.Tasks
         protected override bool Execute(IIntegrationResult result)
         {
             var savePath = GetSavePath(result);
-
-            string saveData;
-            if (FileSaveType == SaveType.Xml)
-            {
-                StringBuilder sb = new StringBuilder();
-                using (TextWriter writer = new StringWriter(sb))
-                {
-                    XDocument.Parse(Source).Save(writer);
-                }
-                saveData = sb.ToString();
-            }
-            else
-            {
-                saveData = Source;
-            }
-
-            bool canSave = true;
+            bool isChanged = true;
+            var encoding = Encoding.GetEncoding(SaveEncoding);
             if (FileSaveCondition == SaveCondition.IfChanged)
             {
                 if (File.Exists(savePath))
                 {
-                    var oldData = File.ReadAllText(savePath).Trim();
-                    var newData = saveData.Trim();
-                    canSave = !oldData.Equals(newData);
+                    isChanged = !Source.Equals(File.ReadAllText(savePath, encoding));
                 }
             }
 
-            if (canSave)
+            if (isChanged)
             {
-                File.WriteAllText(savePath, saveData);
+                File.WriteAllText(savePath, Source, encoding);
             }
 
             return true;
@@ -63,11 +45,6 @@ namespace TqLib.ccnet.Core.Tasks
         private string GetSavePath(IIntegrationResult result)
         {
             return result.BaseFromWorkingDirectory(SavePath);
-        }
-
-        public enum SaveType
-        {
-            Text, Xml
         }
 
         public enum SaveCondition
