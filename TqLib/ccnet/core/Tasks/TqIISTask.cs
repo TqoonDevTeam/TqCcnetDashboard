@@ -34,8 +34,6 @@ namespace TqLib.ccnet.Core.Tasks
         [ReflectorProperty("poolConfig", typeof(ApplicationPoolConfigSerializerFactory), Description = "ApplicationPool 설정")]
         public Dictionary<string, string> PoolConfig { get; set; }
 
-        public Dictionary<string, object> DbData { get; set; }
-
         protected override bool Execute(IIntegrationResult result)
         {
             result.BuildProgressInformation.SignalStartRunTask($"Executing TqIIS {SiteName}");
@@ -76,7 +74,7 @@ namespace TqLib.ccnet.Core.Tasks
                 site.Bindings.Clear();
                 foreach (var binding in Bindings)
                 {
-                    if (binding.IsHTTPS)
+                    if (binding.HasSSL)
                     {
                         site.Bindings.Add(binding.GetBindingInfomation(), binding.GetCertificateHash(), binding.GetCertificateStoreName());
                     }

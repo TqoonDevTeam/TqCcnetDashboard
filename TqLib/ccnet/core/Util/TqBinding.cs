@@ -15,7 +15,8 @@ namespace TqLib.ccnet.Core.Util
 
         public string SSL { get; set; } = string.Empty;
 
-        public bool IsHTTPS { get { return !string.IsNullOrEmpty(SSL); } }
+        public bool IsHTTPS { get { return Port == 443; } }
+        public bool HasSSL { get { return !string.IsNullOrEmpty(SSL); } }
 
         public override string ToString()
         {
@@ -54,14 +55,11 @@ namespace TqLib.ccnet.Core.Util
         {
             if (IsHTTPS)
             {
-                var ssl = SSL.Replace(" ", string.Empty);
-                IList<byte> bytes = new List<byte>();
-                for (var i = 1; i < ssl.Length; i += 2)
-                {
-                    bytes.Add(Convert.ToByte(Convert.ToInt32(ssl.Substring(i, 2), 16)));
-                }
-
-                return bytes.ToArray();
+                string ssl = SSL.Replace(" ", string.Empty);
+                return Enumerable.Range(0, ssl.Length)
+                    .Where(t => t % 2 == 0)
+                    .Select(t => Convert.ToByte(ssl.Substring(t, 2), 16))
+                    .ToArray();
             }
             else
             {
@@ -71,7 +69,7 @@ namespace TqLib.ccnet.Core.Util
 
         public string GetCertificateStoreName()
         {
-            if (IsHTTPS)
+            if (HasSSL)
             {
                 return "My";
             }
