@@ -335,7 +335,7 @@
     }])
     .controller('project.step4.tasks.add.tqtext.ctrl', ['$scope', 'project.svc', function ($scope, svc) {
         var defaultValue = { saveType: 'Text', saveCondition: 'IfChanged' };
-        var attrs_required_forced_key = ['description'];
+        var attrs_required_forced_key = ['description', 'saveEncoding'];
         $scope.attrs = [];
         $scope.attrs_required = [];
         $scope.attrs_required_forced_key = [];
@@ -345,7 +345,7 @@
             svc.SourceControlTemplate.get($scope.task['@type']).then(function (res) {
                 $scope.attrs = res.data;
                 _.each($scope.attrs_un_required_forced_key, function (v) {
-                    var find = _.find(res.data, function (item) {  return item.attr.Name === v; });
+                    var find = _.find(res.data, function (item) { return item.attr.Name === v; });
                     if (find) {
                         find.attr.Required = false;
                     }
