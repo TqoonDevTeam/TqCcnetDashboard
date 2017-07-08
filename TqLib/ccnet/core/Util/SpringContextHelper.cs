@@ -14,7 +14,7 @@ namespace TqLib.ccnet.Core.Util
         private static object lock_init = new object();
         private static IObjectDefinitionFactory fac = new DefaultObjectDefinitionFactory();
 
-        static SpringContextHelper()
+        private static AbstractApplicationContext GetAbstractApplicationContext()
         {
             if (!ContextRegistry.IsContextRegistered(_RootContext))
             {
@@ -30,10 +30,7 @@ namespace TqLib.ccnet.Core.Util
                     }
                 }
             }
-        }
 
-        private static AbstractApplicationContext GetAbstractApplicationContext()
-        {
             return ContextRegistry.GetContext(_RootContext) as AbstractApplicationContext;
         }
 
