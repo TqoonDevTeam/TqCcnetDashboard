@@ -374,4 +374,21 @@
             angular.extend($scope.task, angular.extend({}, defaultValue, $scope.task));
         }();
     }])
+    .controller('project.step4.tasks.add.tqdbexecutor.ctrl', ['$scope', 'project.svc', function ($scope, svc) {
+        var defaultValue = {};
+        var attrs_required_forced_key = ['description'];
+        $scope.attrs = [];
+        $scope.attrs_required = [];
+        $scope.attrs_required_forced_key = [];
+
+        this.init = function () {
+            svc.SourceControlTemplate.get($scope.task['@type']).then(function (res) {
+                $scope.attrs = res.data;
+                $scope.attrs_required = _.filter(res.data, function (item) { return item.attr.Required; });
+                $scope.attrs_required_forced = _.filter(res.data, function (item) { return _.contains(attrs_required_forced_key, item.attr.Name); });
+                _.each($scope.attrs_required_forced, function (v) { v.attr.Required = true });
+            });
+            angular.extend($scope.task, angular.extend({}, defaultValue, $scope.task));
+        }();
+    }])
 });
