@@ -24,6 +24,8 @@ namespace TqLib.ccnet.Local.Helper
 
         public void Install()
         {
+            if (!Directory.Exists(PluginDirectory)) Directory.CreateDirectory(PluginDirectory);
+
             var files = Directory.GetFiles(SrcDirectory, "*.*").Where(file => AllowExtensions.Any(ext => ext.Equals(Path.GetExtension(file), StringComparison.OrdinalIgnoreCase))).Select(t => new ExternalDll(t)).Where(t => t.PublicKeyToken != "PASS").ToList();
             var pluginFiles = files.Where(t => t.IsCcnetPlugin).ToList();
             var pluginReferenceFiles = files.Except(pluginFiles).ToList();
