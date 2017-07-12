@@ -174,7 +174,7 @@ namespace TqLib.ccnet.Local.Helper
         private bool IsNewVersion(PluginDependency pluginDependency, ExternalDll dll)
         {
             var find = pluginDependency.GetAllModuleInfos().Where(t => t.name.Equals(dll.AssemblyName)).OrderByDescending(t => t.version).FirstOrDefault();
-            if (find != null)
+            if (find != null && find.version != dll.AssemblyVersion)
             {
                 return !(new[] { find.version, dll.AssemblyVersion }.OrderByDescending(t => t).First().Equals(dll.AssemblyVersion));
             }
