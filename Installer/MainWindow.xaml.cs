@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.ServiceProcess;
 using System.Threading.Tasks;
 using System.Windows;
 using TqLib.ccnet.Local;
@@ -96,10 +97,13 @@ namespace Installer
                     {
                         btnConfirm.IsEnabled = false;
                     });
-                    Install();
-                    Install_IIS();
-                    if (Directory.Exists(downloadPath)) Directory.Delete(downloadPath, true);
-                    Environment.Exit(0);
+                    if (CheckCCNET())
+                    {
+                        Install();
+                        Install_IIS();
+                        if (Directory.Exists(downloadPath)) Directory.Delete(downloadPath, true);
+                        Environment.Exit(0);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -115,6 +119,16 @@ namespace Installer
                 }
             });
             task.Start();
+        }
+
+        private bool CheckCCNET()
+        {
+            if (!ServiceController.GetServices().Any(t => "CCService".Equals(t.ServiceName)))
+            {
+                MessageBox.Show("CCNET 이 설치되지 않았습니다.", "설치오류", MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+            return true;
         }
 
         private void Install()

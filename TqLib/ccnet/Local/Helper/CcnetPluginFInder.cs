@@ -61,17 +61,7 @@ namespace TqLib.ccnet.Local.Helper
         {
             if (File.Exists(dllPath))
             {
-                //var typeofReflectorTypeAttribute = typeof(ReflectorTypeAttribute);
-                //if (Constants.Key.DefaultPluginName.Equals(Path.GetFileNameWithoutExtension(dllPath)))
-                //{
-                //    return typeof(Constants).Assembly.GetTypes().Where(t => t.IsDefined(typeofReflectorTypeAttribute)).Select(t => new PluginTypeInfo(t)).ToList();
-                //}
-                //else
-                //{
-                //    var typeLoader = new SeperateAppDomainAssemblyLoader() { CCNETServiceDirectory = CCNET.ServiceDirectory };
-                //    return typeLoader.GetAssemblyTypes(new FileInfo(dllPath)).ToList();
-                //}
-                var typeLoader = new SeperateAppDomainAssemblyLoader() { CCNETServiceDirectory = CCNET.ServiceDirectory };
+                 var typeLoader = new SeperateAppDomainAssemblyLoader() { CCNETServiceDirectory = CCNET.ServiceDirectory };
                 return typeLoader.GetAssemblyTypes(new FileInfo(dllPath)).ToList();
             }
             else

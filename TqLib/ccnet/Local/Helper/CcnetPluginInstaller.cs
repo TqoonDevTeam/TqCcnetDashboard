@@ -28,7 +28,7 @@ namespace TqLib.ccnet.Local.Helper
 
             var files = Directory.GetFiles(SrcDirectory, "*.*").Where(file => AllowExtensions.Any(ext => ext.Equals(Path.GetExtension(file), StringComparison.OrdinalIgnoreCase))).Select(t => new ExternalDll(t)).Where(t => t.PublicKeyToken != "PASS").ToList();
             var pluginFiles = files.Where(t => t.IsCcnetPlugin).ToList();
-            var pluginReferenceFiles = files.Except(pluginFiles).ToList();
+            var pluginReferenceFiles = files.Where(t => !t.IsCcnetPlugin).ToList();
             var installedFiles = Directory.GetFiles(ServiceDirecotry, "*.dll").Select(t => new ExternalDll(t)).Where(t => t.PublicKeyToken != "PASS");
 
             PluginDependency pluginDependency = GetPluginDependency();
@@ -268,7 +268,7 @@ namespace TqLib.ccnet.Local.Helper
             {
                 PublicKeyToken = "PASS";
             }
-            IsCcnetPlugin = IsPlugin(AssemblyName ?? string.Empty);
+            IsCcnetPlugin = IsPlugin();
         }
 
         private string GetPublicKeyToken(byte[] bytes)
@@ -281,9 +281,13 @@ namespace TqLib.ccnet.Local.Helper
             return sb.ToString();
         }
 
-        private bool IsPlugin(string shortAssemblyName)
+        private bool IsPlugin()
         {
-            return shortAssemblyName.StartsWith("ccnet.") && shortAssemblyName.EndsWith(".plugin");
+            if (AssemblyName != null)
+            {
+                if (AssemblyName.StartsWith("ccnet.") && AssemblyName.EndsWith(".plugin")) return true;
+            }
+            return false;
         }
     }
 }
