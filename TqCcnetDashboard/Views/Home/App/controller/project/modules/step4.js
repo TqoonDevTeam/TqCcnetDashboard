@@ -360,6 +360,7 @@
     .controller('project.step4.tasks.add.tqrsync.ctrl', ['$scope', 'project.svc', function ($scope, svc) {
         var defaultValue = { options: '-avrzP --chmod=ugo=rwX' };
         var attrs_required_forced_key = ['description', 'workingDirectory'];
+        var attrs_required_forced_key_not_required = ['workingDirectory'];
         $scope.attrs = [];
         $scope.attrs_required = [];
         $scope.attrs_required_forced_key = [];
@@ -369,7 +370,11 @@
                 $scope.attrs = res.data;
                 $scope.attrs_required = _.filter(res.data, function (item) { return item.attr.Required; });
                 $scope.attrs_required_forced = _.filter(res.data, function (item) { return _.contains(attrs_required_forced_key, item.attr.Name); });
-                _.each($scope.attrs_required_forced, function (v) { v.attr.Required = true });
+                _.each($scope.attrs_required_forced, function (v) {
+                    if (!_.contains(attrs_required_forced_key_not_required, item.attr.Name)) {
+                        v.attr.Required = true
+                    }
+                });
             });
             angular.extend($scope.task, angular.extend({}, defaultValue, $scope.task));
         }();
