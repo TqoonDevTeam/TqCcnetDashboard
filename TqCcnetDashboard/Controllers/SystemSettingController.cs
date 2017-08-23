@@ -36,13 +36,13 @@ namespace TqCcnetDashboard.Controllers
             var serverVersion = typeof(SystemSettingController).Assembly.GetName().Version.ToString();
             var pluginVersion = typeof(CCNET).Assembly.GetName().Version.ToString();
             var pluginInstalled = System.IO.File.Exists(Path.Combine(CCNET.PluginDirectory, CcnetPluginFInder.TqDashboardDefaultPluginFileName));
-            var externalPlugins = new CcnetPluginFInder(CCNET.ServiceDirectory).GetExternalPluginsWithInfo();
+            //var externalPlugins = new CcnetPluginFInder(CCNET.ServiceDirectory).GetExternalPluginsWithInfo();
             return Json(new
             {
                 serverVersion,
                 pluginVersion,
                 pluginInstalled,
-                externalPlugins
+              //  externalPlugins
             });
         }
 

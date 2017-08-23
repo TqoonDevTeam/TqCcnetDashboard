@@ -190,7 +190,10 @@
     <Compile Include="ccnet\Core\Util\SpringContextHelper.cs" />
     <Compile Include="ccnet\Core\Util\TqBinding.cs" />
     <Compile Include="ccnet\Local\CCNET.cs" />
-    <Compile Include="ccnet\Local\Helper\CcnetPluginInstaller.cs" />
+    <Compile Include="ccnet\Local\Helper\CcnetPluginInstall\AssemblyBinding.cs" />
+    <Compile Include="ccnet\Local\Helper\CcnetPluginInstall\CcnetPluginInstaller.cs" />
+    <Compile Include="ccnet\Local\Helper\CcnetPluginInstall\CcnetPluginInstallPackage.cs" />
+    <Compile Include="ccnet\Local\Helper\CcnetPluginInstall\CcnetServicePluginRefrenceUpdator.cs" />
     <Compile Include="ccnet\Local\Helper\CcnetServiceConfigUpdator.cs" />
     <Compile Include="ccnet\Local\Helper\CcnetServiceFinder.cs" />
     <Compile Include="ccnet\Local\Helper\CcnetPluginFInder.cs" />
@@ -199,6 +202,7 @@
     <Compile Include="ccnet\Local\Helper\TqCcnetDashboardUpdator.cs" />
     <Compile Include="ccnet\Local\Helper\TqDashboardRemoteVersionChecker.cs" />
     <Compile Include="Exceptions\Exceptions.cs" />
+    <Compile Include="Extends\ByteExtend.cs" />
     <Compile Include="Extends\StringExtend.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\ExecutableUtil.cs" />
@@ -212,6 +216,7 @@
     <Compile Include="zTest\ccnet\Core\Tasks\TqTextTaskTest.cs" />
     <Compile Include="zTest\ccnet\Core\Util\StringDictionaryMapper.cs" />
     <Compile Include="zTest\ccnet\Core\Util\SpringContextHelperTest.cs" />
+    <Compile Include="zTest\ccnet\Local\Helper\AssemblyBindingTest.cs" />
     <Compile Include="zTest\ccnet\Local\Helper\CcnetPluginInstallerTest.cs" />
     <Compile Include="zTest\ccnet\Local\Helper\CcnetServiceConfigUpdatorTest.cs" />
     <Compile Include="zTest\Utils\ExecuteableUtilTest.cs" />

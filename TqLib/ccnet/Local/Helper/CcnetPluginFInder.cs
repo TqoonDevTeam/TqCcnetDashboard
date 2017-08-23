@@ -27,10 +27,10 @@ namespace TqLib.ccnet.Local.Helper
                 .Except(new[] { TqDashboardDefaultPluginFileName }).ToList();
         }
 
-        public IList<ExternalDll> GetExternalPluginsWithInfo()
-        {
-            return Directory.GetFiles(CcnetPluginDirectory, "*.dll").Select(t => new ExternalDll(t)).Where(t => t.IsCcnetPlugin && t.FileName != CcnetPluginFInder.TqDashboardDefaultPluginFileName).ToList();
-        }
+        //public IList<ExternalDll> GetExternalPluginsWithInfo()
+        //{
+        //    return Directory.GetFiles(CcnetPluginDirectory, "*.dll").Select(t => new ExternalDll(t)).Where(t => t.IsCcnetPlugin && t.FileName != CcnetPluginFInder.TqDashboardDefaultPluginFileName).ToList();
+        //}
 
         public PluginTypeInfo[] GetPluginTypeInfo()
         {

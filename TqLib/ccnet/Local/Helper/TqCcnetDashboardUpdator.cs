@@ -5,7 +5,6 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using TqLib.Utils;
 
 namespace TqLib.ccnet.Local.Helper
 {
@@ -34,7 +33,7 @@ namespace TqLib.ccnet.Local.Helper
                 Download();
                 ExtractZip();
                 StopService();
-                Deploy();
+                //Deploy();
                 StartService();
                 IsBysy = false;
                 OnProcessChanged(new TqCcnetDashboardUpdatorEventArgs { FileName = "", Desc = "Complete", Msg = "Complete", ProgressPercentage = 100 });
@@ -49,7 +48,7 @@ namespace TqLib.ccnet.Local.Helper
                 IsBysy = true;
                 ExtractZip();
                 StopService();
-                DeployExternalPlugin();
+                // DeployExternalPlugin();
                 StartService();
                 IsBysy = false;
                 OnProcessChanged(new TqCcnetDashboardUpdatorEventArgs { FileName = "", Desc = "Complete", Msg = "Complete", ProgressPercentage = 100 });
@@ -105,57 +104,57 @@ namespace TqLib.ccnet.Local.Helper
             }
         }
 
-        private bool Deploy()
-        {
-            var downloadPluginsFolder = Path.Combine(DownloadFolder, "plugins");
-            if (Directory.Exists(downloadPluginsFolder))
-            {
-                OnProcessChanged(new TqCcnetDashboardUpdatorEventArgs { Desc = "기본플러그인설치", FileName = "plugins", ProgressPercentage = 0 });
-                var pluginUpdator = new CcnetPluginInstaller(downloadPluginsFolder, PluginFolder, ServiceFolder);
-                pluginUpdator.Install();
-                OnProcessChanged(new TqCcnetDashboardUpdatorEventArgs { Desc = "기본플러그인설치", FileName = "plugins", ProgressPercentage = 100 });
-            }
+        //private bool Deploy()
+        //{
+        //    var downloadPluginsFolder = Path.Combine(DownloadFolder, "plugins");
+        //    if (Directory.Exists(downloadPluginsFolder))
+        //    {
+        //        OnProcessChanged(new TqCcnetDashboardUpdatorEventArgs { Desc = "기본플러그인설치", FileName = "plugins", ProgressPercentage = 0 });
+        //        var pluginUpdator = new CcnetPluginInstaller(downloadPluginsFolder, PluginFolder, ServiceFolder);
+        //        pluginUpdator.Install();
+        //        OnProcessChanged(new TqCcnetDashboardUpdatorEventArgs { Desc = "기본플러그인설치", FileName = "plugins", ProgressPercentage = 100 });
+        //    }
 
-            var downloadWebFolder = Path.Combine(DownloadFolder, @"web");
-            if (Directory.Exists(downloadWebFolder))
-            {
-                OnProcessChanged(new TqCcnetDashboardUpdatorEventArgs { Desc = "대시보드설치", FileName = "web", ProgressPercentage = 0 });
-                var dashboardFolder = DashboardFolder.EndsWith(@"\") ? DashboardFolder.Substring(0, DashboardFolder.Length - 1) : DashboardFolder;
-                var robo = new ExecutableUtil()
-                {
-                    Executable = "robocopy.exe",
-                    SuccessCodes = new[] { 0, 1 },
-                    Args = $"\"{downloadWebFolder}\" \"{dashboardFolder}\" /E /PURGE /XA:H /XD Config"
-                };
-                var result = robo.Run();
-                if (result.WasSuccess)
-                {
-                    OnProcessChanged(new TqCcnetDashboardUpdatorEventArgs { Desc = "대시보드설치", FileName = "web", ProgressPercentage = 100 });
-                }
-                else
-                {
-                    OnProcessChanged(new TqCcnetDashboardUpdatorEventArgs { Desc = "대시보드설치 - 오류", FileName = "web", Msg = result.Error + "\n" + result.Output, ProgressPercentage = 0 });
-                    return false;
-                }
-            }
-            return true;
-        }
+        //    var downloadWebFolder = Path.Combine(DownloadFolder, @"web");
+        //    if (Directory.Exists(downloadWebFolder))
+        //    {
+        //        OnProcessChanged(new TqCcnetDashboardUpdatorEventArgs { Desc = "대시보드설치", FileName = "web", ProgressPercentage = 0 });
+        //        var dashboardFolder = DashboardFolder.EndsWith(@"\") ? DashboardFolder.Substring(0, DashboardFolder.Length - 1) : DashboardFolder;
+        //        var robo = new ExecutableUtil()
+        //        {
+        //            Executable = "robocopy.exe",
+        //            SuccessCodes = new[] { 0, 1 },
+        //            Args = $"\"{downloadWebFolder}\" \"{dashboardFolder}\" /E /PURGE /XA:H /XD Config"
+        //        };
+        //        var result = robo.Run();
+        //        if (result.WasSuccess)
+        //        {
+        //            OnProcessChanged(new TqCcnetDashboardUpdatorEventArgs { Desc = "대시보드설치", FileName = "web", ProgressPercentage = 100 });
+        //        }
+        //        else
+        //        {
+        //            OnProcessChanged(new TqCcnetDashboardUpdatorEventArgs { Desc = "대시보드설치 - 오류", FileName = "web", Msg = result.Error + "\n" + result.Output, ProgressPercentage = 0 });
+        //            return false;
+        //        }
+        //    }
+        //    return true;
+        //}
 
-        private bool DeployExternalPlugin()
-        {
-            foreach (var extractZipFolder in Directory.GetDirectories(DownloadFolder))
-            {
-                if (Directory.Exists(extractZipFolder))
-                {
-                    OnProcessChanged(new TqCcnetDashboardUpdatorEventArgs { Desc = "기본플러그인설치", FileName = "plugins", ProgressPercentage = 0 });
-                    var pluginUpdator = new CcnetPluginInstaller(extractZipFolder, PluginFolder, ServiceFolder);
-                    pluginUpdator.DisAllowFIleNames = new[] { "ThoughtWorks.CruiseControl.Core.dll", "ThoughtWorks.CruiseControl.Remote" };
-                    pluginUpdator.Install();
-                    OnProcessChanged(new TqCcnetDashboardUpdatorEventArgs { Desc = "기본플러그인설치", FileName = "plugins", ProgressPercentage = 100 });
-                }
-            }
-            return true;
-        }
+        //private bool DeployExternalPlugin()
+        //{
+        //    foreach (var extractZipFolder in Directory.GetDirectories(DownloadFolder))
+        //    {
+        //        if (Directory.Exists(extractZipFolder))
+        //        {
+        //            OnProcessChanged(new TqCcnetDashboardUpdatorEventArgs { Desc = "기본플러그인설치", FileName = "plugins", ProgressPercentage = 0 });
+        //            var pluginUpdator = new CcnetPluginInstaller(extractZipFolder, PluginFolder, ServiceFolder);
+        //            pluginUpdator.DisAllowFIleNames = new[] { "ThoughtWorks.CruiseControl.Core.dll", "ThoughtWorks.CruiseControl.Remote" };
+        //            pluginUpdator.Install();
+        //            OnProcessChanged(new TqCcnetDashboardUpdatorEventArgs { Desc = "기본플러그인설치", FileName = "plugins", ProgressPercentage = 100 });
+        //        }
+        //    }
+        //    return true;
+        //}
 
         private void StopService()
         {

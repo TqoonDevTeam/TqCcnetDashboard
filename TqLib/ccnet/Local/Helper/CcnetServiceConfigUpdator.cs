@@ -24,13 +24,13 @@ namespace TqLib.ccnet.Local.Helper
             Update(config_console);
         }
 
-        public void UpdateDependancy(PluginDependency pluginDependency)
-        {
-            string config = PathUtil.Combine(ServiceDirectory, "ccservice.exe.config");
-            string config_console = PathUtil.Combine(ServiceDirectory, "ccnet.exe.config");
-            UpdatePluginDependancy(config, pluginDependency);
-            UpdatePluginDependancy(config_console, pluginDependency);
-        }
+        //public void UpdateDependancy(PluginDependency pluginDependency)
+        //{
+        //    string config = PathUtil.Combine(ServiceDirectory, "ccservice.exe.config");
+        //    string config_console = PathUtil.Combine(ServiceDirectory, "ccnet.exe.config");
+        //    UpdatePluginDependancy(config, pluginDependency);
+        //    UpdatePluginDependancy(config_console, pluginDependency);
+        //}
 
         private void Update(string path)
         {
@@ -59,26 +59,26 @@ namespace TqLib.ccnet.Local.Helper
             doc.Save(path);
         }
 
-        private void UpdatePluginDependancy(string path, PluginDependency pluginDependency)
-        {
-            var doc = XDocument.Load(path);
+        //private void UpdatePluginDependancy(string path, PluginDependency pluginDependency)
+        //{
+        //    var doc = XDocument.Load(path);
 
-            // configuration
-            XElement configuration = doc.Element("configuration");
+        //    // configuration
+        //    XElement configuration = doc.Element("configuration");
 
-            // runtime
-            XElement runtime = FindElementIfNotExistsCreate(configuration, "runtime");
+        //    // runtime
+        //    XElement runtime = FindElementIfNotExistsCreate(configuration, "runtime");
 
-            // assemblyBinding
-            XElement assemblyBinding = FindElementIfNotExistsCreate(runtime, "assemblyBinding", assemblyBindingNamespace);
+        //    // assemblyBinding
+        //    XElement assemblyBinding = FindElementIfNotExistsCreate(runtime, "assemblyBinding", assemblyBindingNamespace);
 
-            foreach (var p in pluginDependency.GetAllModuleInfos())
-            {
-                CheckAndAppendDependentAssembly(assemblyBinding, p.name, p.publicKeyToken, p.culture, p.version);
-            }
+        //    foreach (var p in pluginDependency.GetAllModuleInfos())
+        //    {
+        //        CheckAndAppendDependentAssembly(assemblyBinding, p.name, p.publicKeyToken, p.culture, p.version);
+        //    }
 
-            doc.Save(path);
-        }
+        //    doc.Save(path);
+        //}
 
         private void DependentAssemblyUpdate(XDocument doc)
         {
