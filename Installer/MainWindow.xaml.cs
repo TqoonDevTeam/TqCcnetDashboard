@@ -1,15 +1,14 @@
-﻿using Microsoft.Web.Administration;
+﻿using log4net;
+using Microsoft.Web.Administration;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.ServiceProcess;
 using System.Threading.Tasks;
 using System.Windows;
 using TqLib.ccnet.Local;
-using TqLib.ccnet.Local.Helper;
+using TqLib.ccnet.Utils;
+using TqLib.Dashboard;
 
 namespace Installer
 {
@@ -18,63 +17,33 @@ namespace Installer
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        private readonly string downloadPath = @"C:\069d9695-3887-4a5b-86e9-d346b1099b52";
-        private string installPath = string.Empty;
-        private int progressPercentage;
+        internal ILog Logger { get; set; }
+        internal CustomEventAppender CustomEventAppender { get; set; }
+        private MainWindowInitializer MainWindowInitializer;
+
+        #region Bindings
+
+        public string DashboardPath { get { return dashboardPath; } set { dashboardPath = value; OnPropertyChanged(); } }
+        private string dashboardPath = string.Empty;
+
+        public string DashboardUrl { get { return dashboardUrl; } set { dashboardUrl = value; OnPropertyChanged(); } }
+        private string dashboardUrl = string.Empty;
+
+        public string PluginUrl { get { return pluginUrl; } set { pluginUrl = value; OnPropertyChanged(); } }
+        private string pluginUrl = string.Empty;
+
+        public string ProgressDesc { get { return progressDesc; } set { progressDesc = value; OnPropertyChanged(); } }
         private string progressDesc;
+
+        #endregion Bindings
 
         public MainWindow()
         {
             InitializeComponent();
             DataContext = this;
-            installPath = Path.Combine(new DirectoryInfo(CCNET.ServiceDirectory).Parent.FullName, "tqoondashboard");
+            MainWindowInitializer = new MainWindowInitializer(this);
+            MainWindowInitializer.Initialize();
         }
-
-        #region Bindings
-
-        public string InstallPath
-        {
-            get
-            {
-                return installPath;
-            }
-
-            set
-            {
-                installPath = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public int ProgressPercentage
-        {
-            get
-            {
-                return progressPercentage;
-            }
-
-            set
-            {
-                progressPercentage = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string ProgressDesc
-        {
-            get
-            {
-                return progressDesc;
-            }
-
-            set
-            {
-                progressDesc = value;
-                OnPropertyChanged();
-            }
-        }
-
-        #endregion Bindings
 
         #region OnPropertyChanged
 
@@ -91,19 +60,20 @@ namespace Installer
         {
             var task = new Task(() =>
             {
+                bool wasSuccess = false;
                 try
                 {
                     Dispatcher.Invoke(() =>
                     {
                         btnConfirm.IsEnabled = false;
+                        prgs.Visibility = Visibility.Visible;
                     });
-                    if (CheckCCNET())
-                    {
-                        Install();
-                        Install_IIS();
-                        if (Directory.Exists(downloadPath)) Directory.Delete(downloadPath, true);
-                        Environment.Exit(0);
-                    }
+
+                    Install_Dashboard();
+                    Install_DefaultPlugin();
+                    Install_IIS();
+
+                    wasSuccess = true;
                 }
                 catch (Exception ex)
                 {
@@ -114,38 +84,78 @@ namespace Installer
                     Dispatcher.Invoke(() =>
                     {
                         btnConfirm.IsEnabled = true;
+                        prgs.Visibility = Visibility.Hidden;
                     });
-                    if (Directory.Exists(downloadPath)) Directory.Delete(downloadPath, true);
+                    if (Directory.Exists(Properties.Settings.Default.DownloadFolder)) Directory.Delete(Properties.Settings.Default.DownloadFolder, true);
+
+                    if (wasSuccess) Environment.Exit(0);
                 }
             });
             task.Start();
         }
 
-        private bool CheckCCNET()
+        private void Install_Dashboard()
         {
-            if (!ServiceController.GetServices().Any(t => "CCService".Equals(t.ServiceName)))
+            Logger.Info("install dashboard");
+            if (Directory.Exists(Properties.Settings.Default.DownloadFolder)) Directory.Delete(Properties.Settings.Default.DownloadFolder, true);
+            Directory.CreateDirectory(Properties.Settings.Default.DownloadFolder);
+
+            new CcnetServiceConfigInitializer(CCNET.ServiceDirectory).Initialize();
+
+            string downloadUrl;
+            if (Properties.Settings.Default.DashboardUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase))
             {
-                MessageBox.Show("CCNET 이 설치되지 않았습니다.", "설치오류", MessageBoxButton.OK, MessageBoxImage.Error);
-                return false;
+                var version = new DashboardVersionChecker().GetRemoteVersion();
+                downloadUrl = string.Format(Properties.Settings.Default.DashboardUrl, version);
             }
-            return true;
+            else
+            {
+                downloadUrl = Properties.Settings.Default.DashboardUrl;
+            }
+
+            new DashboardUpdator()
+            {
+                DownloadFolder = Properties.Settings.Default.DownloadFolder,
+                DashboardFolder = Properties.Settings.Default.DashboardFolder,
+                DownloadUrl = downloadUrl,
+                Logger = Logger,
+                SystemLogger = Logger
+            }.Update();
         }
 
-        private void Install()
+        private void Install_DefaultPlugin()
         {
-            var configUpdator = new CcnetServiceConfigUpdator(CCNET.ServiceDirectory);
-            configUpdator.Update();
+            Logger.Info("install plugin");
+            if (Directory.Exists(Properties.Settings.Default.DownloadFolder)) Directory.Delete(Properties.Settings.Default.DownloadFolder, true);
+            Directory.CreateDirectory(Properties.Settings.Default.DownloadFolder);
 
-            var updator = new TqCcnetDashboardUpdator() { DownloadFolder = downloadPath, PluginFolder = CCNET.PluginDirectory, DashboardFolder = InstallPath, ServiceFolder = CCNET.ServiceDirectory };
-            updator.ProcessChanged += Updator_ProcessChanged;
-            updator.Update();
+            string downloadUrl;
+            if (Properties.Settings.Default.DashboardUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+            {
+                var version = new DashboardVersionChecker().GetRemoteVersion();
+                downloadUrl = string.Format(Properties.Settings.Default.PluginUrl, version);
+            }
+            else
+            {
+                downloadUrl = Properties.Settings.Default.PluginUrl;
+            }
+
+            new PluginUpdator()
+            {
+                DownloadFolder = Properties.Settings.Default.DownloadFolder,
+                PluginDirectory = CCNET.PluginDirectory,
+                ServiceDirecotry = CCNET.ServiceDirectory,
+                DownloadUrl = downloadUrl,
+                Logger = Logger,
+                SystemLogger = Logger
+            }.Update();
         }
 
         private void Install_IIS()
         {
             string siteName = "TqDashboard";
             string poolName = "TqDashboardPool";
-            string physicalPath = InstallPath;
+            string physicalPath = DashboardPath;
             using (var iis = new ServerManager())
             {
                 Site site = iis.Sites[siteName];
@@ -183,12 +193,6 @@ namespace Installer
 
                 iis.CommitChanges();
             }
-        }
-
-        private void Updator_ProcessChanged(object sender, List<TqCcnetDashboardUpdator.TqCcnetDashboardUpdatorEventArgs> e)
-        {
-            ProgressDesc = e.LastOrDefault()?.Desc ?? string.Empty;
-            ProgressPercentage = e.LastOrDefault()?.ProgressPercentage ?? 0;
         }
     }
 }

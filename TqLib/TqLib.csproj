@@ -190,17 +190,22 @@
     <Compile Include="ccnet\Core\Util\SpringContextHelper.cs" />
     <Compile Include="ccnet\Core\Util\TqBinding.cs" />
     <Compile Include="ccnet\Local\CCNET.cs" />
-    <Compile Include="ccnet\Local\Helper\CcnetPluginInstall\AssemblyBinding.cs" />
-    <Compile Include="ccnet\Local\Helper\CcnetPluginInstall\CcnetPluginInstaller.cs" />
-    <Compile Include="ccnet\Local\Helper\CcnetPluginInstall\CcnetPluginInstallPackage.cs" />
-    <Compile Include="ccnet\Local\Helper\CcnetPluginInstall\CcnetServicePluginRefrenceUpdator.cs" />
-    <Compile Include="ccnet\Local\Helper\CcnetServiceConfigUpdator.cs" />
-    <Compile Include="ccnet\Local\Helper\CcnetServiceFinder.cs" />
-    <Compile Include="ccnet\Local\Helper\CcnetPluginFInder.cs" />
+    <Compile Include="ccnet\Utils\CcnetPluginLocationFinder.cs" />
+    <Compile Include="Dashboard\CcnetPluginInstall\AssemblyBinding.cs" />
+    <Compile Include="Dashboard\CcnetPluginInstall\CcnetPluginInstaller.cs" />
+    <Compile Include="Dashboard\CcnetPluginInstall\CcnetPluginInstallPackage.cs" />
+    <Compile Include="Dashboard\CcnetPluginInstall\CcnetServicePluginRefrenceUpdator.cs" />
+    <Compile Include="ccnet\Utils\CcnetServiceConfigInitializer.cs" />
+    <Compile Include="ccnet\Utils\CcnetServiceLocationFinder.cs" />
+    <Compile Include="Dashboard\ExternalPluginsInfo.cs" />
+    <Compile Include="ccnet\Utils\CcnetPluginFInder.cs" />
     <Compile Include="ccnet\Local\EnviromentVariableChecker.cs" />
     <Compile Include="ccnet\Local\Helper\SeperateAppDomainAssemblyLoader.cs" />
-    <Compile Include="ccnet\Local\Helper\TqCcnetDashboardUpdator.cs" />
-    <Compile Include="ccnet\Local\Helper\TqDashboardRemoteVersionChecker.cs" />
+    <Compile Include="Dashboard\AssetDownloader.cs" />
+    <Compile Include="Dashboard\CustomEventAppender.cs" />
+    <Compile Include="Dashboard\DashboardUpdator.cs" />
+    <Compile Include="Dashboard\DashboardVersionChecker.cs" />
+    <Compile Include="Dashboard\PluginUpdator.cs" />
     <Compile Include="Exceptions\Exceptions.cs" />
     <Compile Include="Extends\ByteExtend.cs" />
     <Compile Include="Extends\StringExtend.cs" />
@@ -220,16 +225,10 @@
     <Compile Include="zTest\ccnet\Local\Helper\CcnetPluginInstallerTest.cs" />
     <Compile Include="zTest\ccnet\Local\Helper\CcnetServiceConfigUpdatorTest.cs" />
     <Compile Include="zTest\Utils\ExecuteableUtilTest.cs" />
-    <Compile Include="zTest\ccnet\Local\Helper\TqCcnetDashboardUpdatorTest.cs" />
-    <Compile Include="zTest\ccnet\Local\CcnetPluginFInderTest.cs" />
-    <Compile Include="zTest\ccnet\Local\CcnetServiceFinderTest.cs" />
     <Compile Include="zTest\PathTest.cs" />
     <Compile Include="zTest\ccnet\Core\Tasks\TqIISTaskTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config">
-      <SubType>Designer</SubType>
-    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

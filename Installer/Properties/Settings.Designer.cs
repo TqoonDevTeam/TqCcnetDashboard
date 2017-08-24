@@ -25,13 +25,50 @@ namespace Installer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1.0.0.0")]
-        public string ReleaseVersion {
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\069d9695-3887-4a5b-86e9-d346b1099b52")]
+        public string DownloadFolder {
             get {
-                return ((string)(this["ReleaseVersion"]));
+                return ((string)(this["DownloadFolder"]));
             }
             set {
-                this["ReleaseVersion"] = value;
+                this["DownloadFolder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://github.com/TqoonDevTeam/TqCcnetDashboard/releases/download/{0}/web.zip")]
+        public string DashboardUrl {
+            get {
+                return ((string)(this["DashboardUrl"]));
+            }
+            set {
+                this["DashboardUrl"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files (x86)\\CruiseControl.NET\\tqoondashboard")]
+        public string DashboardFolder {
+            get {
+                return ((string)(this["DashboardFolder"]));
+            }
+            set {
+                this["DashboardFolder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://github.com/TqoonDevTeam/TqCcnetDashboard/releases/download/{0}/plugins.zi" +
+            "p")]
+        public string PluginUrl {
+            get {
+                return ((string)(this["PluginUrl"]));
+            }
+            set {
+                this["PluginUrl"] = value;
             }
         }
     }

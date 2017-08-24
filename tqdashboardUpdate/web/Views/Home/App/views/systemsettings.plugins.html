@@ -1,0 +1,68 @@
+﻿<div class="row">
+    <h1 class="page-header">플러그인 관리</h1>
+</div>
+<div class="row">
+    <div class="col-sm-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                시스템 플러그인 리스트
+            </div>
+            <ul class="list-group">
+                <li class="list-group-item" ng-repeat="item in ownedPlugins">
+                    <span class="type">{{item.name}}</span>
+                    <span class="host">{{item.fullName}}</span>
+                    <span class="name">{{item.version}}</span>
+                    <button uib-tooltip="설치" class="btn btn-xs btn-success pull-right" ng-click="ctrl.addPlugin(item)"><i class="fa fa-plus"></i></button>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                설치된 플러그인 리스트
+            </div>
+            <ul class="list-group">
+                <li class="list-group-item" ng-repeat="item in installPlugins">
+                    <span class="type">{{item.name}}</span>
+                    <span class="host">{{item.fullName}}</span>
+                    <span class="name">{{item.version}}</span>
+                    <button uib-tooltip="제거" class="btn btn-xs btn-danger pull-right" ng-click="ctrl.delPlugin(item)"><i class="fa fa-minus"></i></button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!--<div class="" layout="row" layout-xs="column">
+    <md-card flex>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h3>보유한 플러그인</h3>
+            </div>
+        </md-toolbar>
+        <md-card-content>
+            <md-list style="margin:-16px">
+                <md-list-item ng-repeat="item in ownedPlugins" ng-click="null">
+                    <md-icon md-svg-icon="device:usb"></md-icon>
+                    <p>{{item.name}} {{item.version}}</p>
+                    <md-button class="md-secondary" ng-click="installOwnedPlugin(item)">설치</md-button>
+                </md-list-item>
+            </md-list>
+        </md-card-content>
+    </md-card>
+    <md-card flex>
+        <md-toolbar class="_md-toolbar-transitions">
+            <div class="md-toolbar-tools">
+                <h3>설치된 플러그인</h3>
+            </div>
+        </md-toolbar>
+        <md-card-content>
+            <md-list style="margin:-16px">
+                <md-list-item ng-repeat="item in intallPlugins" ng-click="null">
+                    <md-icon md-svg-icon="device:usb"></md-icon>
+                    <p>{{item.name}} {{item.version}}</p>
+                </md-list-item>
+            </md-list>
+        </md-card-content>
+    </md-card>
+</div>-->

@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ThoughtWorks.CruiseControl.Remote;
 using TqLib.ccnet.Local.Helper;
+using TqLib.ccnet.Utils;
 
 namespace TqLib.ccnet.Local
 {
@@ -13,35 +14,29 @@ namespace TqLib.ccnet.Local
     {
         private static PluginTypeInfo[] pluginReflectorTypes;
         private static ICruiseServerClientFactory fac = new CruiseServerClientFactory();
+        private static string ccnetPluginDirectory;
 
         public static PluginTypeInfo[] PluginReflectorTypes
         {
             get
             {
-                if (pluginReflectorTypes == null)
-                {
-                    var ccnetPluginFInder = new CcnetPluginFInder(ServiceDirectory);
-                    pluginReflectorTypes = ccnetPluginFInder.GetPluginTypeInfo();
-                }
+                //if (pluginReflectorTypes == null)
+                //{
+                //    var ccnetPluginFInder = new CcnetPluginFInder(ServiceDirectory);
+                //    //pluginReflectorTypes = ccnetPluginFInder.GetPluginTypeInfo();
+                //}
                 return pluginReflectorTypes;
             }
         }
 
         public CruiseServerClientBase Server { get; private set; }
         public static string ServiceDirectory { get; set; }
-
-        public static string PluginDirectory
-        {
-            get
-            {
-                var ccnetPluginFInder = new CcnetPluginFInder(ServiceDirectory);
-                return ccnetPluginFInder.CcnetPluginDirectory;
-            }
-        }
+        public static string PluginDirectory { get; set; }
 
         static CCNET()
         {
-            ServiceDirectory = new CcnetServiceFinder().FindServiceDirectory();
+            ServiceDirectory = new CcnetServiceLocationFinder().FindServiceDirectory();
+            PluginDirectory = new CcnetPluginLocationFinder().FindPluginDirectory(ServiceDirectory);
         }
 
         public CCNET(string host = "127.0.0.1")

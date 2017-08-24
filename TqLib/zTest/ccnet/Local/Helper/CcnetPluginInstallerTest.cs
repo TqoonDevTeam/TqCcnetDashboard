@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using TqLib.ccnet.Local.Helper.CcnetPluginInstall;
+using TqLib.Dashboard.CcnetPluginInstall;
 
 namespace TqLib.zTest.ccnet.Local.Helper
 {

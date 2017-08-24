@@ -1,0 +1,45 @@
+﻿<div ng-controller="project.step4.tasks.add.tqiis.ctrl as tqiisCtrl">
+    <reflector-type model="task" type-source="attrs_required_forced"></reflector-type>
+    <div class="form-group">
+        <label class="control-label col-sm-2">사이트경로</label>
+        <div class="col-sm-10 radio">
+            <input type="text" class="form-control" ng-model="task.physicalPath" name="physicalPath" required />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2">사이트명</label>
+        <div class="col-sm-10 radio">
+            <input type="text" class="form-control" ng-model="task.siteName" name="siteName" required />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2">Pool명</label>
+        <div class="col-sm-10 radio">
+            <input type="text" class="form-control" ng-model="task.poolName" name="poolName" required />
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2">Site설정</label>
+        <div class="col-sm-10">
+            <textarea class="form-control" ng-model="task.siteConfig" style="min-height:150px"></textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2">Pool설정</label>
+        <div class="col-sm-10">
+            <textarea class="form-control" ng-model="task.poolConfig" style="min-height:150px"></textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2">바인딩 설정</label>
+        <div class="col-sm-10">
+            <textarea class="form-control" ng-model="task.bindings" style="min-height:150px"></textarea>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2">가상경로 설정</label>
+        <div class="col-sm-10">
+            <textarea class="form-control" ng-model="task.virtualDirectories" style="min-height:150px"></textarea>
+        </div>
+    </div>
+</div>

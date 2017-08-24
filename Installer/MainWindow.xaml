@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Installer"
         mc:Ignorable="d"
-        Title="Setup TqoonDevTeam CCNET Dashboard" Height="130" Width="500" ResizeMode="NoResize">
+        Title="Setup TqoonDevTeam CCNET Dashboard" Height="175" Width="600" ResizeMode="NoResize">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
@@ -14,21 +14,30 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition></RowDefinition>
-                <RowDefinition  Height="Auto"></RowDefinition>
-                <RowDefinition  Height="Auto"></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="130"></ColumnDefinition>
+                <ColumnDefinition Width="auto"></ColumnDefinition>
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <Label>Install Path</Label>
-            <TextBox Grid.Column="1" Text="{Binding InstallPath}"></TextBox>
-            <TextBlock Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding ProgressDesc}"></TextBlock>
-            <ProgressBar Grid.Row="2" Height="8" Grid.ColumnSpan="2" Maximum="100" Value="{Binding ProgressPercentage}"></ProgressBar>
+            <Label>Dashboard</Label>
+            <Label Grid.Column="1" Content="{Binding DashboardPath}"></Label>
+            <Label Grid.Row="1">Download Url - Dashbooard</Label>
+            <Label Grid.Row="1" Grid.Column="1" Content="{Binding DashboardUrl}"></Label>
+            <Label Grid.Row="2">Download Url - Plugin</Label>
+            <Label Grid.Row="2" Grid.Column="1" Content="{Binding PluginUrl}"></Label>
+            <Grid Grid.Row="3" Grid.ColumnSpan="2" x:Name="prgs" Visibility="Hidden">
+                <StackPanel>
+                    <ProgressBar IsIndeterminate="True" Height="8"></ProgressBar>
+                    <TextBlock Text="{Binding ProgressDesc}"></TextBlock>
+                </StackPanel>
+            </Grid>
         </Grid>
         <Grid Grid.Row="1">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button x:Name="btnConfirm" Width="100" Height="24" Margin="4" Click="Button_Click">확인</Button>
+                <Button x:Name="btnConfirm" Width="100" Height="24" Margin="4" Click="Button_Click">설치</Button>
             </StackPanel>
         </Grid>
     </Grid>

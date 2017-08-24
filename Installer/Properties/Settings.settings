@@ -2,8 +2,17 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Installer.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="ReleaseVersion" Type="System.String" Scope="User">
-      <Value Profile="(Default)">1.0.0.0</Value>
+    <Setting Name="DownloadFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\069d9695-3887-4a5b-86e9-d346b1099b52</Value>
+    </Setting>
+    <Setting Name="DashboardUrl" Type="System.String" Scope="User">
+      <Value Profile="(Default)">https://github.com/TqoonDevTeam/TqCcnetDashboard/releases/download/{0}/web.zip</Value>
+    </Setting>
+    <Setting Name="DashboardFolder" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Program Files (x86)\CruiseControl.NET\tqoondashboard</Value>
+    </Setting>
+    <Setting Name="PluginUrl" Type="System.String" Scope="User">
+      <Value Profile="(Default)">https://github.com/TqoonDevTeam/TqCcnetDashboard/releases/download/{0}/plugins.zip</Value>
     </Setting>
   </Settings>
 </SettingsFile>
