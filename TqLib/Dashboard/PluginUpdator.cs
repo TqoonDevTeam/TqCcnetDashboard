@@ -18,6 +18,7 @@ namespace TqLib.Dashboard
 
         public void Update()
         {
+            if (PluginDirectory.EndsWith(@"\")) PluginDirectory = PluginDirectory.Substring(0, PluginDirectory.Length - 1);
             CheckDownloadFolder();
             Download();
             UnZip();
@@ -28,7 +29,7 @@ namespace TqLib.Dashboard
 
         private void CheckDownloadFolder()
         {
-            Logger?.Info("다운로드 폴더 확인");
+            Logger?.Info("PluginUpdator - Download Folder Check");
             if (Directory.Exists(DownloadFolder)) Directory.Delete(DownloadFolder, true);
             Directory.CreateDirectory(DownloadFolder);
         }
@@ -70,14 +71,15 @@ namespace TqLib.Dashboard
             {
                 var filename = Path.GetFileName(DownloadUrl);
                 var zip = Path.Combine(DownloadFolder, filename);
-                Logger?.Info("압축해재 시작");
+                Logger?.Info("PluginUpdator - UnZip");
                 ZipFile.ExtractToDirectory(zip, Path.Combine(Path.GetDirectoryName(zip), Path.GetFileNameWithoutExtension(zip)));
-                Logger?.Info("압축해재 종료");
             }
         }
 
         private void Deploy()
         {
+            Logger?.Info("PluginUpdator - deploying");
+
             string source;
             if (DownloadUrl.EndsWith(".zip", System.StringComparison.OrdinalIgnoreCase))
             {
@@ -89,10 +91,8 @@ namespace TqLib.Dashboard
                 source = DownloadFolder;
             }
 
-            Logger?.Info("설치시작");
             var installer = new CcnetPluginInstaller(source, PluginDirectory, ServiceDirecotry);
             installer.Install();
-            Logger?.Info("설치종료");
         }
 
         private void Downloader_DownloadProgressChanged(object sender, AssetDownloader.AssertDownloadEventArgs e)

@@ -15,6 +15,7 @@ namespace TqLib.Dashboard
 
         public void Update()
         {
+            if (DashboardFolder.EndsWith(@"\")) DashboardFolder = DashboardFolder.Substring(0, DashboardFolder.Length - 1);
             CheckDownloadFolder();
             Download();
             UnZip();
@@ -23,7 +24,7 @@ namespace TqLib.Dashboard
 
         private void CheckDownloadFolder()
         {
-            Logger?.Info("다운로드 폴더 확인");
+            Logger?.Info("DashboardUpdator - Download Folder Check");
             if (Directory.Exists(DownloadFolder)) Directory.Delete(DownloadFolder, true);
             Directory.CreateDirectory(DownloadFolder);
         }
@@ -65,15 +66,14 @@ namespace TqLib.Dashboard
             {
                 var filename = Path.GetFileName(DownloadUrl);
                 var zip = Path.Combine(DownloadFolder, filename);
-                Logger?.Info("압축해재 시작");
+                Logger?.Info("DashboardUpdator - UnZip");
                 ZipFile.ExtractToDirectory(zip, Path.Combine(Path.GetDirectoryName(zip), Path.GetFileNameWithoutExtension(zip)));
-                Logger?.Info("압축해재 종료");
             }
         }
 
         private void Deploy()
         {
-            Logger?.Info("deploying");
+            Logger?.Info("DashboardUpdator - deploying");
             string source;
             if (DownloadUrl.EndsWith(".zip", System.StringComparison.OrdinalIgnoreCase))
             {
@@ -94,12 +94,12 @@ namespace TqLib.Dashboard
             var result = robo.Run();
             if (result.WasSuccess)
             {
-                Logger?.Info("deploy success");
+                Logger?.Info("DashboardUpdator - deploy success");
             }
             else
             {
-                Logger?.Error("deploy fail");
-                SystemLogger?.Error("deploy fail\n" + result.Output);
+                Logger?.Error("DashboardUpdator - deploy fail");
+                SystemLogger?.Error("DashboardUpdator - deploy fail\n" + result.Output);
             }
         }
 
