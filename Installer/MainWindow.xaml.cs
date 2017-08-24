@@ -97,8 +97,6 @@ namespace Installer
         private void Install_Dashboard()
         {
             Logger.Info("install dashboard");
-            if (Directory.Exists(Properties.Settings.Default.DownloadFolder)) Directory.Delete(Properties.Settings.Default.DownloadFolder, true);
-            Directory.CreateDirectory(Properties.Settings.Default.DownloadFolder);
 
             new CcnetServiceConfigInitializer(CCNET.ServiceDirectory).Initialize();
 
@@ -126,8 +124,6 @@ namespace Installer
         private void Install_DefaultPlugin()
         {
             Logger.Info("install plugin");
-            if (Directory.Exists(Properties.Settings.Default.DownloadFolder)) Directory.Delete(Properties.Settings.Default.DownloadFolder, true);
-            Directory.CreateDirectory(Properties.Settings.Default.DownloadFolder);
 
             string downloadUrl;
             if (Properties.Settings.Default.DashboardUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase))
