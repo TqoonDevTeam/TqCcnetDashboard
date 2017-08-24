@@ -15,9 +15,6 @@
                 }
             });
 
-            this.resetUpdate = function () {
-                $rootScope._SystemUpdate.busy = false;
-            }
             this.systemUpdate = function () {
                 if (confirm('업데이트 하시겠습니까?')) {
                     $scope.systemUpdating = true;
@@ -40,11 +37,7 @@
                     $scope.uploadProcess.ProgressPercentage = parseInt(100.0 * evt.loaded / evt.total);
                 });
             }
-            this.gittokenSave = function () {
-                if (confirm('토큰을 저장 하시겠습니까?')) {
-                    svc.SystemSetting.SetToken({ key: 'gittoken', value: $scope.info.gittoken });
-                }
-            }
+
             this.init = function () {
                 svc.SystemSetting.GetServerCheckInformation().then(function (res) {
                     $scope.info = res.data;
