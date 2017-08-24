@@ -10,6 +10,9 @@
 
             $rootScope.$on('system.msg.SystemUpdate', function (e, msg) {
                 $scope.systemUpdatingMsg.push(msg);
+                if (msg === 'WARN SystemUpdate Complete') {
+                    location.reload(true);
+                }
             });
 
             this.resetUpdate = function () {

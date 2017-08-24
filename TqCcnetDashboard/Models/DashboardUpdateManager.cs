@@ -43,9 +43,11 @@ namespace TqCcnetDashboard.Models
                         nowBusy = true;
                         try
                         {
+                            TqLogger.Event.Warn("SystemUpdate Start");
                             SetDownLoadUrl();
                             DashboardUpdator.Update();
                             PluginUpdator.Update();
+                            TqLogger.Event.Warn("SystemUpdate Complete");
                         }
                         catch (Exception ex)
                         {
