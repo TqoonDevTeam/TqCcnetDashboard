@@ -191,6 +191,7 @@
     <Compile Include="ccnet\Core\Util\TqBinding.cs" />
     <Compile Include="ccnet\Local\CCNET.cs" />
     <Compile Include="ccnet\Utils\CcnetPluginLocationFinder.cs" />
+    <Compile Include="ccnet\Utils\PluginTypeInfo.cs" />
     <Compile Include="Dashboard\CcnetPluginInstall\AssemblyBinding.cs" />
     <Compile Include="Dashboard\CcnetPluginInstall\CcnetPluginInstaller.cs" />
     <Compile Include="Dashboard\CcnetPluginInstall\CcnetPluginInstallPackage.cs" />
@@ -200,7 +201,7 @@
     <Compile Include="Dashboard\ExternalPluginsInfo.cs" />
     <Compile Include="ccnet\Utils\CcnetPluginFInder.cs" />
     <Compile Include="ccnet\Local\EnviromentVariableChecker.cs" />
-    <Compile Include="ccnet\Local\Helper\SeperateAppDomainAssemblyLoader.cs" />
+    <Compile Include="ccnet\Utils\SeperateAppDomainAssemblyLoader.cs" />
     <Compile Include="Dashboard\AssetDownloader.cs" />
     <Compile Include="Dashboard\CustomEventAppender.cs" />
     <Compile Include="Dashboard\DashboardUpdator.cs" />
@@ -235,7 +236,9 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="ccnet\Local\Helper\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="Libs\ThoughtWorks.CruiseControl.Core.dll" />
     <Content Include="Libs\ThoughtWorks.CruiseControl.Remote.dll" />

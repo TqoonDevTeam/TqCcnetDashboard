@@ -12,7 +12,6 @@ namespace TqCcnetDashboard
 
         public static readonly DashboardUpdateManager Updator;
 
-        //public static readonly TqCcnetDashboardUpdator Updator, ExternalPluginUpdator;
         public static IDictionary<string, ProjectStatus[]> ProjectStatusCollection { get; set; }
 
         public static IList<ProjectStatus> AllProjectStatus { get { return ProjectStatusCollection == null ? new List<ProjectStatus>() : ProjectStatusCollection.Values.SelectMany(t => t).OrderBy(t => t.ServerName).ThenBy(t => t.Name).ToList(); } }

@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using TqLib.ccnet.Local.Helper;
 using TqLib.ccnet.Utils;
 
 namespace TqLib.zTest.ccnet.Local.Helper

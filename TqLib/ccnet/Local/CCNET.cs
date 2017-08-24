@@ -5,26 +5,25 @@ using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
 using ThoughtWorks.CruiseControl.Remote;
-using TqLib.ccnet.Local.Helper;
 using TqLib.ccnet.Utils;
+using TqLib.Dashboard;
 
 namespace TqLib.ccnet.Local
 {
     public class CCNET : IDisposable
     {
-        private static PluginTypeInfo[] pluginReflectorTypes;
+        private static PluginTypeInfo[] pluginReflectorTypes = null;
         private static ICruiseServerClientFactory fac = new CruiseServerClientFactory();
-        private static string ccnetPluginDirectory;
 
         public static PluginTypeInfo[] PluginReflectorTypes
         {
             get
             {
-                //if (pluginReflectorTypes == null)
-                //{
-                //    var ccnetPluginFInder = new CcnetPluginFInder(ServiceDirectory);
-                //    //pluginReflectorTypes = ccnetPluginFInder.GetPluginTypeInfo();
-                //}
+                if (pluginReflectorTypes == null)
+                {
+                    var ccnetPluginFInder = new CcnetPluginFInder(ServiceDirectory, PluginDirectory);
+                    pluginReflectorTypes = ccnetPluginFInder.GetPluginTypeInfo();
+                }
                 return pluginReflectorTypes;
             }
         }

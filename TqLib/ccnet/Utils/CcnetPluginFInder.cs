@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Exortech.NetReflector;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using ThoughtWorks.CruiseControl.Core.Tasks;
+using TqLib.ccnet.Utils;
 
 namespace TqLib.Dashboard
 {
@@ -33,47 +36,42 @@ namespace TqLib.Dashboard
             ).ToList();
         }
 
-        //public IList<ExternalDll> GetExternalPluginsWithInfo()
-        //{
-        //    return Directory.GetFiles(CcnetPluginDirectory, "*.dll").Select(t => new ExternalDll(t)).Where(t => t.IsCcnetPlugin && t.FileName != CcnetPluginFInder.TqDashboardDefaultPluginFileName).ToList();
-        //}
+        public PluginTypeInfo[] GetPluginTypeInfo()
+        {
+            var types = GetPluginTypes_ccnet();
+            types = types.Union(GetPluginTypes_custom()).ToArray();
+            return types;
+        }
 
-        //public PluginTypeInfo[] GetPluginTypeInfo()
-        //{
-        //    var types = GetPluginTypes_ccnet();
-        //    types = types.Union(GetPluginTypes_custom()).ToArray();
-        //    return types;
-        //}
+        private PluginTypeInfo[] GetPluginTypes_ccnet()
+        {
+            return typeof(TaskBase).Assembly.GetTypes().Where(t => t.IsDefined(typeof(ReflectorTypeAttribute), false)).Select(t => new PluginTypeInfo(t)).ToArray();
+        }
 
-        //private PluginTypeInfo[] GetPluginTypes_ccnet()
-        //{
-        //    return typeof(TaskBase).Assembly.GetTypes().Where(t => t.IsDefined(typeof(ReflectorTypeAttribute), false)).Select(t => new PluginTypeInfo(t)).ToArray();
-        //}
+        private PluginTypeInfo[] GetPluginTypes_custom()
+        {
+            var dir = new DirectoryInfo(CcnetPluginDirectory);
+            if (dir.Exists)
+            {
+                return dir.GetFiles("*.dll").Select(t => t.FullName).SelectMany(t => GetPluginTypeInfo(t)).ToArray();
+            }
+            else
+            {
+                return new PluginTypeInfo[] { };
+            }
+        }
 
-        //private PluginTypeInfo[] GetPluginTypes_custom()
-        //{
-        //    var dir = new DirectoryInfo(CcnetPluginDirectory);
-        //    if (dir.Exists)
-        //    {
-        //        return dir.GetFiles("*.dll").Select(t => t.FullName).SelectMany(t => GetPluginTypeInfo(t)).ToArray();
-        //    }
-        //    else
-        //    {
-        //        return new PluginTypeInfo[] { };
-        //    }
-        //}
-
-        //private IList<PluginTypeInfo> GetPluginTypeInfo(string dllPath)
-        //{
-        //    if (File.Exists(dllPath))
-        //    {
-        //         var typeLoader = new SeperateAppDomainAssemblyLoader() { CCNETServiceDirectory = CCNET.ServiceDirectory };
-        //        return typeLoader.GetAssemblyTypes(new FileInfo(dllPath)).ToList();
-        //    }
-        //    else
-        //    {
-        //        return new List<PluginTypeInfo>();
-        //    }
-        //}
+        private IList<PluginTypeInfo> GetPluginTypeInfo(string dllPath)
+        {
+            if (File.Exists(dllPath))
+            {
+                var typeLoader = new SeperateAppDomainAssemblyLoader() { CCNETServiceDirectory = CcnetServiceDirecotry };
+                return typeLoader.GetAssemblyTypes(new FileInfo(dllPath)).ToList();
+            }
+            else
+            {
+                return new List<PluginTypeInfo>();
+            }
+        }
     }
 }
