@@ -74,8 +74,8 @@ define(['angularAMD', 'json!/SystemSetting/CheckEnvironmentVariable'], function 
         }
         function extend_SystemUpdate(res) {
             $rootScope.$apply(function () {
-                console.log(res);
                 $rootScope._SystemUpdate = res;
+                $rootScope.$emit("system.msg.SystemUpdate", res.Msg);
             });
         }
 

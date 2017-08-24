@@ -3,18 +3,23 @@
         app.controller('systemsettings.server.ctrl', ['$scope', '$rootScope', 'systemsettings.svc', 'Upload', function ($scope, $rootScope, svc, Upload) {
             $scope.info = {};
             $scope.remoteVersion = '';
+            $scope.systemUpdating = false;
+            $scope.systemUpdatingMsg = [];
             $scope.pluginUploading = false;
             $scope.uploadProcess = {};
+
+            $rootScope.$on('system.msg.SystemUpdate', function (e, msg) {
+                $scope.systemUpdatingMsg.push(msg);
+            });
+
             this.resetUpdate = function () {
                 $rootScope._SystemUpdate.busy = false;
             }
             this.systemUpdate = function () {
-                if (!$scope.systemUpdateBusy) {
-                    if (confirm('업데이트 하시겠습니까?')) {
-                        $scope.systemUpdateBusy = true;
-                        $scope.msgs = [];
-                        svc.SystemSetting.SystemUpdate();
-                    }
+                if (confirm('업데이트 하시겠습니까?')) {
+                    $scope.systemUpdating = true;
+                    $scope.systemUpdatingMsg = [];
+                    svc.SystemSetting.SystemUpdate();
                 }
             }
             this.pluginUpload = function (file) {
