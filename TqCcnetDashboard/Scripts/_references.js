@@ -41,6 +41,7 @@
 /// <reference path="requirejs-plugins/mdown.js" />
 /// <reference path="requirejs-plugins/noext.js" />
 /// <reference path="requirejs-plugins/propertyparser.js" />
+/// <reference path="select.min.js" />
 /// <reference path="text.js" />
 /// <reference path="ui-grid.min.js" />
 /// <reference path="underscore.min.js" />

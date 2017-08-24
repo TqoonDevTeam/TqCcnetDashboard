@@ -310,6 +310,8 @@
     <Content Include="Content\metisMenu.min.css" />
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\sb-admin\sb-admin.css" />
+    <Content Include="Content\select.css" />
+    <Content Include="Content\select.min.css" />
     <Content Include="Content\ui-bootstrap-csp.css" />
     <Content Include="Content\ui-grid.css" />
     <Content Include="Content\ui-grid.min.css" />
@@ -387,6 +389,7 @@
     <Content Include="Scripts\angular-cookies.min.js.map" />
     <Content Include="Scripts\angular-aria.min.js.map" />
     <Content Include="Scripts\angular-animate.min.js.map" />
+    <Content Include="Content\select.min.css.map" />
     <None Include="Properties\PublishProfiles\File.pubxml" />
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\i18n\angular-locale_af-na.js" />
@@ -1142,6 +1145,8 @@
     <Content Include="Scripts\requirejs-plugins\mdown.js" />
     <Content Include="Scripts\requirejs-plugins\noext.js" />
     <Content Include="Scripts\requirejs-plugins\propertyParser.js" />
+    <Content Include="Scripts\select.js" />
+    <Content Include="Scripts\select.min.js" />
     <Content Include="Scripts\text.js" />
     <Content Include="Scripts\ui-grid.js" />
     <Content Include="Scripts\ui-grid.min.js" />
@@ -1250,6 +1255,7 @@
     <Content Include="Views\SystemSetting\_ViewStart.cshtml" />
     <Content Include="Views\SystemSetting\Index.cshtml" />
     <Content Include="Views\SystemSetting\wizard.cshtml" />
+    <Content Include="Scripts\select.min.js.map" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
