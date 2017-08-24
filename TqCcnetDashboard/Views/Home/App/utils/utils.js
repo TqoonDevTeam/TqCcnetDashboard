@@ -26,6 +26,9 @@ define(function () {
                 },
                 GetTemplate: function (name) {
                     return '/Views/Home/App/views/' + name;
+                },
+                GetCustomTaskJsPath: function (name) {
+                    return '/Views/Home/App/controller/project/modules/tasks/' + name + '.js';
                 }
             };
         }
@@ -306,6 +309,26 @@ define(function () {
             }
         };
         utils.directive('taskSelector', taskSelectorDirective)
+    })(utils);
+    /* dynamicController */
+    (function dynamicCtrl(utils) {
+        function dynamicCtrlDirective($compile, $parse) {
+            return {
+                restrict: 'A',
+                terminal: true,
+                priority: 100000,
+                link: function (scope, element, attrs) {
+                    if (element.ngController) throw 'already has controller. ' + attrs.ngController;
+                    scope.dynamicCtrl.compile = function (ctrlName) {
+                        element.removeAttr('dynamic-ctrl');
+                        element.attr('ng-controller', ctrlName);
+                        $compile(element)(scope);
+                        scope.custom.init();
+                    }
+                }
+            }
+        }
+        utils.directive('dynamicCtrl', ['$compile', '$parse', dynamicCtrlDirective]);
     })(utils);
 });
 define('guid', function () {

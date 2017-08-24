@@ -9,12 +9,14 @@ namespace TqLib.ccnet.Utils
     public class PluginTypeInfo
     {
         public string PluginName { get; private set; }
+        public string Namespace { get; private set; }
 
         public PropertyAttributeInfo[] PropertyInfos { get; private set; }
 
         public PluginTypeInfo(Type pluginType)
         {
             PluginName = GetPluginName(pluginType);
+            Namespace = pluginType.Namespace;
             PropertyInfos = pluginType.GetProperties().Where(t => SeperateAppDomainAssemblyLoader.IsDefinedAttributeData<ReflectorPropertyAttribute>(t)).Select(t => new PropertyAttributeInfo(t)).ToArray();
         }
 

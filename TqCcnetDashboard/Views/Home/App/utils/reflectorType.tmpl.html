@@ -1,4 +1,4 @@
-﻿<div class="form-group" ng-repeat="item in typeSource">
+﻿<div class="form-group" ng-repeat="item in typeSource" ng-show="item.attr.$show">
     <label class="control-label col-sm-2">{{item.attr.Name}}</label>
     <ng-include src="ctrl.getSrc(item)"></ng-include>
 </div>

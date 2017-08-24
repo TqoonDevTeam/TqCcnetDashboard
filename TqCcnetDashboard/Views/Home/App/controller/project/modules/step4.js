@@ -17,7 +17,7 @@
         }
     }
 
-    var innerTaskList = [];
+    var taskPlugins = [];
     app.controller('project.step4.ctrl', ['$scope', '$uibModal', 'pathUtil', function ($scope, $uibModal, pathUtil) {
         this.getDesc = function (item) {
             return (taskDesc[item['@type']] || taskDesc['default'])(item);
@@ -87,25 +87,32 @@
         }();
     }])
     .controller('project.step4.tasks.add.ctrl', ['$scope', '$uibModalInstance', 'items', 'project.svc', 'pathUtil', function ($scope, $uibModalInstance, items, svc, pathUtil) {
+        var forceTemplateLoad = false;
         $scope.mode = items.mode;
+        $scope.taskPlugins = taskPlugins;
         $scope.task = {};
-        $scope.taskTemplate = {
-            TqNunit: pathUtil.GetTemplate('/project/step4/task.tqnunit.html'),
-            TqIIS: pathUtil.GetTemplate('/project/step4/task.tqiis.html'),
-            nuget: pathUtil.GetTemplate('/project/step4/task.nuget.html'),
-            msbuild: pathUtil.GetTemplate('/project/step4/task.msbuild.html'),
-            exec: pathUtil.GetTemplate('/project/step4/task.exec.html'),
-            TqForeachFromDB: pathUtil.GetTemplate('/project/step4/task.tqforeachfromdb.html'),
-            TqDBExecutor: pathUtil.GetTemplate('/project/step4/task.tqdbexecutor.html'),
-            TqText: pathUtil.GetTemplate('/project/step4/task.tqtext.html'),
-            TqRsync: pathUtil.GetTemplate('/project/step4/task.tqrsync.html'),
-            'default': pathUtil.GetTemplate('/project/step4/task.default.html'),
-        };
-
-        this.getTemplateUrl = function () {
-            if (!$scope.task['@type']) return undefined;
-            return $scope.taskTemplate[$scope.task['@type']] || $scope.taskTemplate['default'];
-        }
+        $scope.templateUrl = undefined;
+        //$scope.taskTemplate = {
+        //    TqNunit: pathUtil.GetTemplate('/project/step4/task.tqnunit.html'),
+        //    TqIIS: pathUtil.GetTemplate('/project/step4/task.tqiis.html'),
+        //    nuget: pathUtil.GetTemplate('/project/step4/task.nuget.html'),
+        //    msbuild: pathUtil.GetTemplate('/project/step4/task.msbuild.html'),
+        //    exec: pathUtil.GetTemplate('/project/step4/task.exec.html'),
+        //    TqForeachFromDB: pathUtil.GetTemplate('/project/step4/task.tqforeachfromdb.html'),
+        //    TqDBExecutor: pathUtil.GetTemplate('/project/step4/task.tqdbexecutor.html'),
+        //    TqText: pathUtil.GetTemplate('/project/step4/task.tqtext.html'),
+        //    TqRsync: pathUtil.GetTemplate('/project/step4/task.tqrsync.html'),
+        //    'default': pathUtil.GetTemplate('/project/step4/task.default.html'),
+        //};
+        $scope.$watch('task["@type"]', function (newVal, oldVal) {
+            if (newVal) {
+                if ((newVal !== oldVal) || forceTemplateLoad) {
+                    $scope.templateUrl = pathUtil.GetTemplate('/project/step4/task.default.html') + '?_=' + newVal;
+                }
+            } else {
+                $scope.templateUrl = undefined;
+            }
+        });
         this.cancel = function () {
             $uibModalInstance.dismiss();
         }
@@ -114,25 +121,47 @@
             $uibModalInstance.close($scope.task);
         }
         this.init = function () {
+            if (_.isEmpty(taskPlugins)) {
+                svc.PluginHelp.GetTaskPlugins().then(function (res) {
+                    taskPlugins = res.data;
+                    $scope.taskPlugins = taskPlugins;
+                });
+            }
             if (items.mode === 'mod') {
                 $scope.task = items.item;
+                forceTemplateLoad = true;
             }
         }();
     }])
-    .controller('project.step4.tasks.add.default.ctrl', ['$scope', 'project.svc', function ($scope, svc) {
-        var attrs_required_forced_key = ['description'];
+    .controller('project.step4.tasks.default.ctrl', ['$scope', 'project.svc', 'pathUtil', function ($scope, svc, pathUtil) {
+        var attrs_force_show = ['description', 'workingDirectory'];
         $scope.attrs = [];
-        $scope.attrs_required = [];
-        $scope.attrs_required_forced_key = [];
+        $scope.custom = {};
+        $scope.dynamicCtrl = {};
 
         this.init = function () {
             svc.SourceControlTemplate.get($scope.task['@type']).then(function (res) {
                 $scope.attrs = res.data;
-                $scope.attrs_required = _.filter(res.data, function (item) { return item.attr.Required; });
-                $scope.attrs_required_forced = _.filter(res.data, function (item) { return _.contains(attrs_required_forced_key, item.attr.Name); });
-                _.each($scope.attrs_required_forced, function (v) { v.attr.Required = true });
+                _.each(_.filter(res.data, function (item) { return item.attr.Required; }), function (v) { v.attr.$show = true; });
+                _.each(_.filter(res.data, function (item) { return _.contains(attrs_force_show, item.attr.Name); }), function (v) { v.attr.$show = true; });
+                customCompile();
             });
         }();
+
+        function customCompile() {
+            require([pathUtil.GetCustomTaskJsPath($scope.task['@type'])], function () {
+                $scope.dynamicCtrl.compile('project.step4.tasks.' + $scope.task['@type'] + '.customctrl');
+            }, function () {
+                $scope.dynamicCtrl.compile('project.step4.tasks.default.customctrl');
+            })
+        }
+    }])
+    .controller('project.step4.tasks.default.customctrl', ['$scope', function ($scope) {
+        $scope.custom.force_show = [];
+        $scope.custom.forcer_equired = [];
+        $scope.custom.init = function () {
+            console.log('init default');
+        }
     }])
     .controller('project.step4.tasks.add.exec.ctrl', ['$scope', 'project.svc', function ($scope, svc) {
         var defaultValue = { buildTimeoutSeconds: 120 };
@@ -166,21 +195,6 @@
                 _.each($scope.attrs_required_forced, function (v) { v.attr.Required = true });
             });
             angular.extend($scope.task, defaultValue_force);
-        }();
-    }])
-    .controller('project.step4.tasks.add.nuget.ctrl', ['$scope', 'project.svc', function ($scope, svc) {
-        var attrs_required_forced_key = ['description'];
-        $scope.attrs = [];
-        $scope.attrs_required = [];
-        $scope.attrs_required_forced_key = [];
-
-        this.init = function () {
-            svc.SourceControlTemplate.get($scope.task['@type']).then(function (res) {
-                $scope.attrs = res.data;
-                $scope.attrs_required = _.filter(res.data, function (item) { return item.attr.Required; });
-                $scope.attrs_required_forced = _.filter(res.data, function (item) { return _.contains(attrs_required_forced_key, item.attr.Name); });
-                _.each($scope.attrs_required_forced, function (v) { v.attr.Required = true });
-            });
         }();
     }])
     .controller('project.step4.tasks.add.tqnunit.ctrl', ['$scope', 'project.svc', function ($scope, svc) {

@@ -7,22 +7,17 @@
             <div class="form-group">
                 <label class="control-label col-sm-2">Task Plugin</label>
                 <div class="col-sm-10">
-                    <select class="form-control" name="type" ng-disabled="mode === 'mod'" ng-model="task['@type']" required>
-                        <option value="">선택</option>
-                        <option value="msbuild">MsBuild</option>
-                        <option value="nuget">Nuget</option>
-                        <option value="TqNunit">Nunit</option>
-                        <option value="TqIIS">IIS</option>
-                        <option value="TqHosts">Hosts</option>
-                        <option value="TqRsync">TqRsync</option>
-                        <option value="exec">Exec</option>
-                        <option value="TqText">TqText</option>
-                        <option value="TqForeachFromDB">ForeachFromDB</option>
-                        <option value="TqDBExecutor">TqDBExecutor</option>
-                    </select>
+                    <ui-select name="type" ng-disabled="mode === 'mod'" ng-model="task['@type']" required>
+                        <ui-select-match>
+                            <span>{{$select.selected}}</span>
+                        </ui-select-match>
+                        <ui-select-choices repeat="item in (taskPlugins | filter:$select.search) track by $index">
+                            <span>{{item}}</span>
+                        </ui-select-choices>
+                    </ui-select>
                 </div>
             </div>
-            <ng-include src="ctrl.getTemplateUrl()"></ng-include>
+            <ng-include src="templateUrl"></ng-include>
         </div>
         <pre ng-if="_cookie.modeDebug === '1'">{{task|json}}</pre>
     </div>

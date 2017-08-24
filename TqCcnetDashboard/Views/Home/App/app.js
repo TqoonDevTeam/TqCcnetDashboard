@@ -1,6 +1,6 @@
 ﻿'use strict';
 define(['angularAMD', 'json!/SystemSetting/CheckEnvironmentVariable'], function (angularAMD, CheckEnvironmentVariableJson) {
-    var app = angular.module('app', ['ngAnimate', 'ngFileUpload', 'ngRoute', 'angularJsExtends', 'ui.bootstrap', 'ngMessages', 'Home.App.Utils', 'ngCookies'])
+    var app = angular.module('app', ['ngAnimate', 'ngFileUpload', 'ngRoute', 'angularJsExtends', 'ui.bootstrap', 'ngMessages', 'Home.App.Utils', 'ngCookies', 'ui.select', 'ngSanitize'])
     .constant('CheckEnvironmentVariable', CheckEnvironmentVariableJson)
     .config(['$uibTooltipProvider', function ($uibTooltipProvider) {
         $uibTooltipProvider.options({
