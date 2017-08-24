@@ -45,14 +45,14 @@ namespace TqCcnetDashboard.Controllers.Api
 
         private string GetImsi_savePath()
         {
-            var path = System.Web.Hosting.HostingEnvironment.MapPath("~/pluginTemp");
+            var path = MapPathUtil.MapPath("~/pluginTemp");
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
             return path;
         }
 
         private string GetReal_savePath()
         {
-            var path = System.Web.Hosting.HostingEnvironment.MapPath("~/plugin");
+            var path = MapPathUtil.MapPath("~/plugin");
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
             return path;
         }

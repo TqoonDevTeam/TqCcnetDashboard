@@ -19,7 +19,7 @@ namespace TqCcnetDashboard.Controllers.Api
 
         private string GetReal_savePath()
         {
-            var path = System.Web.Hosting.HostingEnvironment.MapPath("~/plugin");
+            var path = MapPathUtil.MapPath("~/plugin");
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
             return path;
         }

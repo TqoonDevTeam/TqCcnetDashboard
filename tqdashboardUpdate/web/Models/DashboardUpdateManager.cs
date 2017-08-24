@@ -24,9 +24,8 @@ namespace TqCcnetDashboard.Models
             PluginUpdator = new PluginUpdator
             {
                 PluginDirectory = CCNET.PluginDirectory,
-                DownloadFolder = "",
+                DownloadFolder = GetPluginDownloadFolder(),
                 ServiceDirecotry = CCNET.ServiceDirectory,
-                DownloadUrl = "",
                 Logger = TqLogger.Event,
                 SystemLogger = TqLogger.System
             };
@@ -49,6 +48,7 @@ namespace TqCcnetDashboard.Models
                 }
             }
         }
+
         private void SetDownLoadUrl()
         {
             var version = new DashboardVersionChecker().GetRemoteVersion();
@@ -67,14 +67,17 @@ namespace TqCcnetDashboard.Models
             DashboardUpdator.DownloadUrl = dashboardUrl;
             PluginUpdator.DownloadUrl = pluginUrl;
         }
+
         private string GetDashboardFolder()
         {
             return System.Web.Hosting.HostingEnvironment.MapPath("~/");
         }
+
         private string GetDashboardDownloadFolder()
         {
             return Path.Combine(new DirectoryInfo(System.Web.Hosting.HostingEnvironment.MapPath("~/")).Parent.FullName, @"tqdashboardUpdate\web");
         }
+
         private string GetPluginDownloadFolder()
         {
             return Path.Combine(new DirectoryInfo(System.Web.Hosting.HostingEnvironment.MapPath("~/")).Parent.FullName, @"tqdashboardUpdate\plugin");

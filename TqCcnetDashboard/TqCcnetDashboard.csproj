@@ -265,6 +265,7 @@
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\DirViewController.cs" />
     <Compile Include="Models\DashboardUpdateManager.cs" />
+    <Compile Include="Models\MapPathUtil.cs" />
     <Compile Include="Models\TqLogger.cs" />
     <Compile Include="Models\Web\Mvc\AbstractApiController.cs" />
     <Compile Include="Controllers\SystemSettingController.cs" />
