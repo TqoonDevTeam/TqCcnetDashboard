@@ -40,6 +40,7 @@
                     angular.extend($scope.p, res.data.project);
                     checker.checkAndFix($scope.p);
                     projectName = res.data.project.name;
+                    $rootScope.$emit('svc.CcnetProject.get');
                 });
             }();
         }])

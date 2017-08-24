@@ -32,6 +32,7 @@
                 if (query.id) {
                     svc.CcnetProject.get(query.id || 0).then(function (res) {
                         angular.extend($scope.p, res.data.project);
+                        $rootScope.$emit('svc.CcnetProject.get');
                     });
                 }
             }();
