@@ -1,5 +1,5 @@
-﻿using System.IO;
-using System.Web;
+﻿using System;
+using System.IO;
 using TqCcnetDashboard.Config;
 using TqLib.ccnet.Local;
 using TqLib.Dashboard;
@@ -41,10 +41,20 @@ namespace TqCcnetDashboard.Models
                     if (!nowBusy)
                     {
                         nowBusy = true;
-                        SetDownLoadUrl();
-                        DashboardUpdator.Update();
-                        PluginUpdator.Update();
-                        nowBusy = false;
+                        try
+                        {
+                            SetDownLoadUrl();
+                            DashboardUpdator.Update();
+                            PluginUpdator.Update();
+                        }
+                        catch (Exception ex)
+                        {
+                            throw ex;
+                        }
+                        finally
+                        {
+                            nowBusy = false;
+                        }
                     }
                 }
             }
