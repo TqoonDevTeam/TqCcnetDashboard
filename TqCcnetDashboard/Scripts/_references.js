@@ -75,7 +75,6 @@
 /// <reference path="../views/home/app/controller/settings.plugins.js" />
 /// <reference path="../views/home/app/controller/settings.projecttemp.js" />
 /// <reference path="../views/home/app/controller/systemsettings.plugins.js" />
-/// <reference path="../views/home/app/controller/systemsettings/environment.js" />
 /// <reference path="../views/home/app/controller/systemsettings/modules/svc.js" />
 /// <reference path="../views/home/app/controller/systemsettings/server.js" />
 /// <reference path="../views/home/app/main.js" />

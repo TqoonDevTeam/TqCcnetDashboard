@@ -11,13 +11,6 @@ namespace TqCcnetDashboard.Controllers
 {
     public class SystemSettingController : AbstractController
     {
-        public JsonResult CheckEnvironmentVariable()
-        {
-            //var checker = new EnviromentVariableChecker();
-            //return Json(checker.Check());
-            return Json();
-        }
-
         [ViewDownloadFilter]
         public ActionResult Wizard(string id)
         {
@@ -47,12 +40,6 @@ namespace TqCcnetDashboard.Controllers
                 dashboardUrl,
                 pluginUrl
             });
-        }
-
-        public JsonResult GetExternalPluginsNames()
-        {
-            //return Json(new CcnetPluginFInder(CCNET.ServiceDirectory).GetExternalPluginsInfo());
-            return Json();
         }
 
         public void SystemUpdate()
