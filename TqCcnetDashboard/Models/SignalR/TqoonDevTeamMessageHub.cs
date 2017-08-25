@@ -3,6 +3,7 @@ using Microsoft.AspNet.SignalR.Hubs;
 using System;
 using System.Collections.Generic;
 using ThoughtWorks.CruiseControl.Remote;
+using TqLib.Dashboard;
 
 namespace TqCcnetDashboard.Models.SignalR
 {
@@ -42,11 +43,10 @@ namespace TqCcnetDashboard.Models.SignalR
         {
             Clients = clients;
             CurrentSite.ProjectStatusChanged += CurrentSite_ProjectStatusChanged;
-            CurrentSite.Updator.ProcessChanged += Updator_ProcessChanged;
-            CurrentSite.ExternalPluginUpdator.ProcessChanged += Updator_ProcessChanged;
+            TqLogger.CustomEventAppender.ProcessChanged += CustomEventAppender_ProcessChanged;
         }
 
-        private void Updator_ProcessChanged(object sender, List<TqLib.ccnet.Local.Helper.TqCcnetDashboardUpdator.TqCcnetDashboardUpdatorEventArgs> e)
+        private void CustomEventAppender_ProcessChanged(object sender, TqLib.Dashboard.CustomEventAppenderArgs e)
         {
             BroadcastSystemUpdate(e);
         }
@@ -61,9 +61,9 @@ namespace TqCcnetDashboard.Models.SignalR
             Clients.All.updateProjectStatus(CurrentSite.ProjectStatusCollection);
         }
 
-        private void BroadcastSystemUpdate(List<TqLib.ccnet.Local.Helper.TqCcnetDashboardUpdator.TqCcnetDashboardUpdatorEventArgs> e)
+        private void BroadcastSystemUpdate(CustomEventAppenderArgs e)
         {
-            Clients.All.systemUpdate(new { busy = CurrentSite.Updator.IsBysy, e });
+            Clients.All.systemUpdate(e);
         }
 
         public IDictionary<string, ProjectStatus[]> getAllProjectStatus()
@@ -73,7 +73,7 @@ namespace TqCcnetDashboard.Models.SignalR
 
         public object GetSystemUpdate()
         {
-            return new { busy = CurrentSite.Updator.IsBysy, e = CurrentSite.Updator.AllMessage };
+            return new CustomEventAppenderArgs { Msg = "", Level = "" };
         }
     }
 }

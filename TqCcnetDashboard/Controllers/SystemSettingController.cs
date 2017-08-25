@@ -2,21 +2,16 @@
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
+using TqCcnetDashboard.Config;
 using TqCcnetDashboard.Web.Mvc;
 using TqLib.ccnet.Core;
 using TqLib.ccnet.Local;
-using TqLib.ccnet.Local.Helper;
+using TqLib.Dashboard;
 
 namespace TqCcnetDashboard.Controllers
 {
     public class SystemSettingController : AbstractController
     {
-        public JsonResult CheckEnvironmentVariable()
-        {
-            var checker = new EnviromentVariableChecker();
-            return Json(checker.Check());
-        }
-
         [ViewDownloadFilter]
         public ActionResult Wizard(string id)
         {
@@ -35,14 +30,16 @@ namespace TqCcnetDashboard.Controllers
         {
             var serverVersion = typeof(SystemSettingController).Assembly.GetName().Version.ToString();
             var pluginVersion = typeof(CCNET).Assembly.GetName().Version.ToString();
-            var pluginInstalled = System.IO.File.Exists(Path.Combine(CCNET.PluginDirectory, CcnetPluginFInder.TqDashboardDefaultPluginFileName));
-            var externalPlugins = new CcnetPluginFInder(CCNET.ServiceDirectory).GetExternalPluginsWithInfo();
+            var externalPlugins = new CcnetPluginFInder(CCNET.ServiceDirectory, CCNET.PluginDirectory).GetExternalPluginsInfo();
+            var dashboardUrl = ConfigManager.Get("DashboardUrl", "");
+            var pluginUrl = ConfigManager.Get("PluginUrl", "");
             return Json(new
             {
                 serverVersion,
                 pluginVersion,
-                pluginInstalled,
-                externalPlugins
+                externalPlugins,
+                dashboardUrl,
+                pluginUrl
             });
         }
 
@@ -53,7 +50,7 @@ namespace TqCcnetDashboard.Controllers
 
         public JsonResult GetRemoteVersion()
         {
-            return Json(CurrentSite.Updator.GetRemoteVersion());
+            return Json(new DashboardVersionChecker().GetRemoteVersion());
         }
 
         [AllowCrossDomainFilter]
@@ -80,19 +77,17 @@ namespace TqCcnetDashboard.Controllers
 
         public JsonResult PluginUpload()
         {
-            if (!CurrentSite.ExternalPluginUpdator.IsBysy || CurrentSite.Updator.IsBysy)
+            if (CurrentSite.Updator.NowBusy)
             {
-                CurrentSite.ExternalPluginUpdator.CheckDownloadFolder();
-
-                var file = Request.Files[0];
-                var filePath = Path.Combine(CurrentSite.ExternalPluginUpdator.DownloadFolder, file.FileName);
-                file.SaveAs(filePath);
-
-                CurrentSite.ExternalPluginUpdator.UpdateExternalPlugin(filePath);
+                return Json(new { error = true, msg = "다른 설치가 진행 중 입니다." });
             }
             else
             {
-                return Json(new { error = true, msg = "다른 설치가 진행 중 입니다." });
+                CurrentSite.Updator.CleanUpPluginUpdateDownloadFolder();
+                var file = Request.Files[0];
+                var filePath = Path.Combine(CurrentSite.Updator.GetPluginUpdateDownloadFolder(), file.FileName);
+                file.SaveAs(filePath);
+                CurrentSite.Updator.UpdatePluginOnly(filePath);
             }
             return Json();
         }

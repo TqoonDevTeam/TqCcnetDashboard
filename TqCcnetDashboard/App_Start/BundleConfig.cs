@@ -11,6 +11,7 @@ namespace TqCcnetDashboard
                 "~/Content/font-awesome.min.css",
                 "~/Content/bootstrap.min.css",
                 "~/Content/ui-bootstrap-csp.css",
+                "~/Content/select.min.css",
                 "~/Content/sb-admin/sb-admin.css",
                 "~/Content/common/*.css"
                 ));

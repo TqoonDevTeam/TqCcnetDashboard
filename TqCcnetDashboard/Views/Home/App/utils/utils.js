@@ -26,6 +26,9 @@ define(function () {
                 },
                 GetTemplate: function (name) {
                     return '/Views/Home/App/views/' + name;
+                },
+                GetCustomTaskJsPath: function (name) {
+                    return '/Views/Home/App/controller/project/modules/tasks/' + name + '.js';
                 }
             };
         }
@@ -168,21 +171,27 @@ define(function () {
             return {
                 restrict: 'E',
                 templateUrl: '/Views/Home/App/utils/reflectorType.tmpl.html',
-                scope: {
-                    typeSource: '=',
-                    model: '='
-                },
+                terminal: true,
+                priority: 100001,
                 controller: reflectorTypeController,
-                controllerAs: 'ctrl'
+                controllerAs: 'reflectorTypeCtrl'
             }
         }
-        var reflectorTypeController = ['$templateCache', function ($templateCache) {
+        var reflectorTypeController = ['$scope', '$attrs', '$templateCache', function ($scope, $attrs, $templateCache) {
+            this.model = $scope[$attrs.model];
+            this.getReflectorProperties = function () {
+                return $scope[$attrs.typeSource] || [];
+            }
             this.getSrc = function (item) {
-                var url = 'reflectorTypeDirective.' + item.propTypeName + '.html';
-                if ($templateCache.get(url)) {
-                    return url;
+                var reflectorTypeTemplate = 'reflectorTypeDirective.' + item.propTypeName + '.tmpl.html';
+                var customReflectorPropertyTemplate = 'customReflectorProperty.' + item.attr.Name + '.tmpl.html';
+                if ($templateCache.get(reflectorTypeTemplate)) {
+                    return reflectorTypeTemplate;
                 } else {
-                    return 'reflectorTypeDirective.default.html';
+                    if ($templateCache.get(customReflectorPropertyTemplate)) {
+                        return customReflectorPropertyTemplate;
+                    }
+                    return 'reflectorTypeDirective.default.tmpl.html';
                 }
             }
         }];
@@ -306,6 +315,37 @@ define(function () {
             }
         };
         utils.directive('taskSelector', taskSelectorDirective)
+    })(utils);
+    /* dynamicController */
+    (function dynamicCtrl(utils) {
+        function dynamicCtrlDirective($compile, $parse, $templateCache) {
+            return {
+                restrict: 'A',
+                terminal: true,
+                priority: 100000,
+                link: function (scope, element, attrs) {
+                    if (element.ngController) throw 'already has controller. ' + attrs.ngController;
+                    scope.dynamicCtrl.compile = function (ctrlName) {
+                        element.removeAttr('dynamic-ctrl');
+                        element.attr('ng-controller', ctrlName + ' as customCtrl');
+                        $compile(element)(scope);
+                        scope.custom.init();
+                        templateCache();
+                    }
+
+                    function templateCache() {
+                        if (scope.custom.template) {
+                            _.each(scope.custom.template, function (v, p) {
+                                var key = 'customReflectorProperty.' + p + '.tmpl.html';
+                                $templateCache.remove(key);
+                                $templateCache.put(key, v);
+                            })
+                        }
+                    }
+                }
+            }
+        }
+        utils.directive('dynamicCtrl', ['$compile', '$parse', '$templateCache', dynamicCtrlDirective]);
     })(utils);
 });
 define('guid', function () {

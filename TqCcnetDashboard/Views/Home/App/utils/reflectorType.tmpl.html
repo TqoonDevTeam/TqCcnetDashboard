@@ -1,25 +1,25 @@
-﻿<div class="form-group" ng-repeat="item in typeSource">
+﻿<div class="form-group" ng-repeat="item in reflectorTypeCtrl.getReflectorProperties()" ng-show="item.attr.$show">
     <label class="control-label col-sm-2">{{item.attr.Name}}</label>
-    <ng-include src="ctrl.getSrc(item)"></ng-include>
+    <ng-include src="reflectorTypeCtrl.getSrc(item)"></ng-include>
 </div>
-<script type="text/ng-template" id="reflectorTypeDirective.default.html">
+<script type="text/ng-template" id="reflectorTypeDirective.default.tmpl.html">
     <div class="col-sm-10">
-        <input class="form-control" type="text" name="{{item.attr.Name}}" ng-model="model[item.attr.Name]" ng-required="item.attr.Required" />
+        <input class="form-control" type="text" name="{{item.attr.Name}}" ng-model="reflectorTypeCtrl.model[item.attr.Name]" ng-required="item.attr.Required" />
     </div>
 </script>
-<script type="text/ng-template" id="reflectorTypeDirective.PrivateString.html">
+<script type="text/ng-template" id="reflectorTypeDirective.PrivateString.tmpl.html">
     <div class="col-sm-10">
-        <input class="form-control" type="password" name="{{item.attr.Name}}" ng-model="model[item.attr.Name]" ng-required="item.attr.Required" />
+        <input class="form-control" type="password" name="{{item.attr.Name}}" ng-model="reflectorTypeCtrl.model[item.attr.Name]" ng-required="item.attr.Required" />
     </div>
 </script>
-<script type="text/ng-template" id="reflectorTypeDirective.Boolean.html">
+<script type="text/ng-template" id="reflectorTypeDirective.Boolean.tmpl.html">
     <div class="col-sm-10">
         <label>
-            <input type="radio" ng-model="model[item.attr.Name]" name="{{item.attr.Name}}" value="True" ng-required="item.attr.Required" />
+            <input type="radio" ng-model="reflectorTypeCtrl.model[item.attr.Name]" name="{{item.attr.Name}}" value="True" ng-required="item.attr.Required" />
             True
         </label>
         <label>
-            <input type="radio" ng-model="model[item.attr.Name]" name="{{item.attr.Name}}" value="False" ng-required="item.attr.Required" />
+            <input type="radio" ng-model="reflectorTypeCtrl.model[item.attr.Name]" name="{{item.attr.Name}}" value="False" ng-required="item.attr.Required" />
             False
         </label>
     </div>

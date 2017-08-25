@@ -14,7 +14,7 @@ namespace TqLib.ccnet.Core.Tasks
         [ReflectorProperty("connectionString")]
         public string ConnectionString { get; set; }
 
-        [ReflectorProperty("query", Required = false)]
+        [ReflectorProperty("query")]
         public string Query { get; set; }
 
         protected override bool Execute(IIntegrationResult result)

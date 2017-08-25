@@ -5,13 +5,14 @@ using System.ServiceProcess;
 using System.Threading;
 using System.Threading.Tasks;
 using ThoughtWorks.CruiseControl.Remote;
-using TqLib.ccnet.Local.Helper;
+using TqLib.ccnet.Utils;
+using TqLib.Dashboard;
 
 namespace TqLib.ccnet.Local
 {
     public class CCNET : IDisposable
     {
-        private static PluginTypeInfo[] pluginReflectorTypes;
+        private static PluginTypeInfo[] pluginReflectorTypes, taskPluginReflectorTypes;
         private static ICruiseServerClientFactory fac = new CruiseServerClientFactory();
 
         public static PluginTypeInfo[] PluginReflectorTypes
@@ -20,28 +21,40 @@ namespace TqLib.ccnet.Local
             {
                 if (pluginReflectorTypes == null)
                 {
-                    var ccnetPluginFInder = new CcnetPluginFInder(ServiceDirectory);
+                    var ccnetPluginFInder = new CcnetPluginFInder(ServiceDirectory, PluginDirectory);
                     pluginReflectorTypes = ccnetPluginFInder.GetPluginTypeInfo();
                 }
                 return pluginReflectorTypes;
             }
         }
 
-        public CruiseServerClientBase Server { get; private set; }
-        public static string ServiceDirectory { get; set; }
-
-        public static string PluginDirectory
+        public static PluginTypeInfo[] TaskPluginsReflectorTypes
         {
             get
             {
-                var ccnetPluginFInder = new CcnetPluginFInder(ServiceDirectory);
-                return ccnetPluginFInder.CcnetPluginDirectory;
+                if (taskPluginReflectorTypes == null)
+                {
+                    taskPluginReflectorTypes = PluginReflectorTypes.Where(t =>
+                     {
+                         if (t.Namespace.StartsWith("ThoughtWorks"))
+                         {
+                             return t.Namespace == "ThoughtWorks.CruiseControl.Core.Tasks";
+                         }
+                         return true;
+                     }).ToArray();
+                }
+                return taskPluginReflectorTypes;
             }
         }
 
+        public CruiseServerClientBase Server { get; private set; }
+        public static string ServiceDirectory { get; set; }
+        public static string PluginDirectory { get; set; }
+
         static CCNET()
         {
-            ServiceDirectory = new CcnetServiceFinder().FindServiceDirectory();
+            ServiceDirectory = new CcnetServiceLocationFinder().FindServiceDirectory();
+            PluginDirectory = new CcnetPluginLocationFinder().FindPluginDirectory(ServiceDirectory);
         }
 
         public CCNET(string host = "127.0.0.1")

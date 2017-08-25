@@ -1,7 +1,6 @@
 ﻿'use strict';
-define(['angularAMD', 'json!/SystemSetting/CheckEnvironmentVariable'], function (angularAMD, CheckEnvironmentVariableJson) {
-    var app = angular.module('app', ['ngAnimate', 'ngFileUpload', 'ngRoute', 'angularJsExtends', 'ui.bootstrap', 'ngMessages', 'Home.App.Utils', 'ngCookies'])
-    .constant('CheckEnvironmentVariable', CheckEnvironmentVariableJson)
+define(['angularAMD'], function (angularAMD) {
+    var app = angular.module('app', ['ngAnimate', 'ngFileUpload', 'ngRoute', 'angularJsExtends', 'ui.bootstrap', 'ngMessages', 'Home.App.Utils', 'ngCookies', 'ui.select', 'ngSanitize'])
     .config(['$uibTooltipProvider', function ($uibTooltipProvider) {
         $uibTooltipProvider.options({
             appendToBody: true
@@ -40,12 +39,6 @@ define(['angularAMD', 'json!/SystemSetting/CheckEnvironmentVariable'], function 
             controllerUrl: 'controller/systemsettings/server',
             $data: { title: '시스템설정 - Server' }
         }))
-        .when('/systemsettings/environment', angularAMD.route({
-            templateUrl: appBase + 'systemsettings/environment.html',
-            controller: 'systemsettings.environment.ctrl as ctrl',
-            controllerUrl: 'controller/systemsettings/environment',
-            $data: { title: '시스템설정 - Environment' }
-        }))
         .otherwise({ redirectTo: '/dashboard' });
         ;
     }])
@@ -75,6 +68,7 @@ define(['angularAMD', 'json!/SystemSetting/CheckEnvironmentVariable'], function 
         function extend_SystemUpdate(res) {
             $rootScope.$apply(function () {
                 $rootScope._SystemUpdate = res;
+                $rootScope.$emit("system.msg.SystemUpdate", res.Msg);
             });
         }
 
@@ -116,14 +110,7 @@ define(['angularAMD', 'json!/SystemSetting/CheckEnvironmentVariable'], function 
             });
         } init();
     }])
-    .controller('root.left.navbar.ctrl', ['$scope', 'CheckEnvironmentVariable', function ($scope, CheckEnvironmentVariable) {
-        this.hasEnvironmentVariableError = function () {
-            if (_.any(CheckEnvironmentVariable, function (v) { return v === false })) {
-                return 'label-danger navbar-label-danger-fix';
-            } else {
-                return '';
-            }
-        }
+    .controller('root.left.navbar.ctrl', ['$scope', function ($scope) {
     }])
     ;
     return angularAMD.bootstrap(app);

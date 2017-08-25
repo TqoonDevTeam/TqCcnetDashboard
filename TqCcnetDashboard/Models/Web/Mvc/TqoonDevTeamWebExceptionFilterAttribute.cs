@@ -12,7 +12,7 @@ namespace TqCcnetDashboard.Web.Mvc
     {
         public override void OnException(HttpActionExecutedContext context)
         {
-            TqLogger.Web.Error(context.Exception);
+            TqLogger.System.Error(context.Exception);
 
             if (context.Exception is ITqoonDevTeamException)
             {
@@ -32,7 +32,7 @@ namespace TqCcnetDashboard.Web.Mvc
     {
         public override void OnException(ExceptionContext context)
         {
-            TqLogger.Web.Error(context.Exception);
+            TqLogger.System.Error(context.Exception);
 
             if (context.Exception is ITqoonDevTeamException)
             {

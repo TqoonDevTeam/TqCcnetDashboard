@@ -2,9 +2,9 @@
 
 namespace TqCcnetDashboard.Controllers
 {
-    //[Authorize]
     public class HomeController : AbstractController
     {
+        [Authorize]
         public ActionResult Index()
         {
             return View();

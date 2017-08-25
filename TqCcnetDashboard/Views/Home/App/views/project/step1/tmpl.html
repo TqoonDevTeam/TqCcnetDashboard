@@ -24,5 +24,23 @@
                 <input class="form-control" type="text" name="workingDirectory" ng-model="p.workingDirectory" is-working-directory form-check-force />
             </div>
         </div>
+        <div class="form-group">
+            <label class="control-label col-sm-2">Queue Use</label>
+            <div class="col-sm-10">
+                <input type="checkbox" name="useQueue" ng-model="useQueue" ng-click="step.useQueueChanged()"/>
+            </div>
+        </div>
+        <div class="form-group" ng-if="useQueue">
+            <label class="control-label col-sm-2">Queue</label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" name="queue" ng-model="p.queue" />
+            </div>
+        </div>
+        <div class="form-group" ng-if="useQueue">
+            <label class="control-label col-sm-2">QueuePriority</label>
+            <div class="col-sm-10">
+                <input class="form-control" type="text" name="queuePriority" ng-model="p.queuePriority" />
+            </div>
+        </div>
     </div>
 </div>

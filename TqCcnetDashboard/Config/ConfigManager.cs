@@ -10,7 +10,7 @@ namespace TqCcnetDashboard.Config
 
         static ConfigManager()
         {
-            ConfigPath = Path.Combine(System.Web.Hosting.HostingEnvironment.MapPath("~/Config"), "config.xml");
+            ConfigPath = Path.Combine(MapPathUtil.MapPath("~/Config"), "config.xml");
             if (File.Exists(ConfigPath))
             {
                 config = XDocument.Load(ConfigPath);

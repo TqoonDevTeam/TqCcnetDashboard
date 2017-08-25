@@ -1,12 +1,12 @@
 ﻿using Microsoft.Win32;
 
-namespace TqLib.ccnet.Local.Helper
+namespace TqLib.ccnet.Utils
 {
-    public class CcnetServiceFinder
+    public class CcnetServiceLocationFinder
     {
         public string ServiceName { get; private set; }
 
-        public CcnetServiceFinder(string serviceName = "CCService")
+        public CcnetServiceLocationFinder(string serviceName = "CCService")
         {
             ServiceName = serviceName;
         }

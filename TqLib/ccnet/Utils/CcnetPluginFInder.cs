@@ -1,23 +1,21 @@
 ﻿using Exortech.NetReflector;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Xml.Linq;
 using ThoughtWorks.CruiseControl.Core.Tasks;
+using TqLib.ccnet.Utils;
 
-namespace TqLib.ccnet.Local.Helper
+namespace TqLib.Dashboard
 {
     public class CcnetPluginFInder
     {
         public static readonly string TqDashboardDefaultPluginFileName = "ccnet.TqLib.plugin.dll";
-        public string CcnetServiceDirecotry { get; private set; }
-        public string CcnetPluginDirectory { get; private set; }
+        private string CcnetServiceDirecotry, CcnetPluginDirectory;
 
-        public CcnetPluginFInder(string ccnetServiceDirecotry)
+        public CcnetPluginFInder(string ccnetServiceDirectory, string ccnetPluginDirectory)
         {
-            CcnetServiceDirecotry = ccnetServiceDirecotry;
-            SetCcnetPluginDirectory();
+            CcnetServiceDirecotry = ccnetServiceDirectory;
+            CcnetPluginDirectory = ccnetPluginDirectory;
         }
 
         public IList<string> GetExternalPlugins()
@@ -27,9 +25,15 @@ namespace TqLib.ccnet.Local.Helper
                 .Except(new[] { TqDashboardDefaultPluginFileName }).ToList();
         }
 
-        public IList<ExternalDll> GetExternalPluginsWithInfo()
+        public IList<ExternalPluginsInfo> GetExternalPluginsInfo()
         {
-            return Directory.GetFiles(CcnetPluginDirectory, "*.dll").Select(t => new ExternalDll(t)).Where(t => t.IsCcnetPlugin && t.FileName != CcnetPluginFInder.TqDashboardDefaultPluginFileName).ToList();
+            return GetExternalPlugins().Select(t =>
+            new ExternalPluginsInfo()
+            {
+                Name = Path.GetFileNameWithoutExtension(t),
+                UpdateSupport = false
+            }
+            ).ToList();
         }
 
         public PluginTypeInfo[] GetPluginTypeInfo()
@@ -61,21 +65,13 @@ namespace TqLib.ccnet.Local.Helper
         {
             if (File.Exists(dllPath))
             {
-                 var typeLoader = new SeperateAppDomainAssemblyLoader() { CCNETServiceDirectory = CCNET.ServiceDirectory };
+                var typeLoader = new SeperateAppDomainAssemblyLoader() { CCNETServiceDirectory = CcnetServiceDirecotry };
                 return typeLoader.GetAssemblyTypes(new FileInfo(dllPath)).ToList();
             }
             else
             {
                 return new List<PluginTypeInfo>();
             }
-        }
-
-        private void SetCcnetPluginDirectory()
-        {
-            var config = Path.Combine(CcnetServiceDirecotry, "ccservice.exe.config");
-            var doc = XDocument.Load(config);
-            var pluginAbs = doc.Element("configuration").Element("appSettings").Elements("add").FirstOrDefault(t => t.Attribute("key").Value == "PluginLocation").Attribute("value").Value;
-            CcnetPluginDirectory = new Uri(new Uri(CcnetServiceDirecotry + "\\"), pluginAbs).LocalPath;
         }
     }
 }

@@ -5,11 +5,11 @@
                 <thead>
                     <tr class="alert-info">
                         <th class="block">#</th>
+                        <th class="block" uib-tooltip="Admin">관리</th>
                         <th class="block" uib-tooltip="ProjectName">프로젝트</th>
                         <th class="block" uib-tooltip="Last Build Time">마지막 빌드 시간</th>
                         <th class="block" uib-tooltip="Next Build Time">다음 빌드 시간</th>
                         <th uib-tooltip="Message">서버 메시지</th>
-                        <th class="block" uib-tooltip="Admin">관리</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -26,6 +26,12 @@
                                 <i ng-style="ctrl.isBuilding(p) && { 'color': 'blue' } || { 'color': 'gray' }" ng-class="{ 'spinning' :ctrl.isBuilding(p) }" class="fa fa-rotate-right"></i>
                             </span>
                         </td>
+                        <td class="block">
+                            <button ng-disabled="!ctrl.canForceBuild(p)" ng-if="ctrl.showForceBuild(p)" ng-click="ctrl.onForceBuild(p)" class="btn btn-primary btn-xs">Force</button>
+                            <button ng-disabled="!p.ShowForceBuildButton" ng-if="!ctrl.showForceBuild(p)" ng-click="ctrl.onAbortBuild(p)" class="btn btn-danger btn-xs">Abort</button>
+                            <!--<button ng-if="p.ShowStartStopButton" class="btn btn-default btn-xs">Start</button>
+                            <button ng-if="p.ShowStartStopButton" class="btn btn-default btn-xs">Stop</button>-->
+                        </td>
                         <td class="block" uib-tooltip="{{p.Description}}">{{p.Name}}</td>
                         <td class="block">{{p.LastBuildDate | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
                         <td class="block">
@@ -34,12 +40,9 @@
                                 {{p.NextBuildTime | date: 'yyyy-MM-dd HH:mm:ss'}}
                             </span>
                         </td>
-                        <td>{{p.CurrentMessage}}</td>
-                        <td class="block">
-                            <button ng-disabled="!ctrl.canForceBuild(p)" ng-if="ctrl.showForceBuild(p)" ng-click="ctrl.onForceBuild(p)" class="btn btn-primary btn-xs">Force</button>
-                            <button ng-disabled="!p.ShowForceBuildButton" ng-if="!ctrl.showForceBuild(p)" ng-click="ctrl.onAbortBuild(p)" class="btn btn-danger btn-xs">Abort</button>
-                            <!--<button ng-if="p.ShowStartStopButton" class="btn btn-default btn-xs">Start</button>
-                            <button ng-if="p.ShowStartStopButton" class="btn btn-default btn-xs">Stop</button>-->
+                        <td>
+                            <span ng-if="tableCtrl.hasBreakers(p)">&#x2022; Breakers : <span class="label label-danger" ng-repeat="msg in tableCtrl.getBreakers(p)">{{msg.Text}}</span></span>
+                            <span ng-if="tableCtrl.hasFailingTasks(p)">&#x2022; FailingTasks : <span class="label label-warning" ng-repeat="msg in tableCtrl.getFailingTasks(p)">{{msg.Text}}</span></span>
                         </td>
                     </tr>
                 </tbody>

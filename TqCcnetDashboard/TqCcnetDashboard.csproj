@@ -264,6 +264,14 @@
     <Compile Include="Controllers\Api\SourceControlTemplateController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\DirViewController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\PluginHelpController.cs" />
+    <Compile Include="Models\Account\myAccount.cs" />
+    <Compile Include="Models\Account\TqUserAccount.cs" />
+    <Compile Include="Models\Account\TqUserIdentity.cs" />
+    <Compile Include="Models\Account\TqUserPrincipal.cs" />
+    <Compile Include="Models\DashboardUpdateManager.cs" />
+    <Compile Include="Models\MapPathUtil.cs" />
     <Compile Include="Models\TqLogger.cs" />
     <Compile Include="Models\Web\Mvc\AbstractApiController.cs" />
     <Compile Include="Controllers\SystemSettingController.cs" />
@@ -308,6 +316,7 @@
     <Content Include="Content\metisMenu.min.css" />
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\sb-admin\sb-admin.css" />
+    <Content Include="Content\select.min.css" />
     <Content Include="Content\ui-bootstrap-csp.css" />
     <Content Include="Content\ui-grid.css" />
     <Content Include="Content\ui-grid.min.css" />
@@ -1140,6 +1149,8 @@
     <Content Include="Scripts\requirejs-plugins\mdown.js" />
     <Content Include="Scripts\requirejs-plugins\noext.js" />
     <Content Include="Scripts\requirejs-plugins\propertyParser.js" />
+    <Content Include="Scripts\select.js" />
+    <Content Include="Scripts\select.min.js" />
     <Content Include="Scripts\text.js" />
     <Content Include="Scripts\ui-grid.js" />
     <Content Include="Scripts\ui-grid.min.js" />
@@ -1157,6 +1168,14 @@
     <Content Include="Views\Home\App\controller\dashboard\modules\svc.js" />
     <Content Include="Views\Home\App\controller\project\modules\step5.js" />
     <Content Include="Views\Home\App\controller\project\modules\svc.js" />
+    <Content Include="Views\Home\App\controller\project\modules\tasks\TqDBExecutor.js" />
+    <Content Include="Views\Home\App\controller\project\modules\tasks\TqForeachFromDB.js" />
+    <Content Include="Views\Home\App\controller\project\modules\tasks\TqRsync.js" />
+    <Content Include="Views\Home\App\controller\project\modules\tasks\TqIIS.js" />
+    <Content Include="Views\Home\App\controller\project\modules\tasks\TqText.js" />
+    <Content Include="Views\Home\App\controller\project\modules\tasks\msbuild.js" />
+    <Content Include="Views\Home\App\controller\project\modules\tasks\exec.js" />
+    <Content Include="Views\Home\App\controller\project\modules\tasks\TqNunit.js" />
     <Content Include="Views\Home\App\controller\project\update.js" />
     <Content Include="Views\Home\App\controller\project\list.js" />
     <Content Include="Views\Home\App\controller\project\create.js" />
@@ -1165,7 +1184,6 @@
     <Content Include="Views\Home\App\controller\project\modules\step3.js" />
     <Content Include="Views\Home\App\controller\project\modules\step2.js" />
     <Content Include="Views\Home\App\controller\settings.projecttemp.js" />
-    <Content Include="Views\Home\App\controller\systemsettings\environment.js" />
     <Content Include="Views\Home\App\controller\systemsettings\server.js" />
     <Content Include="Views\Home\App\controller\systemsettings.plugins.js" />
     <Content Include="Views\Home\App\controller\settings.plugins.js" />
@@ -1183,15 +1201,8 @@
     <Content Include="Views\Home\App\views\project\step3\triggers.projectTrigger.tmpl.html" />
     <Content Include="Views\Home\App\views\project\step3\triggers.multiTrigger.tmpl.html" />
     <Content Include="Views\Home\App\views\project\step5\publishers.forcebuild.html" />
-    <Content Include="Views\Home\App\views\project\step4\task.tqrsync.html" />
-    <Content Include="Views\Home\App\views\project\step4\task.tqdbexecutor.html" />
-    <Content Include="Views\Home\App\views\project\step4\task.tqtext.html" />
     <Content Include="Views\Home\App\views\project\step4\task.tqforeachfromdb.html" />
-    <Content Include="Views\Home\App\views\project\step4\task.exec.html" />
     <Content Include="Views\Home\App\views\project\step4\task.default.html" />
-    <Content Include="Views\Home\App\views\project\step4\task.nuget.html" />
-    <Content Include="Views\Home\App\views\project\step4\task.msbuild.html" />
-    <Content Include="Views\Home\App\views\project\step4\task.tqiis.html" />
     <Content Include="Views\Home\App\views\project\step5\publishers.artifactcleanup.html" />
     <Content Include="Views\Home\App\views\project\step5\publishers.xmllogger.html" />
     <Content Include="Views\Home\App\views\project\step5\publishers.default.html" />
@@ -1199,7 +1210,6 @@
     <Content Include="Views\Home\App\views\project\step5\tmpl.html" />
     <Content Include="Views\Home\App\views\project\update.html" />
     <Content Include="Views\Home\App\views\project\list.html" />
-    <Content Include="Views\Home\App\views\project\step4\task.tqnunit.html" />
     <Content Include="Views\Home\App\utils\fileSelector.tmpl.html" />
     <Content Include="Views\Home\App\views\project\step2\sc.add.tmpl.html" />
     <Content Include="Views\Home\App\views\project\step2\sc.svn.tmpl.html" />
@@ -1217,7 +1227,6 @@
     <Content Include="Views\Home\App\views\settings.projecttemp.add.tasks.tmpl.html" />
     <Content Include="Views\Home\App\views\settings.projecttemp.html" />
     <Content Include="Views\Home\App\views\settings.projecttemp.add.project.tmpl.html" />
-    <Content Include="Views\Home\App\views\systemsettings\environment.html" />
     <Content Include="Views\Home\App\views\systemsettings\server.html" />
     <Content Include="Views\Home\App\views\systemsettings.plugins.html" />
     <Content Include="Views\Home\App\views\settings.plugins.html" />
@@ -1248,6 +1257,7 @@
     <Content Include="Views\SystemSetting\_ViewStart.cshtml" />
     <Content Include="Views\SystemSetting\Index.cshtml" />
     <Content Include="Views\SystemSetting\wizard.cshtml" />
+    <Content Include="Scripts\select.min.js.map" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -1258,14 +1268,15 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\TqLib\TqLib.csproj">
       <Project>{2f096830-5da5-4a69-9cd2-acdd4d4a6f58}</Project>
       <Name>TqLib</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

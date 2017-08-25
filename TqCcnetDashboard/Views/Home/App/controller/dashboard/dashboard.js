@@ -119,6 +119,18 @@
             refreshProjectList();
         }]);
         app.controller('dashboard.table.ctrl', ['$scope', '$rootScope', function ($scope, $rootScope) {
+            this.hasBreakers = function (p) {
+                return _.some(p.Messages, function (v) { return v.Kind === 1; });
+            }
+            this.hasFailingTasks = function (p) {
+                return _.some(p.Messages, function (v) { return v.Kind === 3; });
+            }
+            this.getBreakers = function (p) {
+                return _.filter(p.Messages, function (v) { return v.Kind === 1; });
+            }
+            this.getFailingTasks = function (p) {
+                return _.filter(p.Messages, function (v) { return v.Kind === 3; });
+            }
         }]);
         app.controller('dashboard.panel.ctrl', ['$scope', '$rootScope', function ($scope, $rootScope) {
             this.getFilteredList = function () {

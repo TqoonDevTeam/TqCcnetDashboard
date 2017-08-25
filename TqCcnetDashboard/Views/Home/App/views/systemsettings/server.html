@@ -29,34 +29,28 @@
                 <li class="list-group-item">
                     <span>기본 플러그인</span>
                     <span class="pull-right">
-                        <span ng-if="info.pluginInstalled" class="label label-success">{{info.pluginVersion}}</span>
-                        <span ng-if="!info.pluginInstalled" class="label label-danger">설치되지않음</span>
+                        <span class="label label-success">{{info.pluginVersion}}</span>
                     </span>
                 </li>
                 <li class="list-group-item" ng-repeat="item in info.externalPlugins">
-                    <span>{{item.AssemblyName}}</span>
-                    <span class="pull-right">
-                        <span class="label label-success">{{item.AssemblyVersion}}</span>
-                    </span>
+                    <span>{{item.Name}}</span>
                 </li>
             </ul>
         </div>
     </div>
 </div>
-<div class="row" ng-if="_SystemUpdate.busy">
+<div class="row" ng-if="systemUpdating">
     <div class="col-md-12">
         <div class="alert alert-warning">
             시스템을 업데이트 중 입니다.<br />작업이 완료되면 CCNET Service와 Dashbaord가 재시작 합니다.
-            <button type="button" class="btn btn-warning btn-xs" ng-click="ctrl.resetUpdate()" uib-tooltip="업데이트 오류 발생시 다시 시도할 수 있도록 합니다."><i class="fa fa-refresh"></i></button>
         </div>
     </div>
     <div class="col-md-12">
         <div class="panel panel-default">
             <div class="panel-heading">업데이트 진행중...</div>
             <ul class="list-group">
-                <li class="list-group-item" ng-repeat="msg in _SystemUpdate.e">
-                    <span>{{msg.Desc}}</span>
-                    <uib-progressbar style="margin-bottom:0" animate="false" value="msg.ProgressPercentage" type="success"><b>{{msg.ProgressPercentage}}%</b></uib-progressbar>
+                <li class="list-group-item" ng-repeat="msg in systemUpdatingMsg">
+                    <span>{{msg}}</span>
                 </li>
             </ul>
         </div>
@@ -76,9 +70,8 @@
                     <span>{{uploadProcess.Desc}}</span>
                     <uib-progressbar style="margin-bottom:0" animate="false" value="uploadProcess.ProgressPercentage" type="success"><b>{{uploadProcess.ProgressPercentage}}%</b></uib-progressbar>
                 </li>
-                <li class="list-group-item" ng-repeat="msg in _SystemUpdate.e">
-                    <span>{{msg.Desc}}</span>
-                    <uib-progressbar style="margin-bottom:0" animate="false" value="msg.ProgressPercentage" type="success"><b>{{msg.ProgressPercentage}}%</b></uib-progressbar>
+                <li class="list-group-item" ng-repeat="msg in systemUpdatingMsg">
+                    <span>{{msg}}</span>
                 </li>
             </ul>
         </div>

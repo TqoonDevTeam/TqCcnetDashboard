@@ -5,7 +5,8 @@
             SourceControlTemplate: svcUtil.create('SourceControlTemplate'),
             OwnedInnerTask: svcUtil.create('OwnedInnerTask'),
             GitHub: svcUtil.create('GitHub', true).$action('CheckRepository'),
-            SvnHub: svcUtil.create('SvnHub', true).$action('CheckRepository')
+            SvnHub: svcUtil.create('SvnHub', true).$action('CheckRepository'),
+            PluginHelp: svcUtil.create('PluginHelp', true).$action('GetTaskPlugins')
         };
         return svc;
     }])

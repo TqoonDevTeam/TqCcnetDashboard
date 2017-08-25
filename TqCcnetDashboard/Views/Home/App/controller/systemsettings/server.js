@@ -3,18 +3,23 @@
         app.controller('systemsettings.server.ctrl', ['$scope', '$rootScope', 'systemsettings.svc', 'Upload', function ($scope, $rootScope, svc, Upload) {
             $scope.info = {};
             $scope.remoteVersion = '';
+            $scope.systemUpdating = false;
+            $scope.systemUpdatingMsg = [];
             $scope.pluginUploading = false;
             $scope.uploadProcess = {};
-            this.resetUpdate = function () {
-                $rootScope._SystemUpdate.busy = false;
-            }
+
+            $rootScope.$on('system.msg.SystemUpdate', function (e, msg) {
+                $scope.systemUpdatingMsg.push(msg);
+                if (msg === 'WARN SystemUpdate Complete') {
+                    location.reload(true);
+                }
+            });
+
             this.systemUpdate = function () {
-                if (!$scope.systemUpdateBusy) {
-                    if (confirm('업데이트 하시겠습니까?')) {
-                        $scope.systemUpdateBusy = true;
-                        $scope.msgs = [];
-                        svc.SystemSetting.SystemUpdate();
-                    }
+                if (confirm('업데이트 하시겠습니까?')) {
+                    $scope.systemUpdating = true;
+                    $scope.systemUpdatingMsg = [];
+                    svc.SystemSetting.SystemUpdate();
                 }
             }
             this.pluginUpload = function (file) {
@@ -32,11 +37,7 @@
                     $scope.uploadProcess.ProgressPercentage = parseInt(100.0 * evt.loaded / evt.total);
                 });
             }
-            this.gittokenSave = function () {
-                if (confirm('토큰을 저장 하시겠습니까?')) {
-                    svc.SystemSetting.SetToken({ key: 'gittoken', value: $scope.info.gittoken });
-                }
-            }
+
             this.init = function () {
                 svc.SystemSetting.GetServerCheckInformation().then(function (res) {
                     $scope.info = res.data;
