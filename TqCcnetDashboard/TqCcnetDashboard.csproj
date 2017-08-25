@@ -264,7 +264,12 @@
     <Compile Include="Controllers\Api\SourceControlTemplateController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\DirViewController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\PluginHelpController.cs" />
+    <Compile Include="Models\Account\myAccount.cs" />
+    <Compile Include="Models\Account\TqUserAccount.cs" />
+    <Compile Include="Models\Account\TqUserIdentity.cs" />
+    <Compile Include="Models\Account\TqUserPrincipal.cs" />
     <Compile Include="Models\DashboardUpdateManager.cs" />
     <Compile Include="Models\MapPathUtil.cs" />
     <Compile Include="Models\TqLogger.cs" />

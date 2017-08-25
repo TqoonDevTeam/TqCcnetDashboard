@@ -5,6 +5,7 @@ using TqCcnetDashboard.Web.Mvc;
 namespace TqCcnetDashboard
 {
     [TqoonDevTeamExceptionApiFilter]
+    [Authorize]
     public abstract class AbstractApiController : ApiController
     {
         public AbstractApiController()
