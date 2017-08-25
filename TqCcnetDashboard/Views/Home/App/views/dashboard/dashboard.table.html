@@ -40,7 +40,10 @@
                                 {{p.NextBuildTime | date: 'yyyy-MM-dd HH:mm:ss'}}
                             </span>
                         </td>
-                        <td>{{p.CurrentMessage}}</td>
+                        <td>
+                            <span ng-if="tableCtrl.hasBreakers(p)">&#x2022; Breakers : <span class="label label-danger" ng-repeat="msg in tableCtrl.getBreakers(p)">{{msg.Text}}</span></span>
+                            <span ng-if="tableCtrl.hasFailingTasks(p)">&#x2022; FailingTasks : <span class="label label-warning" ng-repeat="msg in tableCtrl.getFailingTasks(p)">{{msg.Text}}</span></span>
+                        </td>
                     </tr>
                 </tbody>
             </table>
