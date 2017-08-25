@@ -1,6 +1,7 @@
 ﻿using log4net;
 using System.IO;
 using System.IO.Compression;
+using System.Threading;
 using TqLib.Utils;
 
 namespace TqLib.Dashboard
@@ -25,8 +26,25 @@ namespace TqLib.Dashboard
         private void CheckDownloadFolder()
         {
             Logger?.Info("DashboardUpdator - Download Folder Check");
-            if (Directory.Exists(DownloadFolder)) Directory.Delete(DownloadFolder, true);
-            Directory.CreateDirectory(DownloadFolder);
+            DirectoryInfo dnf = new DirectoryInfo(DownloadFolder);
+            if (dnf.Exists)
+            {
+                dnf.Delete(true);
+                dnf.Refresh();
+                while (dnf.Exists)
+                {
+                    Thread.Sleep(1000);
+                    dnf.Refresh();
+                }
+            }
+
+            dnf.Create();
+            dnf.Refresh();
+            while (!dnf.Exists)
+            {
+                Thread.Sleep(1000);
+                dnf.Refresh();
+            }
         }
 
         private void Download()
