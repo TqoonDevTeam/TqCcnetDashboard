@@ -9,7 +9,7 @@ namespace TqCcnetDashboard.Models
     public class DashboardUpdateManager
     {
         private object _lock = new object();
-        private bool nowBusy = false;
+        public bool NowBusy = false;
         private DashboardUpdator DashboardUpdator;
         private PluginUpdator PluginUpdator;
 
@@ -34,13 +34,13 @@ namespace TqCcnetDashboard.Models
 
         public void Update()
         {
-            if (!nowBusy)
+            if (!NowBusy)
             {
                 lock (_lock)
                 {
-                    if (!nowBusy)
+                    if (!NowBusy)
                     {
-                        nowBusy = true;
+                        NowBusy = true;
                         try
                         {
                             TqLogger.Event.Warn("SystemUpdate Start");
@@ -55,7 +55,37 @@ namespace TqCcnetDashboard.Models
                         }
                         finally
                         {
-                            nowBusy = false;
+                            NowBusy = false;
+                        }
+                    }
+                }
+            }
+        }
+
+        public void UpdatePluginOnly(string downloadedPath)
+        {
+            if (!NowBusy)
+            {
+                lock (_lock)
+                {
+                    if (!NowBusy)
+                    {
+                        NowBusy = true;
+                        try
+                        {
+                            TqLogger.Event.Warn("SystemUpdate Start");
+                            TqLogger.Event.Warn("PluginUpdate Only");
+                            PluginUpdator.DownloadUrl = downloadedPath;
+                            PluginUpdator.Update();
+                            TqLogger.Event.Warn("SystemUpdate Complete");
+                        }
+                        catch (Exception ex)
+                        {
+                            throw ex;
+                        }
+                        finally
+                        {
+                            NowBusy = false;
                         }
                     }
                 }
@@ -86,14 +116,21 @@ namespace TqCcnetDashboard.Models
             return MapPathUtil.MapPath("~/");
         }
 
-        private string GetDashboardDownloadFolder()
+        public string GetDashboardDownloadFolder()
         {
             return Path.Combine(new DirectoryInfo(MapPathUtil.MapPath("~/")).Parent.FullName, @"tqdashboardUpdate\web");
         }
 
-        private string GetPluginDownloadFolder()
+        public string GetPluginDownloadFolder()
         {
             return Path.Combine(new DirectoryInfo(MapPathUtil.MapPath("~/")).Parent.FullName, @"tqdashboardUpdate\plugin");
+        }
+
+        public void CleanUpPluginDownloadFolder()
+        {
+            var path = GetPluginDownloadFolder();
+            if (Directory.Exists(path)) Directory.Delete(path, true);
+            Directory.CreateDirectory(path);
         }
     }
 }

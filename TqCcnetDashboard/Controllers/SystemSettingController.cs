@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 using TqCcnetDashboard.Config;
@@ -76,20 +77,18 @@ namespace TqCcnetDashboard.Controllers
 
         public JsonResult PluginUpload()
         {
-            //if (!CurrentSite.ExternalPluginUpdator.IsBysy || CurrentSite.Updator.IsBysy)
-            //{
-            //    CurrentSite.ExternalPluginUpdator.CheckDownloadFolder();
-
-            //    var file = Request.Files[0];
-            //    var filePath = Path.Combine(CurrentSite.ExternalPluginUpdator.DownloadFolder, file.FileName);
-            //    file.SaveAs(filePath);
-
-            //    CurrentSite.ExternalPluginUpdator.UpdateExternalPlugin(filePath);
-            //}
-            //else
-            //{
-            //    return Json(new { error = true, msg = "다른 설치가 진행 중 입니다." });
-            //}
+            if (CurrentSite.Updator.NowBusy)
+            {
+                return Json(new { error = true, msg = "다른 설치가 진행 중 입니다." });
+            }
+            else
+            {
+                CurrentSite.Updator.CleanUpPluginDownloadFolder();
+                var file = Request.Files[0];
+                var filePath = Path.Combine(CurrentSite.Updator.GetPluginDownloadFolder(), file.FileName);
+                file.SaveAs(filePath);
+                CurrentSite.Updator.UpdatePluginOnly(filePath);
+            }
             return Json();
         }
     }
