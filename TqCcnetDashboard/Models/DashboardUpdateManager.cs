@@ -126,9 +126,14 @@ namespace TqCcnetDashboard.Models
             return Path.Combine(new DirectoryInfo(MapPathUtil.MapPath("~/")).Parent.FullName, @"tqdashboardUpdate\plugin");
         }
 
-        public void CleanUpPluginDownloadFolder()
+        public string GetPluginUpdateDownloadFolder()
         {
-            var path = GetPluginDownloadFolder();
+            return Path.Combine(new DirectoryInfo(MapPathUtil.MapPath("~/")).Parent.FullName, @"tqdashboardUpdate\pluginupdate");
+        }
+
+        public void CleanUpPluginUpdateDownloadFolder()
+        {
+            var path = GetPluginUpdateDownloadFolder();
             if (Directory.Exists(path)) Directory.Delete(path, true);
             Directory.CreateDirectory(path);
         }

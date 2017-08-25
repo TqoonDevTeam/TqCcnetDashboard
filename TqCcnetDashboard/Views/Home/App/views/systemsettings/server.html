@@ -29,15 +29,11 @@
                 <li class="list-group-item">
                     <span>기본 플러그인</span>
                     <span class="pull-right">
-                        <span ng-if="info.pluginInstalled" class="label label-success">{{info.pluginVersion}}</span>
-                        <span ng-if="!info.pluginInstalled" class="label label-danger">설치되지않음</span>
+                        <span class="label label-success">{{info.pluginVersion}}</span>
                     </span>
                 </li>
                 <li class="list-group-item" ng-repeat="item in info.externalPlugins">
-                    <span>{{item.AssemblyName}}</span>
-                    <span class="pull-right">
-                        <span class="label label-success">{{item.AssemblyVersion}}</span>
-                    </span>
+                    <span>{{item.Name}}</span>
                 </li>
             </ul>
         </div>
@@ -74,9 +70,8 @@
                     <span>{{uploadProcess.Desc}}</span>
                     <uib-progressbar style="margin-bottom:0" animate="false" value="uploadProcess.ProgressPercentage" type="success"><b>{{uploadProcess.ProgressPercentage}}%</b></uib-progressbar>
                 </li>
-                <li class="list-group-item" ng-repeat="msg in _SystemUpdate.e">
-                    <span>{{msg.Desc}}</span>
-                    <uib-progressbar style="margin-bottom:0" animate="false" value="msg.ProgressPercentage" type="success"><b>{{msg.ProgressPercentage}}%</b></uib-progressbar>
+                <li class="list-group-item" ng-repeat="msg in systemUpdatingMsg">
+                    <span>{{msg}}</span>
                 </li>
             </ul>
         </div>

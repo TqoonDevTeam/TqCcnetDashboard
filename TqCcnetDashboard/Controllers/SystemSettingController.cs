@@ -83,9 +83,9 @@ namespace TqCcnetDashboard.Controllers
             }
             else
             {
-                CurrentSite.Updator.CleanUpPluginDownloadFolder();
+                CurrentSite.Updator.CleanUpPluginUpdateDownloadFolder();
                 var file = Request.Files[0];
-                var filePath = Path.Combine(CurrentSite.Updator.GetPluginDownloadFolder(), file.FileName);
+                var filePath = Path.Combine(CurrentSite.Updator.GetPluginUpdateDownloadFolder(), file.FileName);
                 file.SaveAs(filePath);
                 CurrentSite.Updator.UpdatePluginOnly(filePath);
             }
