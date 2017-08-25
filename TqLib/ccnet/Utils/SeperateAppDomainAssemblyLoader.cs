@@ -204,6 +204,13 @@ namespace TqLib.ccnet.Utils
                     return Assembly.LoadFrom(dependentAssemblyFilename);
                 }
 
+                dependentAssemblyFilename = Path.Combine(Path.Combine(CCNETServiceDirectory, "$$PluginReference"), assemblyName.Name + ".dll");
+
+                if (File.Exists(dependentAssemblyFilename))
+                {
+                    return Assembly.LoadFrom(dependentAssemblyFilename);
+                }
+
                 return Assembly.LoadFrom(args.Name);
             }
 
