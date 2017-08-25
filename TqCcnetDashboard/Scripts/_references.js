@@ -66,6 +66,7 @@
 /// <reference path="../views/home/app/controller/project/modules/tasks/exec.js" />
 /// <reference path="../views/home/app/controller/project/modules/tasks/msbuild.js" />
 /// <reference path="../views/home/app/controller/project/modules/tasks/tqdbexecutor.js" />
+/// <reference path="../views/home/app/controller/project/modules/tasks/tqforeachfromdb.js" />
 /// <reference path="../views/home/app/controller/project/modules/tasks/tqiis.js" />
 /// <reference path="../views/home/app/controller/project/modules/tasks/tqnunit.js" />
 /// <reference path="../views/home/app/controller/project/modules/tasks/tqrsync.js" />

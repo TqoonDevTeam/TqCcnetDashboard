@@ -16,7 +16,6 @@
             return item.description || '';
         }
     }
-
     var taskPlugins = [];
     app.controller('project.step4.ctrl', ['$scope', '$uibModal', 'pathUtil', function ($scope, $uibModal, pathUtil) {
         this.getDesc = function (item) {
@@ -92,18 +91,6 @@
         $scope.taskPlugins = taskPlugins;
         $scope.task = {};
         $scope.templateUrl = undefined;
-        //$scope.taskTemplate = {
-        //    TqNunit: pathUtil.GetTemplate('/project/step4/task.tqnunit.html'),
-        //    TqIIS: pathUtil.GetTemplate('/project/step4/task.tqiis.html'),
-        //    nuget: pathUtil.GetTemplate('/project/step4/task.nuget.html'),
-        //    msbuild: pathUtil.GetTemplate('/project/step4/task.msbuild.html'),
-        //    exec: pathUtil.GetTemplate('/project/step4/task.exec.html'),
-        //    TqForeachFromDB: pathUtil.GetTemplate('/project/step4/task.tqforeachfromdb.html'),
-        //    TqDBExecutor: pathUtil.GetTemplate('/project/step4/task.tqdbexecutor.html'),
-        //    TqText: pathUtil.GetTemplate('/project/step4/task.tqtext.html'),
-        //    TqRsync: pathUtil.GetTemplate('/project/step4/task.tqrsync.html'),
-        //    'default': pathUtil.GetTemplate('/project/step4/task.default.html'),
-        //};
         $scope.$watch('task["@type"]', function (newVal, oldVal) {
             if (newVal) {
                 if ((newVal !== oldVal) || forceTemplateLoad) {
@@ -178,85 +165,5 @@
         $scope.custom.attrs_force_required = [];
         $scope.custom.template = {};
         $scope.custom.init = function () { };
-    }])
-    .controller('project.step4.tasks.add.tqforeachfromdb.ctrl', ['$scope', '$uibModal', 'pathUtil', 'project.svc', function ($scope, $uibModal, pathUtil, svc) {
-        var attrs_required_forced_key = ['description'];
-        $scope.attrs = [];
-        $scope.attrs_required = [];
-        $scope.attrs_required_forced_key = [];
-
-        this.getDesc = function (item) {
-            return (taskDesc[item['@type']] || taskDesc['default'])(item);
-        }
-
-        this.onTasksAddClick = function () {
-            var instance = $uibModal.open({
-                templateUrl: pathUtil.GetTemplate('/project/step4/tasks.add.tmpl.html'),
-                controller: 'project.step4.tasks.add.ctrl',
-                controllerAs: 'ctrl',
-                scope: $scope,
-                size: 'lg', backdrop: 'static',
-                resolve: {
-                    items: function () {
-                        return {
-                            mode: 'new'
-                        };
-                    }
-                }
-            });
-            instance.result.then(function (item) {
-                $scope.task.tasks.push(item);
-            }, function () { });
-        }
-        this.onTasksDelClick = function (item) {
-            $scope.task.tasks.remove(item);
-        }
-        this.onTasksModClick = function (item) {
-            var instance = $uibModal.open({
-                templateUrl: pathUtil.GetTemplate('/project/step4/tasks.add.tmpl.html'),
-                controller: 'project.step4.tasks.add.ctrl',
-                controllerAs: 'ctrl',
-                scope: $scope,
-                size: 'lg', backdrop: 'static',
-                resolve: {
-                    items: function () {
-                        return {
-                            mode: 'mod',
-                            item: angular.copy(item)
-                        };
-                    }
-                }
-            });
-            instance.result.then(function (modItem) {
-                var idx = _.indexOf($scope.task.tasks, item);
-                if (idx > -1) {
-                    $scope.task.tasks[idx] = modItem;
-                }
-            }, function () { });
-        }
-        this.onOrderUpClick = function (item) {
-            var idx = _.indexOf($scope.task.tasks, item) - 1;
-            if (idx > -1) {
-                $scope.task.tasks.remove(item);
-                $scope.task.tasks.insert(idx, item);
-            }
-        }
-        this.onOrderDownClick = function (item) {
-            var idx = _.indexOf($scope.task.tasks, item) + 1;
-            if (idx < $scope.task.tasks.length) {
-                $scope.task.tasks.remove(item);
-                $scope.task.tasks.insert(idx, item);
-            }
-        }
-
-        this.init = function () {
-            svc.SourceControlTemplate.get($scope.task['@type']).then(function (res) {
-                $scope.attrs = res.data;
-                $scope.attrs_required = _.filter(res.data, function (item) { return item.attr.Required; });
-                $scope.attrs_required_forced = _.filter(res.data, function (item) { return _.contains(attrs_required_forced_key, item.attr.Name); });
-                _.each($scope.attrs_required_forced, function (v) { v.attr.Required = true });
-            });
-            $scope.task.tasks = $scope.task.tasks || [];
-        }();
-    }])
+    }]);
 });

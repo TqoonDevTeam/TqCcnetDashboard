@@ -1164,6 +1164,7 @@
     <Content Include="Views\Home\App\controller\project\modules\step5.js" />
     <Content Include="Views\Home\App\controller\project\modules\svc.js" />
     <Content Include="Views\Home\App\controller\project\modules\tasks\TqDBExecutor.js" />
+    <Content Include="Views\Home\App\controller\project\modules\tasks\TqForeachFromDB.js" />
     <Content Include="Views\Home\App\controller\project\modules\tasks\TqRsync.js" />
     <Content Include="Views\Home\App\controller\project\modules\tasks\TqIIS.js" />
     <Content Include="Views\Home\App\controller\project\modules\tasks\TqText.js" />
@@ -1196,7 +1197,6 @@
     <Content Include="Views\Home\App\views\project\step3\triggers.projectTrigger.tmpl.html" />
     <Content Include="Views\Home\App\views\project\step3\triggers.multiTrigger.tmpl.html" />
     <Content Include="Views\Home\App\views\project\step5\publishers.forcebuild.html" />
-    <Content Include="Views\Home\App\views\project\step4\task.tqdbexecutor.html" />
     <Content Include="Views\Home\App\views\project\step4\task.tqforeachfromdb.html" />
     <Content Include="Views\Home\App\views\project\step4\task.default.html" />
     <Content Include="Views\Home\App\views\project\step5\publishers.artifactcleanup.html" />
