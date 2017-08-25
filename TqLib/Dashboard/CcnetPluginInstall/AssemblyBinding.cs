@@ -16,6 +16,9 @@ namespace TqLib.Dashboard.CcnetPluginInstall
         [XmlElement]
         public List<DependentAssembly> dependentAssembly { get; private set; }
 
+        [XmlElement]
+        public Probing probing { get; set; }
+
         public void Load(string path)
         {
             this.path = path;
@@ -35,6 +38,8 @@ namespace TqLib.Dashboard.CcnetPluginInstall
             {
                 dependentAssembly = new List<DependentAssembly>();
             }
+
+            if (probing == null) probing = new Probing();
         }
 
         public void Clear()
@@ -131,5 +136,11 @@ namespace TqLib.Dashboard.CcnetPluginInstall
 
         [XmlAttribute]
         public string href { get; set; }
+    }
+    
+    public class Probing
+    {
+        [XmlAttribute]
+        public string privatePath { get; set; } = "$$PluginReference";
     }
 }

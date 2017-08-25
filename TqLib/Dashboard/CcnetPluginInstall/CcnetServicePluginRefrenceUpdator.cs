@@ -33,29 +33,31 @@ namespace TqLib.Dashboard.CcnetPluginInstall
             {
                 AssemblyBinding assemblyBinding = new AssemblyBinding();
                 assemblyBinding.Load(configPath);
-                assemblyBinding.Clear();
-                foreach (var item in allPluginRefrenceInfo.Where(t => t.IsDll()))
-                {
-                    assemblyBinding.Append(new DependentAssembly
-                    {
-                        assemblyIdentity = new AssemblyIdentity
-                        {
-                            culture = item.culture,
-                            name = item.asmName,
-                            publicKeyToken = item.publicKeyToken
-                        },
-                        bindingRedirect = new BindingRedirect
-                        {
-                            oldVersion = "0.0.0.0-99.0.0.0",
-                            newVersion = item.version
-                        },
-                        codeBase = new CodeBase
-                        {
-                            version = item.version,
-                            href = GetInstalledPluginReferenceTargetPath(item.name)
-                        }
-                    });
-                }
+
+                // probing 으로 정상 작동함으로 상세 구성은 일단 제외한다.
+                //assemblyBinding.Clear();
+                //foreach (var item in allPluginRefrenceInfo.Where(t => t.IsDll()))
+                //{
+                //    assemblyBinding.Append(new DependentAssembly
+                //    {
+                //        assemblyIdentity = new AssemblyIdentity
+                //        {
+                //            culture = item.culture,
+                //            name = item.asmName,
+                //            publicKeyToken = item.publicKeyToken
+                //        },
+                //        bindingRedirect = new BindingRedirect
+                //        {
+                //            oldVersion = "0.0.0.0-99.0.0.0",
+                //            newVersion = item.version
+                //        },
+                //        codeBase = new CodeBase
+                //        {
+                //            version = item.version,
+                //            href = GetInstalledPluginReferenceTargetPath(item.name)
+                //        }
+                //    });
+                //}
                 assemblyBinding.Save();
             }
         }
@@ -174,7 +176,7 @@ namespace TqLib.Dashboard.CcnetPluginInstall
 
             private bool IsVersionValidRefrence(string srcPluginReferencePath)
             {
-                return new[] { ".dll", ".exe" }.Any(t => t.Equals(Path.GetExtension(srcPluginReferencePath)));
+                return new[] { ".dll" }.Any(t => t.Equals(Path.GetExtension(srcPluginReferencePath)));
             }
 
             public override bool Equals(object obj)

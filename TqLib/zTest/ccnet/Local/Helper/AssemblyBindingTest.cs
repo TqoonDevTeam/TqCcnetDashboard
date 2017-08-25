@@ -19,6 +19,7 @@ namespace TqLib.zTest.ccnet.Local.Helper
         {
             string path = @"D:\Test\ccnet.exe.config";
             item.Load(path);
+            item.Save();
         }
     }
 }

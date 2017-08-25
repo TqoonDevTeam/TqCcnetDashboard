@@ -1,63 +1,40 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
-using TqLib.ccnet.Local;
-using TqLib.ccnet.Utils;
 
 namespace TqCcnetDashboard.Controllers.Api
 {
-    public class CcnetPluginController : AbstractApiController
+    public class CcnetPluginController : ApiController
     {
         public async Task<HttpResponseMessage> Post()
         {
-            if (!Request.Content.IsMimeMultipartContent())
+            if (!Request.Content.IsMimeMultipartContent() || CurrentSite.Updator.NowBusy)
             {
                 throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
             }
-
-            var imsi_savePath = GetImsi_savePath();
-            var real_savePath = GetReal_savePath();
-
-            var streamProvider = new MultipartFormDataStreamProvider(imsi_savePath);
-            await Request.Content.ReadAsMultipartAsync(streamProvider);
-
-            foreach (MultipartFileData fileData in streamProvider.FileData)
+            try
             {
-                if (string.IsNullOrEmpty(fileData.Headers.ContentDisposition.FileName))
-                {
-                    return Request.CreateResponse(HttpStatusCode.NotAcceptable, "This request is not properly formatted");
-                }
-                string fileName = fileData.Headers.ContentDisposition.FileName;
-                if (fileName.StartsWith("\"") && fileName.EndsWith("\""))
-                {
-                    fileName = fileName.Trim('"');
-                }
-                if (fileName.Contains(@"/") || fileName.Contains(@"\"))
-                {
-                    fileName = Path.GetFileName(fileName);
-                }
+                CurrentSite.Updator.CleanUpPluginUpdateDownloadFolder();
 
-                if (File.Exists(Path.Combine(real_savePath, fileName))) File.Delete(Path.Combine(real_savePath, fileName));
-                File.Move(fileData.LocalFileName, Path.Combine(real_savePath, fileName));
+                var provider = new MultipartFormDataStreamProvider(CurrentSite.Updator.GetPluginUpdateDownloadFolder());
+                await Request.Content.ReadAsMultipartAsync(provider);
+
+                MultipartFileData fileData = provider.FileData.Single();
+                string fileName = fileData.Headers.ContentDisposition.FileName.Replace("\"", "");
+                string newFIleName = Path.Combine(Path.GetDirectoryName(fileData.LocalFileName), fileName);
+                File.Move(fileData.LocalFileName, newFIleName);
+
+                CurrentSite.Updator.UpdatePluginOnly(newFIleName);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
             return Request.CreateResponse(HttpStatusCode.OK);
-        }
-
-        private string GetImsi_savePath()
-        {
-            var path = MapPathUtil.MapPath("~/pluginTemp");
-            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-            return path;
-        }
-
-        private string GetReal_savePath()
-        {
-            var path = MapPathUtil.MapPath("~/plugin");
-            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-            return path;
         }
     }
 }
