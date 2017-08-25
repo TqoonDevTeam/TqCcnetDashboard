@@ -19,16 +19,16 @@ namespace TqLib.ccnet.Core.Tasks
         [ReflectorProperty("physicalPath", Description = "사이트경로")]
         public string PhysicalPath { get; set; }
 
-        [ReflectorProperty("siteConfig", typeof(SiteConfigSerializerFactory), Description = "Site 설정")]
+        [ReflectorProperty("siteConfig", typeof(SiteConfigSerializerFactory), Description = "Site 설정", Required = false)]
         public Dictionary<string, string> SiteConfig { get; set; }
 
-        [ReflectorProperty("virtualDirectories", typeof(VirtualDirectorySerializerFactory), Description = "가상경로")]
+        [ReflectorProperty("virtualDirectories", typeof(VirtualDirectorySerializerFactory), Description = "가상경로", Required = false)]
         public Dictionary<string, string> VirtualDirectories { get; set; }
 
         [ReflectorProperty("bindings", typeof(BindingsSerializerFactory), Description = "바인딩 설정")]
         public TqBinding[] Bindings { get; set; }
 
-        [ReflectorProperty("poolName", Description = "ApplicationPool 명", Required = false)]
+        [ReflectorProperty("poolName", Description = "ApplicationPool 명")]
         public string PoolName { get; set; }
 
         [ReflectorProperty("poolConfig", typeof(ApplicationPoolConfigSerializerFactory), Description = "ApplicationPool 설정")]

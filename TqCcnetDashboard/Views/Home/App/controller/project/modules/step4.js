@@ -134,7 +134,8 @@
         }();
     }])
     .controller('project.step4.tasks.default.ctrl', ['$scope', 'project.svc', 'pathUtil', function ($scope, svc, pathUtil) {
-        var attrs_force_show = ['description', 'workingDirectory'];
+        var default_attrs_force_show = ['description', 'workingDirectory'];
+        var default_attrs_force_required = ['description'];
         $scope.attrs = [];
         $scope.custom = {};
         $scope.dynamicCtrl = {};
@@ -143,129 +144,40 @@
             svc.SourceControlTemplate.get($scope.task['@type']).then(function (res) {
                 $scope.attrs = res.data;
                 _.each(_.filter(res.data, function (item) { return item.attr.Required; }), function (v) { v.attr.$show = true; });
-                _.each(_.filter(res.data, function (item) { return _.contains(attrs_force_show, item.attr.Name); }), function (v) { v.attr.$show = true; });
+                on_attrs_force_show(default_attrs_force_show);
+                on_attrs_force_required(default_attrs_force_required);
                 customCompile();
             });
         }();
-
+        function on_attrs_force_show(names) {
+            _.each(_.filter($scope.attrs, function (item) { return _.contains(names, item.attr.Name); }), function (v) { v.attr.$show = true; });
+        }
+        function on_attrs_force_required(names) {
+            _.each(_.filter($scope.attrs, function (item) { return _.contains(names, item.attr.Name); }), function (v) { v.attr.Required = true; });
+        }
+        function on_defaultValueSet() {
+            angular.extend($scope.task, angular.extend({}, $scope.custom.defaultValue || {}, $scope.task));
+        }
+        function onCustomSetting() {
+            on_attrs_force_show($scope.custom.attrs_force_show);
+            on_attrs_force_required($scope.custom.attrs_force_required);
+            on_defaultValueSet();
+        }
         function customCompile() {
             require([pathUtil.GetCustomTaskJsPath($scope.task['@type'])], function () {
                 $scope.dynamicCtrl.compile('project.step4.tasks.' + $scope.task['@type'] + '.customctrl');
+                onCustomSetting();
             }, function () {
-                $scope.dynamicCtrl.compile('project.step4.tasks.default.customctrl');
+                $scope.dynamicCtrl.compile('project.step4.tasks.abstract.customctrl');
+                onCustomSetting();
             })
         }
     }])
-    .controller('project.step4.tasks.default.customctrl', ['$scope', function ($scope) {
-        $scope.custom.force_show = [];
-        $scope.custom.forcer_equired = [];
-        $scope.custom.init = function () {
-            console.log('init default');
-        }
-    }])
-    .controller('project.step4.tasks.add.exec.ctrl', ['$scope', 'project.svc', function ($scope, svc) {
-        var defaultValue = { buildTimeoutSeconds: 120 };
-        var attrs_required_forced_key = ['description', 'buildArgs', 'buildTimeoutSeconds', 'successExitCodes', 'baseDirectory'];
-        $scope.attrs = [];
-        $scope.attrs_required = [];
-        $scope.attrs_required_forced_key = [];
-
-        this.init = function () {
-            svc.SourceControlTemplate.get($scope.task['@type']).then(function (res) {
-                $scope.attrs = res.data;
-                $scope.attrs_required = _.filter(res.data, function (item) { return item.attr.Required; });
-                $scope.attrs_required_forced = _.filter(res.data, function (item) { return _.contains(attrs_required_forced_key, item.attr.Name); });
-                _.each($scope.attrs_required_forced, function (v) { v.attr.Required = true });
-            });
-            angular.extend($scope.task, angular.extend({}, defaultValue, $scope.task));
-        }();
-    }])
-    .controller('project.step4.tasks.add.msbuild.ctrl', ['$scope', 'project.svc', function ($scope, svc) {
-        var defaultValue_force = { executable: 'msbuild.exe' };
-        var attrs_required_forced_key = ['description', 'projectFile', 'targets', 'buildArgs'];
-        $scope.attrs = [];
-        $scope.attrs_required = [];
-        $scope.attrs_required_forced_key = [];
-
-        this.init = function () {
-            svc.SourceControlTemplate.get($scope.task['@type']).then(function (res) {
-                $scope.attrs = res.data;
-                $scope.attrs_required = _.filter(res.data, function (item) { return item.attr.Required; });
-                $scope.attrs_required_forced = _.filter(res.data, function (item) { return _.contains(attrs_required_forced_key, item.attr.Name); });
-                _.each($scope.attrs_required_forced, function (v) { v.attr.Required = true });
-            });
-            angular.extend($scope.task, defaultValue_force);
-        }();
-    }])
-    .controller('project.step4.tasks.add.tqnunit.ctrl', ['$scope', 'project.svc', function ($scope, svc) {
-        var attrs_required_forced_key = ['description', 'workingDirectory'];
-        $scope.attrs = [];
-        $scope.attrs_required = [];
-        $scope.attrs_required_forced_key = [];
-        $scope.excludeCategory = '';
-        $scope.includeCategory = '';
-        $scope.assembly = '';
-        this.removeExclude = function (item) {
-            $scope.task.excludedCategories.string.remove(item);
-        }
-        this.addExclude = function () {
-            if ($scope.excludeCategory) {
-                if (!_.contains($scope.task.excludedCategories.string, $scope.excludeCategory)) {
-                    $scope.task.excludedCategories.string.push($scope.excludeCategory);
-                }
-                $scope.excludeCategory = '';
-            }
-        }
-        this.removeInclude = function (item) {
-            $scope.task.includedCategories.string.remove(item);
-        }
-        this.addInclude = function () {
-            if ($scope.includeCategory) {
-                if (!_.contains($scope.task.excludedCategories.string, $scope.includeCategory)) {
-                    $scope.task.excludedCategories.string.push($scope.includeCategory);
-                }
-                $scope.includeCategory = '';
-            }
-        }
-        this.removeAsm = function (item) {
-            $scope.task.assemblies.string.remove(item);
-        }
-        this.addAsm = function () {
-            if ($scope.assembly) {
-                if (!_.contains($scope.task.assemblies.string, $scope.assembly)) {
-                    $scope.task.assemblies.string.push($scope.assembly);
-                }
-                $scope.assembly = '';
-            }
-        }
-
-        this.init = function () {
-            svc.SourceControlTemplate.get($scope.task['@type']).then(function (res) {
-                $scope.attrs = res.data;
-                $scope.attrs_required = _.filter(res.data, function (item) { return item.attr.Required; });
-                $scope.attrs_required_forced = _.filter(res.data, function (item) { return _.contains(attrs_required_forced_key, item.attr.Name); });
-                _.each($scope.attrs_required_forced, function (v) { v.attr.Required = true });
-            });
-        }();
-
-        $scope.task.excludedCategories = $scope.task.excludedCategories || { string: [] };
-        $scope.task.includedCategories = $scope.task.includedCategories || { string: [] };
-        $scope.task.assemblies = $scope.task.assemblies || { string: [] };
-    }])
-    .controller('project.step4.tasks.add.tqiis.ctrl', ['$scope', 'project.svc', function ($scope, svc) {
-        var attrs_required_forced_key = ['description'];
-        $scope.attrs = [];
-        $scope.attrs_required = [];
-        $scope.attrs_required_forced_key = [];
-
-        this.init = function () {
-            svc.SourceControlTemplate.get($scope.task['@type']).then(function (res) {
-                $scope.attrs = res.data;
-                $scope.attrs_required = _.filter(res.data, function (item) { return item.attr.Required; });
-                $scope.attrs_required_forced = _.filter(res.data, function (item) { return _.contains(attrs_required_forced_key, item.attr.Name); });
-                _.each($scope.attrs_required_forced, function (v) { v.attr.Required = true });
-            });
-        }();
+    .controller('project.step4.tasks.abstract.customctrl', ['$scope', function ($scope) {
+        $scope.custom.attrs_force_show = [];
+        $scope.custom.attrs_force_required = [];
+        $scope.custom.template = {};
+        $scope.custom.init = function () { };
     }])
     .controller('project.step4.tasks.add.tqforeachfromdb.ctrl', ['$scope', '$uibModal', 'pathUtil', 'project.svc', function ($scope, $uibModal, pathUtil, svc) {
         var attrs_required_forced_key = ['description'];
@@ -345,69 +257,6 @@
                 _.each($scope.attrs_required_forced, function (v) { v.attr.Required = true });
             });
             $scope.task.tasks = $scope.task.tasks || [];
-        }();
-    }])
-    .controller('project.step4.tasks.add.tqtext.ctrl', ['$scope', 'project.svc', function ($scope, svc) {
-        var defaultValue = { saveType: 'Text', saveCondition: 'IfChanged' };
-        var attrs_required_forced_key = ['description', 'saveEncoding'];
-        $scope.attrs = [];
-        $scope.attrs_required = [];
-        $scope.attrs_required_forced_key = [];
-        $scope.attrs_un_required_forced_key = ['source'];
-
-        this.init = function () {
-            svc.SourceControlTemplate.get($scope.task['@type']).then(function (res) {
-                $scope.attrs = res.data;
-                _.each($scope.attrs_un_required_forced_key, function (v) {
-                    var find = _.find(res.data, function (item) { return item.attr.Name === v; });
-                    if (find) {
-                        find.attr.Required = false;
-                    }
-                });
-                $scope.attrs_required = _.filter(res.data, function (item) { return item.attr.Required; });
-                $scope.attrs_required_forced = _.filter(res.data, function (item) { return _.contains(attrs_required_forced_key, item.attr.Name); });
-                _.each($scope.attrs_required_forced, function (v) { v.attr.Required = true });
-            });
-            angular.extend($scope.task, angular.extend({}, defaultValue, $scope.task));
-        }();
-    }])
-    .controller('project.step4.tasks.add.tqrsync.ctrl', ['$scope', 'project.svc', function ($scope, svc) {
-        var defaultValue = { options: '-avrzP --chmod=ugo=rwX' };
-        var attrs_required_forced_key = ['description', 'workingDirectory'];
-        var attrs_required_forced_key_not_required = ['workingDirectory'];
-        $scope.attrs = [];
-        $scope.attrs_required = [];
-        $scope.attrs_required_forced_key = [];
-
-        this.init = function () {
-            svc.SourceControlTemplate.get($scope.task['@type']).then(function (res) {
-                $scope.attrs = res.data;
-                $scope.attrs_required = _.filter(res.data, function (item) { return item.attr.Required; });
-                $scope.attrs_required_forced = _.filter(res.data, function (item) { return _.contains(attrs_required_forced_key, item.attr.Name); });
-                _.each($scope.attrs_required_forced, function (v) {
-                    if (!_.contains(attrs_required_forced_key_not_required, item.attr.Name)) {
-                        v.attr.Required = true
-                    }
-                });
-            });
-            angular.extend($scope.task, angular.extend({}, defaultValue, $scope.task));
-        }();
-    }])
-    .controller('project.step4.tasks.add.tqdbexecutor.ctrl', ['$scope', 'project.svc', function ($scope, svc) {
-        var defaultValue = {};
-        var attrs_required_forced_key = ['description'];
-        $scope.attrs = [];
-        $scope.attrs_required = [];
-        $scope.attrs_required_forced_key = [];
-
-        this.init = function () {
-            svc.SourceControlTemplate.get($scope.task['@type']).then(function (res) {
-                $scope.attrs = res.data;
-                $scope.attrs_required = _.filter(res.data, function (item) { return item.attr.Required; });
-                $scope.attrs_required_forced = _.filter(res.data, function (item) { return _.contains(attrs_required_forced_key, item.attr.Name); });
-                _.each($scope.attrs_required_forced, function (v) { v.attr.Required = true });
-            });
-            angular.extend($scope.task, angular.extend({}, defaultValue, $scope.task));
         }();
     }])
 });
