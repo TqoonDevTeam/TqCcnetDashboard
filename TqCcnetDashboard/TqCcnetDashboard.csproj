@@ -1168,7 +1168,10 @@
     <Content Include="Views\Home\App\controller\dashboard\modules\svc.js" />
     <Content Include="Views\Home\App\controller\project\modules\step5.js" />
     <Content Include="Views\Home\App\controller\project\modules\svc.js" />
+    <Content Include="Views\Home\App\controller\project\modules\tasks\git.js" />
+    <Content Include="Views\Home\App\controller\project\modules\tasks\svn.js" />
     <Content Include="Views\Home\App\controller\project\modules\tasks\TqDBExecutor.js" />
+    <Content Include="Views\Home\App\controller\project\modules\tasks\multi.js" />
     <Content Include="Views\Home\App\controller\project\modules\tasks\TqForeachFromDB.js" />
     <Content Include="Views\Home\App\controller\project\modules\tasks\TqRsync.js" />
     <Content Include="Views\Home\App\controller\project\modules\tasks\TqIIS.js" />
@@ -1196,7 +1199,7 @@
     <Content Include="Views\Home\App\utils\reflectorType.tmpl.html" />
     <Content Include="Views\Home\App\views\dashboard\dashboard.panel.html" />
     <Content Include="Views\Home\App\views\dashboard\dashboard.table.html" />
-    <Content Include="Views\Home\App\views\project\step2\sc.multi.tmpl.html" />
+    <Content Include="Views\Home\App\views\project\step2\sc.default.html" />
     <Content Include="Views\Home\App\views\project\step3\triggers.default.tmpl.html" />
     <Content Include="Views\Home\App\views\project\step3\triggers.projectTrigger.tmpl.html" />
     <Content Include="Views\Home\App\views\project\step3\triggers.multiTrigger.tmpl.html" />
@@ -1212,7 +1215,6 @@
     <Content Include="Views\Home\App\views\project\list.html" />
     <Content Include="Views\Home\App\utils\fileSelector.tmpl.html" />
     <Content Include="Views\Home\App\views\project\step2\sc.add.tmpl.html" />
-    <Content Include="Views\Home\App\views\project\step2\sc.svn.tmpl.html" />
     <Content Include="Views\Home\App\views\project\step2\sc.git.tmpl.html" />
     <Content Include="Views\Home\App\views\project\step3\triggers.scheduleTrigger.tmpl.html" />
     <Content Include="Views\Home\App\views\project\step4\tasks.add.tmpl.html" />

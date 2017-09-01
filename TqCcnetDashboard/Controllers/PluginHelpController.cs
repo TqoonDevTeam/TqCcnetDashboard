@@ -10,5 +10,10 @@ namespace TqCcnetDashboard.Controllers
         {
             return Json(CCNET.TaskPluginsReflectorTypes.Select(t => t.PluginName));
         }
+
+        public JsonResult GetScPlugins()
+        {
+            return Json(CCNET.ScPluginsReflectorTypes.Select(t => t.PluginName));
+        }
     }
 }

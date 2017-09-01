@@ -28,6 +28,25 @@ namespace TqLib.ccnet.Local
             }
         }
 
+        public static PluginTypeInfo[] ScPluginsReflectorTypes
+        {
+            get
+            {
+                if (taskPluginReflectorTypes == null)
+                {
+                    taskPluginReflectorTypes = PluginReflectorTypes.Where(t =>
+                    {
+                        if (t.Namespace.StartsWith("ThoughtWorks"))
+                        {
+                            return t.Namespace == "ThoughtWorks.CruiseControl.Core.Sourcecontrol";
+                        }
+                        return true;
+                    }).ToArray();
+                }
+                return taskPluginReflectorTypes;
+            }
+        }
+
         public static PluginTypeInfo[] TaskPluginsReflectorTypes
         {
             get
