@@ -28,7 +28,7 @@ namespace TqCcnetDashboard.Quartz
             string server = ConfigManager.Get("server", "127.0.0.1");
             foreach (var host in server.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Distinct())
             {
-                Add(host);
+                Add(host.Trim());
             }
         }
 
@@ -37,7 +37,7 @@ namespace TqCcnetDashboard.Quartz
             string server = ConfigManager.Get("server", "127.0.0.1");
             foreach (var host in server.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Distinct())
             {
-                sched.TriggerJob(GetJobKey(host));
+                sched.TriggerJob(GetJobKey(host.Trim()));
             }
         }
 

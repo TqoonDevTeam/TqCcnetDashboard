@@ -18,9 +18,11 @@
             <thead>
                 <tr>
                     <th>#</th>
+                    <th class="block">프로젝트관리</th>
+                    <th>Category</th>
                     <th>Name</th>
                     <th>Desc</th>
-                    <th class="block">프로젝트관리</th>
+                    
                 </tr>
             </thead>
             <tbody>
@@ -30,13 +32,14 @@
                         <span class="label label-success" uib-tooltip="CI 서버에 연결 되었습니다. Dashboard에서 진행상황을 확인하십시오." ng-show="item.state === 'REG'"><i class="fa fa-link"></i></span>
                         <span>{{$index + 1}}</span>
                     </td>
-                    <td>{{item.name}}</td>
-                    <td>{{ctrl.getDesc(item)}}</td>
                     <td class="block">
                         <button type="button" ng-click="ctrl.onTmplModClick(item)" uib-tooltip="등록내용을 수정합니다" class="btn btn-xs btn-warning"><i class="fa fa-pencil"></i></button>
                         <button type="button" ng-click="ctrl.onTmplDelClick(item)" uib-tooltip="삭제" class="btn btn-xs btn-danger"><i class="fa fa-times"></i></button>
                         <button type="button" ng-click="ctrl.onTmplDupClick(item)" uib-tooltip="등록내용을 복제하여 새 등록을 시작 합니다." class="btn btn-xs btn-default"><i class="fa fa-copy"></i></button>
                     </td>
+                    <td>{{item.category}}</td>
+                    <td>{{item.name}}</td>
+                    <td>{{ctrl.getDesc(item)}}</td>
                 </tr>
             </tbody>
         </table>

@@ -6,6 +6,7 @@
                     <tr class="alert-info">
                         <th class="block">#</th>
                         <th class="block" uib-tooltip="Admin">관리</th>
+                        <th class="block" uib-tooltip="Category">카테고리</th>
                         <th class="block" uib-tooltip="ProjectName">프로젝트</th>
                         <th class="block" uib-tooltip="Last Build Time">마지막 빌드 시간</th>
                         <th class="block" uib-tooltip="Next Build Time">다음 빌드 시간</th>
@@ -32,6 +33,7 @@
                             <!--<button ng-if="p.ShowStartStopButton" class="btn btn-default btn-xs">Start</button>
                             <button ng-if="p.ShowStartStopButton" class="btn btn-default btn-xs">Stop</button>-->
                         </td>
+                        <td class="block">{{p.Category}}</td>
                         <td class="block" uib-tooltip="{{p.Description}}">{{p.Name}}</td>
                         <td class="block">{{p.LastBuildDate | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
                         <td class="block">

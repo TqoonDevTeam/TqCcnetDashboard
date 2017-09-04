@@ -30,10 +30,10 @@ namespace TqLib.ccnet.Core.Util
 
                     bindins.Add(new TqBinding()
                     {
-                        Ip = kv[0],
-                        Port = Convert.ToInt32(kv[1]),
-                        Host = kv[2],
-                        SSL = kv.Length == 4 ? kv[3] : string.Empty
+                        Ip = kv[0].Trim(),
+                        Port = Convert.ToInt32(kv[1].Trim()),
+                        Host = kv[2].Trim(),
+                        SSL = kv.Length == 4 ? kv[3].Trim() : string.Empty
                     });
                 }
             }

@@ -29,7 +29,7 @@ namespace TqLib.ccnet.Core.Util
                     foreach (var line in lines)
                     {
                         kv = line.Split('=');
-                        config[kv[0]] = kv[1];
+                        config[kv[0].Trim()] = kv[1].Trim();
                     }
                 }
             }
