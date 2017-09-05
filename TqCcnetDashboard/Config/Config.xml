@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <configs>
-  <server>127.0.0.1,192.168.1.219</server>
+  <server>127.0.0.1</server>
   <DashboardUrl>C:\DEV\TqCcnetDashboard\TqCcnetDashboard</DashboardUrl>
   <PluginUrl>C:\DEV\TqCcnetDashboard\TqLib\bin\Debug</PluginUrl>
 </configs>

@@ -26,18 +26,18 @@ namespace TqCcnetDashboard.Quartz
         public static void Start()
         {
             string server = ConfigManager.Get("server", "127.0.0.1");
-            foreach (var host in server.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Distinct())
+            foreach (var host in server.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Distinct().Select(t=> t.Trim()).Where(t=> !string.IsNullOrEmpty(t)))
             {
-                Add(host.Trim());
+                Add(host);
             }
         }
 
         public static void TriggerImmediately()
         {
             string server = ConfigManager.Get("server", "127.0.0.1");
-            foreach (var host in server.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Distinct())
+            foreach (var host in server.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Distinct().Select(t => t.Trim()).Where(t => !string.IsNullOrEmpty(t)))
             {
-                sched.TriggerJob(GetJobKey(host.Trim()));
+                sched.TriggerJob(GetJobKey(host));
             }
         }
 

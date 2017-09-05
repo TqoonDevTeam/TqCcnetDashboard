@@ -25,12 +25,11 @@ namespace TqLib.ccnet.Core.Util
                 {
                     string[] lines = str.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
-                    string[] kv;
-                    foreach (var line in lines)
-                    {
-                        kv = line.Split('=');
-                        config[kv[0].Trim()] = kv[1].Trim();
-                    }
+                    var line = lines.Select(t => t.Split('='))
+                        .Where(t => t.Length >= 2)
+                        .Select(t => new Tuple<string, string>(t[0].Trim(), t[1].Trim()))
+                        .Where(t => !string.IsNullOrEmpty(t.Item1) && !string.IsNullOrEmpty(t.Item2));
+                    line.ToList().ForEach(t => { config[t.Item1] = t.Item2; });
                 }
             }
             return config;

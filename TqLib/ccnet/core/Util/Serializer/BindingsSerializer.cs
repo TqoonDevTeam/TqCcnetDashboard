@@ -23,19 +23,18 @@ namespace TqLib.ccnet.Core.Util
             {
                 string[] lines = str.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
 
-                string[] kv;
-                foreach (var line in lines)
-                {
-                    kv = line.Split(':');
-
-                    bindins.Add(new TqBinding()
-                    {
-                        Ip = kv[0].Trim(),
-                        Port = Convert.ToInt32(kv[1].Trim()),
-                        Host = kv[2].Trim(),
-                        SSL = kv.Length == 4 ? kv[3].Trim() : string.Empty
+                var tqBindings = lines.Select(t => t.Split(':'))
+                    .Where(t => t.Length >= 3)
+                    .Select(t => new TqBinding {
+                        Ip = t[0].Trim(),
+                        Port = Convert.ToInt32(t[1].Trim()),
+                        Host = t[2].Trim(),
+                        SSL = t.Length == 4 ? t[3].Trim() : string.Empty
                     });
-                }
+
+                tqBindings.ToList().ForEach(t => {
+                    bindins.Add(t);
+                });
             }
             return bindins.ToArray();
         }
