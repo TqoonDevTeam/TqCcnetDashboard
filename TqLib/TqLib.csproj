@@ -231,7 +231,6 @@
     <Compile Include="zTest\ccnet\Core\Tasks\TqIISTaskTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
