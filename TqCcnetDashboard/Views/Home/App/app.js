@@ -82,7 +82,7 @@ define(['angularAMD'], function (angularAMD) {
         $.connection.hub.start().done(init);
     }])
     .run(['$rootScope', '$route', '$cookies', '$location', function ($rootScope, $route, $cookies, $location) {
-        $rootScope._cookie = { modeDebug: '0' };
+        $rootScope._cookie = { modeDebug: '0', showAllModuleConfig: '0' };
         $rootScope._location = {};
 
         // global events handling

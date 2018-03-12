@@ -120,7 +120,7 @@
             }
         }();
     }])
-    .controller('project.step4.tasks.default.ctrl', ['$scope', 'project.svc', 'pathUtil', function ($scope, svc, pathUtil) {
+    .controller('project.step4.tasks.default.ctrl', ['$scope', '$rootScope', 'project.svc', 'pathUtil', function ($scope, $rootScope, svc, pathUtil) {
         var default_attrs_force_show = ['description', 'workingDirectory'];
         var default_attrs_force_required = ['description'];
         $scope.attrs = [];
@@ -135,9 +135,26 @@
                 on_attrs_force_required(default_attrs_force_required);
                 customCompile();
             });
+            onCookieWatch();
         }();
+        function onCookieWatch() {
+            $rootScope.$watch('_cookie.showAllModuleConfig', function (newVal) {
+                if (newVal == '1') {
+                    on_attrs_force_show([]);
+                } else {
+                    _.each(_.filter(res.data, function (item) { return item.attr.Required; }), function (v) { v.attr.$show = true; });
+                    on_attrs_force_show(default_attrs_force_show);
+                    on_attrs_force_required(default_attrs_force_required);
+                    onCustomSetting();
+                }
+            });
+        }
         function on_attrs_force_show(names) {
-            _.each(_.filter($scope.attrs, function (item) { return _.contains(names, item.attr.Name); }), function (v) { v.attr.$show = true; });
+            if ($rootScope._cookie.showAllModuleConfig === "1") {
+                _.each($scope.attrs, function (v) { v.attr.$show = true; });
+            } else {
+                _.each(_.filter($scope.attrs, function (item) { return _.contains(names, item.attr.Name); }), function (v) { v.attr.$show = true; });
+            }
         }
         function on_attrs_force_required(names) {
             _.each(_.filter($scope.attrs, function (item) { return _.contains(names, item.attr.Name); }), function (v) { v.attr.Required = true; });
