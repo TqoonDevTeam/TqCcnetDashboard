@@ -16,19 +16,19 @@ namespace TqLib.ccnet.Core.Tasks
         [ReflectorProperty("GitRepository")]
         public string GitRepository { get; set; }
 
-        [ReflectorProperty("GitRepository")]
+        [ReflectorProperty("Branch")]
         public string Branch { get; set; }
 
-        [ReflectorProperty("GitRepository")]
+        [ReflectorProperty("StartBranch")]
         public string StartBranch { get; set; }
 
         [ReflectorProperty("CheckOnly")]
         public bool CheckOnly { get; set; } = false;
 
-        [ReflectorProperty("GitRepository", Required = false)]
+        [ReflectorProperty("UserName", Required = false)]
         public string UserName { get; set; } = "TqGitCITask";
 
-        [ReflectorProperty("GitRepository", Required = false)]
+        [ReflectorProperty("UserEmail", Required = false)]
         public string UserEmail { get; set; } = "TqGitCITask";
 
         private string repoName, gitDirectory, gitUrl, gitUserName, gitUserPassword;
