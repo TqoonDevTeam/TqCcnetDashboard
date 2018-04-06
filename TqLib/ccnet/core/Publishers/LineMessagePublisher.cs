@@ -35,8 +35,8 @@ namespace TqLib.ccnet.Core.Publishers
         [ReflectorProperty("StickerId", Required = false)]
         public int StickerId { get; set; }
 
-        [ReflectorProperty("SendSucceeded", Required = false)]
-        public bool SendSucceeded { get; set; } = false;
+        [ReflectorProperty("SendCondition", Required = false)]
+        public string SendCondition { get; set; } = "ALL";
 
         [ReflectorProperty("AppendTaskResult", Required = false)]
         public bool AppendTaskResult { get; set; } = false;
@@ -46,21 +46,24 @@ namespace TqLib.ccnet.Core.Publishers
 
         protected override bool Execute(IIntegrationResult result)
         {
-            string message = GetMessage(result);
-            if (!string.IsNullOrEmpty(message))
+            if (SendCondition == "ALL" || SendCondition == result.Succeeded.ToString().ToUpper())
             {
-                using (var clinet = new HttpClient())
-                using (var content = GetContent(result, message))
+                string message = GetMessage(result);
+                if (!string.IsNullOrEmpty(message))
                 {
-                    clinet.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
-                    clinet.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("multipart/form-data"));
-
-                    var response = clinet.PostAsync(ApiUrl, content).Result;
-                    var responseString = response.Content.ReadAsStringAsync().Result;
-                    if (!response.IsSuccessStatusCode)
+                    using (var clinet = new HttpClient())
+                    using (var content = GetContent(result, message))
                     {
-                        result.AddTaskResult($"[LineMessagePublisher] {responseString}");
-                        return false;
+                        clinet.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
+                        clinet.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("multipart/form-data"));
+
+                        var response = clinet.PostAsync(ApiUrl, content).Result;
+                        var responseString = response.Content.ReadAsStringAsync().Result;
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            result.AddTaskResult($"[LineMessagePublisher] {responseString}");
+                            return false;
+                        }
                     }
                 }
             }
