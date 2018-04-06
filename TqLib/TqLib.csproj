@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\LibGit2Sharp.NativeBinaries.1.0.205\build\LibGit2Sharp.NativeBinaries.props" Condition="Exists('..\packages\LibGit2Sharp.NativeBinaries.1.0.205\build\LibGit2Sharp.NativeBinaries.props')" />
   <Import Project="..\packages\Microsoft.Net.Compilers.2.0.1\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.2.0.1\build\Microsoft.Net.Compilers.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -63,6 +64,10 @@
     </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.4.9.5, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.4.9.5\lib\Net45\HtmlAgilityPack.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="LibGit2Sharp, Version=0.24.1.0, Culture=neutral, PublicKeyToken=7cbde695407f0333, processorArchitecture=MSIL">
+      <HintPath>..\packages\LibGit2Sharp.0.24.1\lib\net40\LibGit2Sharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
@@ -165,9 +170,11 @@
     <Compile Include="ccnet\Core\Constants.cs" />
     <Compile Include="ccnet\Core\ProjectWebJsonConverter.cs" />
     <Compile Include="ccnet\Core\PluginArgumentAttribute.cs" />
+    <Compile Include="ccnet\Core\Publishers\LineMessagePublisher.cs" />
     <Compile Include="ccnet\Core\Tasks\NothingTestTask.cs" />
     <Compile Include="ccnet\Core\Tasks\TqDBExecutorTask.cs" />
     <Compile Include="ccnet\Core\Tasks\TqForeachFromDBTask.cs" />
+    <Compile Include="ccnet\Core\Tasks\TqGitCITask.cs" />
     <Compile Include="ccnet\Core\Tasks\TqHostsTask.cs" />
     <Compile Include="ccnet\Core\Tasks\TqIISTask.cs" />
     <Compile Include="ccnet\Core\Tasks\TqNunitTask.cs" />
@@ -218,6 +225,7 @@
     <Compile Include="zTest\AbstractTest.cs" />
     <Compile Include="zTest\CcnetTest.cs" />
     <Compile Include="zTest\ccnet\Core\Tasks\TqForeachFromDBTaskTest.cs" />
+    <Compile Include="zTest\ccnet\Core\Tasks\TqGitCITaskTest.cs" />
     <Compile Include="zTest\ccnet\Core\Tasks\TqHostsTaskTest.cs" />
     <Compile Include="zTest\ccnet\Core\Tasks\TqRsyncTaskTest.cs" />
     <Compile Include="zTest\ccnet\Core\Tasks\TqTextTaskTest.cs" />
@@ -260,6 +268,7 @@
       <ErrorText>이 프로젝트는 이 컴퓨터에 없는 NuGet 패키지를 참조합니다. 해당 패키지를 다운로드하려면 NuGet 패키지 복원을 사용하십시오. 자세한 내용은 http://go.microsoft.com/fwlink/?LinkID=322105를 참조하십시오. 누락된 파일은 {0}입니다.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.2.0.1\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.2.0.1\build\Microsoft.Net.Compilers.props'))" />
+    <Error Condition="!Exists('..\packages\LibGit2Sharp.NativeBinaries.1.0.205\build\LibGit2Sharp.NativeBinaries.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibGit2Sharp.NativeBinaries.1.0.205\build\LibGit2Sharp.NativeBinaries.props'))" />
   </Target>
   <PropertyGroup>
     <PostBuildEvent>mkdir $(SolutionDir)deploy\plugins
