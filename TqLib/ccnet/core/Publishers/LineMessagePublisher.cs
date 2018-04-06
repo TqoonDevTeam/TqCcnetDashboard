@@ -46,27 +46,31 @@ namespace TqLib.ccnet.Core.Publishers
 
         protected override bool Execute(IIntegrationResult result)
         {
-            using (var clinet = new HttpClient())
-            using (var content = GetContent(result))
+            string message = GetMessage(result);
+            if (!string.IsNullOrEmpty(message))
             {
-                clinet.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
-                clinet.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("multipart/form-data"));
-
-                var response = clinet.PostAsync(ApiUrl, content).Result;
-                var responseString = response.Content.ReadAsStringAsync().Result;
-                if (!response.IsSuccessStatusCode)
+                using (var clinet = new HttpClient())
+                using (var content = GetContent(result, message))
                 {
-                    result.AddTaskResult($"[LineMessagePublisher] {responseString}");
-                    return false;
+                    clinet.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
+                    clinet.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("multipart/form-data"));
+
+                    var response = clinet.PostAsync(ApiUrl, content).Result;
+                    var responseString = response.Content.ReadAsStringAsync().Result;
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        result.AddTaskResult($"[LineMessagePublisher] {responseString}");
+                        return false;
+                    }
                 }
             }
             return true;
         }
 
-        private HttpContent GetContent(IIntegrationResult result)
+        private HttpContent GetContent(IIntegrationResult result, string message)
         {
             var content = new MultipartFormDataContent();
-            content.Add(new StringContent(GetMessage(result)), "message");
+            content.Add(new StringContent(message), "message");
             if (!string.IsNullOrEmpty(ImageThumbnail)) content.Add(new StringContent(ImageThumbnail), "imageThumbnail");
             if (!string.IsNullOrEmpty(ImageFullsize)) content.Add(new StringContent(ImageFullsize), "imageFullsize");
             if (!string.IsNullOrEmpty(ImageFile))

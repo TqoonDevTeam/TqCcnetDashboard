@@ -83,6 +83,7 @@ namespace TqLib.ccnet.Core.Tasks
                     else
                     {
                         result.AddTaskResult($"git push");
+                        result.AddTaskResult($"[TqGitCTask] merge success {Branch} <- {StartBranch}");
                         Push();
                     }
                 }
