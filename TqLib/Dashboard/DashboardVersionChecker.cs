@@ -12,6 +12,7 @@ namespace TqLib.Dashboard
         {
             using (var wc = new CustomWebClient())
             {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
                 wc.DownloadString(CheckUrl);
                 return wc.ResponseUri.Segments.Last();
             }
@@ -26,6 +27,7 @@ namespace TqLib.Dashboard
         {
             using (var wc = new CustomWebClient())
             {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
                 wc.DownloadString(CheckUrl);
                 return wc.ResponseUri.Segments.Last();
             }
