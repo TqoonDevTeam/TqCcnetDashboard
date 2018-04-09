@@ -182,6 +182,7 @@
     <Compile Include="ccnet\Core\Tasks\TqRsyncTask.cs" />
     <Compile Include="ccnet\Core\Tasks\TqTextTask.cs" />
     <Compile Include="ccnet\Core\Util\ApplyDbDataUtil.cs" />
+    <Compile Include="ccnet\Core\Extension.cs" />
     <Compile Include="ccnet\Core\Util\Serializer\VirtualDirectorySerializer.cs" />
     <Compile Include="ccnet\Core\Util\Serializer\BindingsSerializer.cs" />
     <Compile Include="ccnet\Core\Util\Serializer\VirtualDirectorySerializerFactory.cs" />

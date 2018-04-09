@@ -20,16 +20,16 @@ namespace TqLib.ccnet.Core.Publishers
 
         [DataType(DataType.MultilineText)]
         [ReflectorProperty("Message", Required = false)]
-        public string Message { get; set; }
+        public string Message { get; set; } = string.Empty;
 
         [ReflectorProperty("ImageThumbnail", Required = false)]
-        public string ImageThumbnail { get; set; }
+        public string ImageThumbnail { get; set; } = string.Empty;
 
         [ReflectorProperty("ImageFullsize", Required = false)]
-        public string ImageFullsize { get; set; }
+        public string ImageFullsize { get; set; } = string.Empty;
 
         [ReflectorProperty("ImageFile", Required = false)]
-        public string ImageFile { get; set; }
+        public string ImageFile { get; set; } = string.Empty;
 
         [ReflectorProperty("StickerPackageId", Required = false)]
         public int StickerPackageId { get; set; }
@@ -37,18 +37,19 @@ namespace TqLib.ccnet.Core.Publishers
         [ReflectorProperty("StickerId", Required = false)]
         public int StickerId { get; set; }
 
+        [DataType("Select")]
         [ReflectorProperty("SendCondition", Required = false)]
-        public string SendCondition { get; set; } = "ALL";
+        public SendConditions SendCondition { get; set; } = SendConditions.FALSE;
 
         [ReflectorProperty("AppendTaskResult", Required = false)]
         public bool AppendTaskResult { get; set; } = false;
 
         [ReflectorProperty("MessageAppendTaskResult", Required = false)]
-        public string TaskResultFilter { get; set; }
+        public string TaskResultFilter { get; set; } = string.Empty;
 
         protected override bool Execute(IIntegrationResult result)
         {
-            if (SendCondition == "ALL" || SendCondition == result.Succeeded.ToString().ToUpper())
+            if (SendCondition == SendConditions.ALL || SendCondition.ToString() == result.Succeeded.ToString().ToUpper())
             {
                 string message = GetMessage(result);
                 if (!string.IsNullOrEmpty(message))
@@ -120,6 +121,11 @@ namespace TqLib.ccnet.Core.Publishers
                 return sb.ToString();
             }
             return Message;
+        }
+
+        public enum SendConditions
+        {
+            ALL, TRUE, FALSE
         }
     }
 }

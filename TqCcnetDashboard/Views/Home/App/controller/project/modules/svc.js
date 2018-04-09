@@ -54,9 +54,7 @@
         function onTaskWatch() {
             $scope.$watch('task["@type"]', function (newVal, oldVal) {
                 if (newVal) {
-                    if ((newVal !== oldVal) || forceTemplateLoad) {
-                        $scope.templateUrl = pathUtil.GetTemplate('/project/plugins.default.tmpl.html' + "?_=" + newVal);
-                    }
+                    $scope.templateUrl = pathUtil.GetTemplate('/project/plugins.default.tmpl.html' + "?_=" + newVal);
                 } else {
                     $scope.templateUrl = undefined;
                 }
@@ -93,7 +91,7 @@
                 pluginType: items.pluginType
             }
             if (items.mode == 'mod') {
-                $scope.task = items.task;
+                $scope.task = items.item;
             }
             setPluginValue();
             onTaskWatch();

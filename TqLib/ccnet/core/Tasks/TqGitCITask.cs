@@ -44,32 +44,32 @@ namespace TqLib.ccnet.Core.Tasks
             builder.Password = string.Empty;
             gitUrl = builder.Uri.ToString();
 
-            result.AddTaskResult("git clone");
+            result.AddMessage("git clone");
             GitClone();
 
-            result.AddTaskResult($"git checkout {Branch}");
+            result.AddMessage($"git checkout {Branch}");
             Checkout();
 
-            result.AddTaskResult("git pull");
+            result.AddMessage("git pull");
             var pullResult = Pull();
-            result.AddTaskResult("status: " + pullResult.Status.ToString());
+            result.AddMessage("status: " + pullResult.Status.ToString());
 
-            result.AddTaskResult($"git fetch origin/{StartBranch}");
+            result.AddMessage($"git fetch origin/{StartBranch}");
             FetchStartBranch();
 
-            result.AddTaskResult($"git diff origin/{StartBranch}");
+            result.AddMessage($"git diff origin/{StartBranch}");
             var diffList = GetDiffList();
 
             if (diffList.Count > 0)
             {
-                result.AddTaskResult($"git merge origin/{StartBranch}");
+                result.AddMessage($"git merge origin/{StartBranch}");
                 var mergeResult = Merge();
                 if (mergeResult.Status == MergeStatus.Conflicts)
                 {
                     var conflictsList = GetConflictsList();
-                    result.AddTaskResult($"[TqGitCTask] Conflicts {Branch} <- {StartBranch}");
-                    result.AddTaskResult("Conflicts Count: " + conflictsList.Count);
-                    result.AddTaskResult("git reset");
+                    result.AddMessage($"[TqGitCTask] Conflicts {Branch} <- {StartBranch}");
+                    result.AddMessage("Conflicts Count: " + conflictsList.Count);
+                    result.AddMessage("git reset");
                     Reset();
                     return false;
                 }
@@ -77,13 +77,13 @@ namespace TqLib.ccnet.Core.Tasks
                 {
                     if (CheckOnly)
                     {
-                        result.AddTaskResult("git reset");
+                        result.AddMessage("git reset");
                         Reset();
                     }
                     else
                     {
-                        result.AddTaskResult($"git push");
-                        result.AddTaskResult($"[TqGitCTask] merge success {Branch} <- {StartBranch}");
+                        result.AddMessage($"git push");
+                        result.AddMessage($"[TqGitCTask] merge success {Branch} <- {StartBranch}");
                         Push();
                     }
                 }
