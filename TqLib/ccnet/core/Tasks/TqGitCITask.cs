@@ -25,21 +25,26 @@ namespace TqLib.ccnet.Core.Tasks
         [ReflectorProperty("CheckOnly")]
         public bool CheckOnly { get; set; } = false;
 
+        [ReflectorProperty("UserId")]
+        public string UserId { get; set; } = string.Empty;
+
+        [ReflectorProperty("UserPassword")]
+        public string UserPassword { get; set; } = string.Empty;
+
         [ReflectorProperty("UserName", Required = false)]
         public string UserName { get; set; } = "TqGitCITask";
 
         [ReflectorProperty("UserEmail", Required = false)]
         public string UserEmail { get; set; } = "TqGitCITask";
 
-        private string repoName, gitDirectory, gitUrl, gitUserName, gitUserPassword;
+        private string repoName, gitDirectory, gitUrl;
 
         protected override bool Execute(IIntegrationResult result)
         {
             repoName = GetGitRepositoryName();
             gitDirectory = result.BaseFromWorkingDirectory(repoName);
+
             var builder = new UriBuilder(GitRepository);
-            gitUserName = builder.UserName;
-            gitUserPassword = builder.Password;
             builder.UserName = string.Empty;
             builder.Password = string.Empty;
             gitUrl = builder.Uri.ToString();
@@ -259,7 +264,7 @@ namespace TqLib.ccnet.Core.Tasks
 
         private CredentialsHandler GetCredentialsHandler()
         {
-            return (_url, _user, _cred) => new UsernamePasswordCredentials { Username = gitUserName, Password = gitUserPassword };
+            return (_url, _user, _cred) => new UsernamePasswordCredentials { Username = UserName, Password = UserPassword };
         }
 
         private Signature GetSignature()
