@@ -83,8 +83,21 @@ namespace TqLib.ccnet.Core.Tasks
                     else
                     {
                         result.AddMessage($"git push");
-                        result.AddMessage($"[TqGitCTask] merge success {Branch} <- {StartBranch}");
-                        Push();
+                        bool pushSuccess = false;
+                        try
+                        {
+                            Push();
+                            pushSuccess = true;
+                        }
+                        catch (Exception ex)
+                        {
+                            Reset();
+                            throw ex;
+                        }
+                        finally
+                        {
+                            result.AddMessage($"[TqGitCTask] merge {Branch} <- {StartBranch} {(pushSuccess ? "Success" : "Push Exception")}");
+                        }
                     }
                 }
             }
@@ -134,7 +147,6 @@ namespace TqLib.ccnet.Core.Tasks
                     {
                         var newBranch = repo.CreateBranch(Branch, remoteBranch.Tip);
                         repo.Branches.Update(newBranch, t => t.TrackedBranch = remoteBranch.CanonicalName);
-                        //repo.Branches.Update(newBranch, t => t.TrackedBranch = remoteBranch.TrackedBranch.);
                         branch = repo.Branches[Branch];
                     }
                 }

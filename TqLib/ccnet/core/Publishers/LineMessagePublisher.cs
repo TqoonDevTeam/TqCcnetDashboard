@@ -113,7 +113,7 @@ namespace TqLib.ccnet.Core.Publishers
                         msg = (taskResult as string);
                     }
 
-                    if (msg.StartsWith(TaskResultFilter))
+                    if (msg.Contains(TaskResultFilter))
                     {
                         sb.AppendLine(msg);
                     }

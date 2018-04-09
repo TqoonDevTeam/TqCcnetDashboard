@@ -16,6 +16,7 @@ namespace TqLib.zTest.ccnet.Core.Tasks
             var result = new IntegrationResult("test", @"D:\Test\CI", @"D:\Test\CI", new IntegrationRequest(BuildCondition.ForceBuild, "", ""), new IntegrationSummary(IntegrationStatus.Success, "", "", DateTime.Now));
 
             TqGitCITask task = new TqGitCITask();
+            //96d65458a1c52647a1ec5633b010ec08f317382f
             task.GitRepository = "https://a3c9a3a71d88ead6dddf9562e5d75b90d9bfc7e5@github.com/TqoonDevTeam/TqoonLibraries.git";
 
             task.Branch = "group1";
