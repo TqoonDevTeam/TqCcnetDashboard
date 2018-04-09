@@ -25,11 +25,11 @@ namespace TqLib.ccnet.Core.Tasks
         [ReflectorProperty("CheckOnly")]
         public bool CheckOnly { get; set; } = false;
 
-        [ReflectorProperty("UserId")]
-        public string UserId { get; set; } = string.Empty;
+        [ReflectorProperty("GitUserId")]
+        public string GitUserId { get; set; } = string.Empty;
 
-        [ReflectorProperty("UserPassword")]
-        public string UserPassword { get; set; } = string.Empty;
+        [ReflectorProperty("GitUserPassword")]
+        public string GitUserPassword { get; set; } = string.Empty;
 
         [ReflectorProperty("UserName", Required = false)]
         public string UserName { get; set; } = "TqGitCITask";
@@ -87,21 +87,24 @@ namespace TqLib.ccnet.Core.Tasks
                     }
                     else
                     {
-                        result.AddMessage($"git push");
-                        bool pushSuccess = false;
-                        try
+                        if (!(mergeResult.Commit == null || mergeResult.Status == MergeStatus.UpToDate))
                         {
-                            Push();
-                            pushSuccess = true;
-                        }
-                        catch (Exception ex)
-                        {
-                            Reset();
-                            throw ex;
-                        }
-                        finally
-                        {
-                            result.AddMessage($"[TqGitCTask] merge {Branch} <- {StartBranch} {(pushSuccess ? "Success" : "Push Exception")}");
+                            result.AddMessage($"git push");
+                            bool pushSuccess = false;
+                            try
+                            {
+                                Push();
+                                pushSuccess = true;
+                            }
+                            catch (Exception ex)
+                            {
+                                Reset();
+                                throw ex;
+                            }
+                            finally
+                            {
+                                result.AddMessage($"[TqGitCTask] merge {Branch} <- {StartBranch} {(pushSuccess ? "Success" : "Push Exception")}");
+                            }
                         }
                     }
                 }
@@ -264,7 +267,7 @@ namespace TqLib.ccnet.Core.Tasks
 
         private CredentialsHandler GetCredentialsHandler()
         {
-            return (_url, _user, _cred) => new UsernamePasswordCredentials { Username = UserId, Password = UserPassword };
+            return (_url, _user, _cred) => new UsernamePasswordCredentials { Username = GitUserId, Password = GitUserPassword };
         }
 
         private Signature GetSignature()

@@ -1,4 +1,8 @@
 ﻿using NUnit.Framework;
+using System;
+using ThoughtWorks.CruiseControl.Core;
+using ThoughtWorks.CruiseControl.Remote;
+using TqLib.ccnet.Core.Tasks;
 
 namespace TqLib.zTest.ccnet.Core.Tasks
 {
@@ -6,16 +10,20 @@ namespace TqLib.zTest.ccnet.Core.Tasks
     public class TqGitCITaskTest
     {
         [Test]
-        //[Ignore("로컬전용")]
+        [Ignore("로컬전용")]
         public void TqGitCITask()
         {
-            //var result = new IntegrationResult("test", @"D:\Test\CI", @"D:\Test\CI", new IntegrationRequest(BuildCondition.ForceBuild, "", ""), new IntegrationSummary(IntegrationStatus.Success, "", "", DateTime.Now));
-            //task.GitRepository = "https://github.com/TqoonDevTeam/TqoonLibraries.git";
+            var result = new IntegrationResult("test", @"D:\Test\CI", @"D:\Test\CI", new IntegrationRequest(BuildCondition.ForceBuild, "", ""), new IntegrationSummary(IntegrationStatus.Success, "", "", DateTime.Now));
 
-            //task.Branch = "group1";
-            //task.StartBranch = "dev";
+            TqGitCITask task = new TqGitCITask();
+            task.GitRepository = "https://github.com/TqoonDevTeam/TqoonLibraries.git";
+            task.Branch = "dev";
+            task.StartBranch = "master";
 
-            //task.Run(result);
+            task.GitUserId = "";
+            task.GitUserPassword = "";
+
+            task.Run(result);
         }
     }
 }
