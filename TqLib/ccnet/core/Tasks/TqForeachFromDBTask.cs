@@ -1,6 +1,7 @@
 ﻿using Exortech.NetReflector;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using ThoughtWorks.CruiseControl.Core;
 using ThoughtWorks.CruiseControl.Core.Tasks;
 using ThoughtWorks.CruiseControl.Remote;
@@ -18,6 +19,7 @@ namespace TqLib.ccnet.Core.Tasks
         [ReflectorProperty("connectionString")]
         public string ConnectionString { get; set; }
 
+        [DataType(DataType.MultilineText)]
         [ReflectorProperty("query")]
         public string Query { get; set; }
 

@@ -1,4 +1,5 @@
 ﻿using Exortech.NetReflector;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -17,6 +18,7 @@ namespace TqLib.ccnet.Core.Publishers
         [ReflectorProperty("Token")]
         public string Token { get; set; }
 
+        [DataType(DataType.MultilineText)]
         [ReflectorProperty("Message", Required = false)]
         public string Message { get; set; }
 

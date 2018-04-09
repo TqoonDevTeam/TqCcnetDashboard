@@ -3,8 +3,19 @@
     <ng-include src="reflectorTypeCtrl.getSrc(item)"></ng-include>
 </div>
 <script type="text/ng-template" id="reflectorTypeDirective.default.tmpl.html">
-    <div class="col-sm-10">
+    <div class="col-sm-10" ng-if="item.attr.DataType.DataType === 'Text'">
         <input class="form-control" type="text" name="{{item.attr.Name}}" ng-model="reflectorTypeCtrl.model[item.attr.Name]" ng-required="item.attr.Required" />
+    </div>
+    <div class="col-sm-10" ng-if="item.attr.DataType.DataType === 'MultilineText'">
+        <textarea class="form-control" name="{{item.attr.Name}}" ng-model="reflectorTypeCtrl.model[item.attr.Name]" style="min-height:150px" ng-required="item.attr.Required"></textarea>
+    </div>
+    <div class="col-sm-10" ng-if="item.attr.DataType.DataType === 'Custom'">
+        <select class="form-control"
+                ng-if="item.attr.DataType.CustomDataType === 'Select'"
+                name="{{item.attr.Name}}"
+                ng-options="opt as opt for opt in item.attr.DataType.Enums"
+                ng-model="reflectorTypeCtrl.model[item.attr.Name]"
+                ng-required="item.attr.Required"></select>
     </div>
 </script>
 <script type="text/ng-template" id="reflectorTypeDirective.PrivateString.tmpl.html">

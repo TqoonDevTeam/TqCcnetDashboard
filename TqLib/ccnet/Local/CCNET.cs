@@ -12,7 +12,7 @@ namespace TqLib.ccnet.Local
 {
     public class CCNET : IDisposable
     {
-        private static PluginTypeInfo[] pluginReflectorTypes, taskPluginReflectorTypes;
+        private static PluginTypeInfo[] pluginReflectorTypes, taskPluginReflectorTypes, publishPluginsReflectorTypes;
         private static ICruiseServerClientFactory fac = new CruiseServerClientFactory();
 
         public static PluginTypeInfo[] PluginReflectorTypes
@@ -63,6 +63,18 @@ namespace TqLib.ccnet.Local
                      }).ToArray();
                 }
                 return taskPluginReflectorTypes;
+            }
+        }
+
+        public static PluginTypeInfo[] PublishPluginsReflectorTypes
+        {
+            get
+            {
+                if (publishPluginsReflectorTypes == null)
+                {
+                    publishPluginsReflectorTypes = PluginReflectorTypes.Where(t => t.Namespace.EndsWith("Publishers")).ToArray();
+                }
+                return publishPluginsReflectorTypes;
             }
         }
 

@@ -1,6 +1,6 @@
 ﻿define(['app'], function (app) {
     'use strict';
-    app.controller('project.step4.tasks.TqNunit.customctrl', ['$scope', function ($scope) {
+    app.controller('project.plugins.TqNunit.customctrl', ['$scope', function ($scope) {
         $scope.custom.attrs_force_show = ['excludedCategories', 'includedCategories'];
         $scope.custom.attrs_force_required = [];
         $scope.custom.template = {

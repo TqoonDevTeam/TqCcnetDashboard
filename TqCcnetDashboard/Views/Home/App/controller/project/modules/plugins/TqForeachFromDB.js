@@ -1,6 +1,6 @@
 ﻿define(['app'], function (app) {
     'use strict';
-    app.controller('project.step4.tasks.TqForeachFromDB.customctrl', ['$scope', '$uibModal', 'pathUtil', function ($scope, $uibModal, pathUtil) {
+    app.controller('project.plugins.TqForeachFromDB.customctrl', ['$scope', '$uibModal', 'pathUtil', function ($scope, $uibModal, pathUtil) {
         $scope.custom.attrs_force_show = ['tasks'];
         $scope.custom.attrs_force_required = [];
         $scope.custom.template = {

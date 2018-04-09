@@ -14,7 +14,18 @@ namespace TqCcnetDashboard.Controllers.Api
                 return type.PropertyInfos.Select(t => new
                 {
                     propTypeName = t.PropertyTypeName,
-                    attr = new { t.Attribute.Description, t.Attribute.Name, t.Attribute.Required }
+                    attr = new
+                    {
+                        t.Attribute.Description,
+                        t.Attribute.Name,
+                        t.Attribute.Required,
+                        DataType = new
+                        {
+                            t.Attribute.DataType.CustomDataType,
+                            t.Attribute.DataType.DataType,
+                            t.Attribute.DataType.Enums
+                        }
+                    }
                 });
             }
             else

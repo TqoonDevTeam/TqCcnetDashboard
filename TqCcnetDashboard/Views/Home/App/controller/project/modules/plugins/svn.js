@@ -1,6 +1,6 @@
 ﻿define(['app'], function (app) {
     'use strict';
-    app.controller('project.step4.tasks.svn.customctrl', ['$scope', 'pathUtil', function ($scope, pathUtil) {
+    app.controller('project.plugins.svn.customctrl', ['$scope', 'pathUtil', function ($scope, pathUtil) {
         $scope.custom.attrs_force_show = ['trunkUrl', 'username', 'password', 'forceUpdate', 'cleanCopy', 'cleanUp', 'workingDirectory'];
         $scope.custom.attrs_force_required = ['trunkUrl', 'username', 'password', 'forceUpdate', 'cleanCopy', 'cleanUp', 'workingDirectory'];
         $scope.custom.template = {};

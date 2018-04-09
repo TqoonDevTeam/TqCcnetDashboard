@@ -28,7 +28,7 @@ define(function () {
                     return '/Views/Home/App/views/' + name;
                 },
                 GetCustomTaskJsPath: function (name) {
-                    return '/Views/Home/App/controller/project/modules/tasks/' + name + '.js';
+                    return '/Views/Home/App/controller/project/modules/plugins/' + name + '.js';
                 }
             };
         }

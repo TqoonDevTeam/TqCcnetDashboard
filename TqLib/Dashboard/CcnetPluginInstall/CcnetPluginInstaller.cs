@@ -80,7 +80,9 @@ namespace TqLib.Dashboard.CcnetPluginInstall
                 foreach (var srcPluginReferencePath in package.PluginReferenceFiles)
                 {
                     pluginReferenceCopyPath = GetPluginReferenceCopyPath(srcPluginPath, srcPluginReferencePath);
-                    File.Copy(srcPluginReferencePath, pluginReferenceCopyPath);
+                    var dir = new DirectoryInfo(Path.GetDirectoryName(pluginReferenceCopyPath));
+                    if (!dir.Exists) dir.Create();
+                    File.Copy(srcPluginReferencePath, pluginReferenceCopyPath, true);
                 }
             }
         }

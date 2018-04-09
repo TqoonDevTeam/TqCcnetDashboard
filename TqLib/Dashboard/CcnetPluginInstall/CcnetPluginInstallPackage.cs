@@ -25,7 +25,7 @@ namespace TqLib.Dashboard.CcnetPluginInstall
 
         private IList<string> GetAllFiles()
         {
-            return Directory.GetFiles(PluginSourceDirectory, "*.*").Where(file => AllowExtensions.Any(extension => extension.Equals(Path.GetExtension(file), StringComparison.OrdinalIgnoreCase))).ToList();
+            return Directory.GetFiles(PluginSourceDirectory, "*.*", SearchOption.AllDirectories).Where(file => AllowExtensions.Any(extension => extension.Equals(Path.GetExtension(file), StringComparison.OrdinalIgnoreCase))).ToList();
         }
 
         private IList<string> GetPluginFiles()

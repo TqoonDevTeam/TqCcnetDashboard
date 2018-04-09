@@ -1,11 +1,11 @@
 ﻿define(['app'], function (app) {
     'use strict';
-    app.controller('project.step4.tasks.TqRsync.customctrl', ['$scope', function ($scope) {
-        $scope.custom.attrs_force_show = ['workingDirectory', 'timeout'];
+    app.controller('project.plugins.TqText.customctrl', ['$scope', function ($scope) {
+        $scope.custom.attrs_force_show = ['saveEncoding', 'saveCondition'];
         $scope.custom.attrs_force_required = [];
         $scope.custom.template = {};
         $scope.custom.defaultValue = {
-            options: '-avrzP --chmod=ugo=rwX'
+            saveEncoding: 'UTF-8', saveCondition: 'IfChanged'
         }
         $scope.custom.init = function () { }
     }]);

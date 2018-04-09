@@ -1,5 +1,6 @@
 ﻿using Exortech.NetReflector;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 
@@ -40,6 +41,7 @@ namespace TqLib.ccnet.Utils
                 Attribute.Name = attrData.ConstructorArguments[0].Value.ToString();
                 Attribute.Description = attrData.NamedArguments.FirstOrDefault(t => t.MemberName == "Description").TypedValue.Value?.ToString() ?? string.Empty;
                 Attribute.Required = (bool)(attrData.NamedArguments.FirstOrDefault(t => t.MemberName == "Required").TypedValue.Value ?? true);
+                Attribute.DataType = new AttributeData.DataTypeData(prop);
             }
 
             [Serializable]
@@ -48,6 +50,31 @@ namespace TqLib.ccnet.Utils
                 public string Description { get; set; }
                 public string Name { get; set; }
                 public bool Required { get; set; }
+                public DataTypeData DataType { get; set; }
+
+                [Serializable]
+                public class DataTypeData
+                {
+                    public string CustomDataType { get; set; } = string.Empty;
+                    public string DataType { get; set; } = "Text";
+
+                    public string[] Enums { get; set; } = new string[] { };
+
+                    public DataTypeData(PropertyInfo prop)
+                    {
+                        var attr = prop.GetCustomAttribute<DataTypeAttribute>();
+                        if (attr != null)
+                        {
+                            CustomDataType = attr.CustomDataType;
+                            DataType = attr.DataType.ToString();
+                        }
+
+                        if (prop.PropertyType.IsEnum)
+                        {
+                            Enums = Enum.GetNames(prop.PropertyType);
+                        }
+                    }
+                }
             }
         }
     }

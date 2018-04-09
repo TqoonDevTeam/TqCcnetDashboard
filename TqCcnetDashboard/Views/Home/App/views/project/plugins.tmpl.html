@@ -1,0 +1,36 @@
+﻿<form name="frmTaskAdd" novalidate form-check>
+    <div class="modal-header">
+        <h3 class="modal-title">Task 추가</h3>
+    </div>
+    <div class="modal-body">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label class="control-label col-sm-2">Task Plugin</label>
+                <div class="col-sm-10">
+                    <ui-select name="type" ng-disabled="config.mode === 'mod'" ng-model="task['@type']" required>
+                        <ui-select-match>
+                            <span>{{$select.selected}}</span>
+                        </ui-select-match>
+                        <ui-select-choices repeat="item in (ctrl.getPlugins() | filter:$select.search) track by $index">
+                            <span>{{item}}</span>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+            </div>
+            <ng-include src="templateUrl"></ng-include>
+        </div>
+        <pre ng-if="ctrl.val.toggle.task_debug">{{task|json}}</pre>
+    </div>
+    <div class="modal-footer">
+        <div class="pull-left">
+            <button type="button" class="btn btn-default" ng-model="ctrl.val.toggle.all_attrs" uib-btn-checkbox>
+                All Attrs {{ctrl.val.toggle.all_attrs ? 'ON' : 'OFF'}}
+            </button>
+            <button type="button" class="btn btn-default" ng-model="ctrl.val.toggle.task_debug" uib-btn-checkbox>
+                TaskDebug {{ctrl.val.toggle.task_debug ? 'ON' : 'OFF'}}
+            </button>
+        </div>
+        <button type="button" class="btn btn-default" ng-click="ctrl.evt.cancel()">취소</button>
+        <button type="submit" class="btn btn-primary" ng-click="ctrl.evt.ok()">확인</button>
+    </div>
+</form>

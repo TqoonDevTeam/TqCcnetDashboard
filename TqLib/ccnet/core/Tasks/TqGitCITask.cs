@@ -122,8 +122,7 @@ namespace TqLib.ccnet.Core.Tasks
         {
             using (var repo = GetRepository())
             {
-                var branch = repo.Branches[Branch];
-                return Commands.Checkout(repo, branch);
+                return Commands.Checkout(repo, Branch);
             }
         }
 

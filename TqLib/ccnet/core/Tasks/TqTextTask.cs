@@ -1,4 +1,5 @@
 ﻿using Exortech.NetReflector;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Text;
 using ThoughtWorks.CruiseControl.Core;
@@ -9,6 +10,7 @@ namespace TqLib.ccnet.Core.Tasks
     [ReflectorType("TqText", Description = "TqText")]
     public class TqTextTask : TaskBase
     {
+        [DataType(DataType.MultilineText)]
         [ReflectorProperty("source")]
         public string Source { get; set; } = string.Empty;
 
@@ -18,6 +20,7 @@ namespace TqLib.ccnet.Core.Tasks
         [ReflectorProperty("saveEncoding", Required = false)]
         public string SaveEncoding { get; set; } = "UTF-8";
 
+        [DataType("Select")]
         [ReflectorProperty("saveCondition", Required = false)]
         public SaveCondition FileSaveCondition { get; set; } = SaveCondition.IfChanged;
 
