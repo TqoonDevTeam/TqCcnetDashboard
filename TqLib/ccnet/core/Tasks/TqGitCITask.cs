@@ -264,7 +264,7 @@ namespace TqLib.ccnet.Core.Tasks
 
         private CredentialsHandler GetCredentialsHandler()
         {
-            return (_url, _user, _cred) => new UsernamePasswordCredentials { Username = UserName, Password = UserPassword };
+            return (_url, _user, _cred) => new UsernamePasswordCredentials { Username = UserId, Password = UserPassword };
         }
 
         private Signature GetSignature()
