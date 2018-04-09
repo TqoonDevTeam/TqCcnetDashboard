@@ -48,7 +48,7 @@ namespace TqLib.ccnet.Core.Tasks
             GitClone();
 
             result.AddMessage($"git checkout {Branch}");
-            Checkout();
+            CheckoutOrSwitch();
 
             result.AddMessage("git pull");
             var pullResult = Pull();
@@ -115,14 +115,30 @@ namespace TqLib.ccnet.Core.Tasks
             {
                 return Repository.Clone(gitUrl, gitDirectory, GetCloneOptions());
             }
+            else
+            {
+                FetchOrigin();
+            }
             return string.Empty;
         }
 
-        private Branch Checkout()
+        private Branch CheckoutOrSwitch()
         {
             using (var repo = GetRepository())
             {
-                return Commands.Checkout(repo, Branch);
+                Branch branch = repo.Branches[Branch];
+                if (branch == null)
+                {
+                    var remoteBranch = repo.Branches["origin/" + Branch];
+                    if (remoteBranch.IsRemote)
+                    {
+                        var newBranch = repo.CreateBranch(Branch, remoteBranch.Tip);
+                        repo.Branches.Update(newBranch, t => t.TrackedBranch = remoteBranch.CanonicalName);
+                        //repo.Branches.Update(newBranch, t => t.TrackedBranch = remoteBranch.TrackedBranch.);
+                        branch = repo.Branches[Branch];
+                    }
+                }
+                return Commands.Checkout(repo, branch);
             }
         }
 
@@ -155,6 +171,19 @@ namespace TqLib.ccnet.Core.Tasks
             using (var repo = GetRepository())
             {
                 return repo.Diff.Compare<TreeChanges>(repo.Head.Tip.Tree, repo.Branches["origin/" + StartBranch].Tip.Tree).ToList();
+            }
+        }
+
+        private void FetchOrigin()
+        {
+            using (var repo = GetRepository())
+            {
+                foreach (Remote remote in repo.Network.Remotes)
+                {
+                    string logMessage = "";
+                    IEnumerable<string> refSpecs = remote.FetchRefSpecs.Select(x => x.Specification);
+                    Commands.Fetch(repo, remote.Name, refSpecs, GetFetchOptions(), logMessage);
+                }
             }
         }
 

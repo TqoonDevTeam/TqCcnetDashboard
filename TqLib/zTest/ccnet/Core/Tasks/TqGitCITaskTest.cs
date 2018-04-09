@@ -10,16 +10,16 @@ namespace TqLib.zTest.ccnet.Core.Tasks
     public class TqGitCITaskTest
     {
         [Test]
-        [Ignore("로컬전용")]
+        //[Ignore("로컬전용")]
         public void TqGitCITask()
         {
-            var result = new IntegrationResult("test", @"D:\Test", @"D:\Test", new IntegrationRequest(BuildCondition.ForceBuild, "", ""), new IntegrationSummary(IntegrationStatus.Success, "", "", DateTime.Now));
+            var result = new IntegrationResult("test", @"D:\Test\CI", @"D:\Test\CI", new IntegrationRequest(BuildCondition.ForceBuild, "", ""), new IntegrationSummary(IntegrationStatus.Success, "", "", DateTime.Now));
 
             TqGitCITask task = new TqGitCITask();
-            task.GitRepository = "https://github.com/wisdomcdh/Test.git";
+            task.GitRepository = "https://a3c9a3a71d88ead6dddf9562e5d75b90d9bfc7e5@github.com/TqoonDevTeam/TqoonLibraries.git";
 
-            task.Branch = "dev";
-            task.StartBranch = "master";
+            task.Branch = "group1";
+            task.StartBranch = "dev";
 
             task.Run(result);
         }
