@@ -133,6 +133,9 @@ namespace TqLib.ccnet.Core.Tasks
                 if (branch == null)
                 {
                     branch = repo.CreateBranch(Branch, $"origin/{Branch}");
+                    var remoteBranch = repo.Branches[$"origin/{Branch}"];
+                    repo.Branches.Update(branch, b => b.UpstreamBranch = remoteBranch.UpstreamBranchCanonicalName);
+                    branch = repo.Branches[Branch];
                 }
                 return Commands.Checkout(repo, branch);
             }
