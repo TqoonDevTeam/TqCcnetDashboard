@@ -132,13 +132,7 @@ namespace TqLib.ccnet.Core.Tasks
                 Branch branch = repo.Branches[Branch];
                 if (branch == null)
                 {
-                    var remoteBranch = repo.Branches["origin/" + Branch];
-                    if (remoteBranch.IsRemote)
-                    {
-                        var newBranch = repo.CreateBranch(Branch, remoteBranch.Tip);
-                        repo.Branches.Update(newBranch, t => t.TrackedBranch = remoteBranch.CanonicalName);
-                        branch = repo.Branches[Branch];
-                    }
+                    branch = repo.CreateBranch(Branch, $"origin/{Branch}");
                 }
                 return Commands.Checkout(repo, branch);
             }

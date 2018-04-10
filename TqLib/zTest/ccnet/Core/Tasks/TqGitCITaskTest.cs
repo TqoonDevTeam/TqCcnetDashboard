@@ -13,11 +13,11 @@ namespace TqLib.zTest.ccnet.Core.Tasks
         [Ignore("로컬전용")]
         public void TqGitCITask()
         {
-            var result = new IntegrationResult("test", @"D:\Test\CI", @"D:\Test\CI", new IntegrationRequest(BuildCondition.ForceBuild, "", ""), new IntegrationSummary(IntegrationStatus.Success, "", "", DateTime.Now));
+            var result = new IntegrationResult("test", @"D:\Test\CI\group1", @"D:\Test\CI\group1", new IntegrationRequest(BuildCondition.ForceBuild, "", ""), new IntegrationSummary(IntegrationStatus.Success, "", "", DateTime.Now));
 
             TqGitCITask task = new TqGitCITask();
             task.GitRepository = "https://github.com/TqoonDevTeam/TqoonLibraries.git";
-            task.Branch = "group2";
+            task.Branch = "group3";
             task.StartBranch = "dev";
 
             task.GitUserId = "";
