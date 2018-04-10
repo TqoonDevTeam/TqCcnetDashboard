@@ -17,8 +17,8 @@ namespace TqLib.zTest.ccnet.Core.Tasks
 
             TqGitCITask task = new TqGitCITask();
             task.GitRepository = "https://github.com/TqoonDevTeam/TqoonLibraries.git";
-            task.Branch = "dev";
-            task.StartBranch = "master";
+            task.Branch = "group2";
+            task.StartBranch = "dev";
 
             task.GitUserId = "";
             task.GitUserPassword = "";

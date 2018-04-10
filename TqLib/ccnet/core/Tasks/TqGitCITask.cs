@@ -49,56 +49,43 @@ namespace TqLib.ccnet.Core.Tasks
             builder.Password = string.Empty;
             gitUrl = builder.Uri.ToString();
 
-            result.AddMessage("git clone");
-            GitClone();
-
-            result.AddMessage($"git checkout {Branch}");
-            CheckoutOrSwitch();
-
-            result.AddMessage("git pull");
-            var pullResult = Pull();
-            result.AddMessage("status: " + pullResult.Status.ToString());
-
-            result.AddMessage($"git fetch origin/{StartBranch}");
-            FetchStartBranch();
-
-            result.AddMessage($"git diff origin/{StartBranch}");
-            var diffList = GetDiffList();
-
+            GitClone(result);
+            Fetch(result);
+            CheckoutOrSwitch(result);
+            Pull(result);
+            var diffList = GetDiffList(result, $"origin/{StartBranch}");
             if (diffList.Count > 0)
             {
                 result.AddMessage($"git merge origin/{StartBranch}");
-                var mergeResult = Merge();
+                var mergeResult = Merge(result);
                 if (mergeResult.Status == MergeStatus.Conflicts)
                 {
                     var conflictsList = GetConflictsList();
-                    result.AddMessage($"[TqGitCTask] Conflicts {Branch} <- {StartBranch}");
-                    result.AddMessage("Conflicts Count: " + conflictsList.Count);
-                    result.AddMessage("git reset");
-                    Reset();
+                    result.AddMessage($"[TqGitCTask] Conflicts {Branch} <- {StartBranch}, ConflictsCount {conflictsList.Count}");
+                    Reset(result);
                     return false;
                 }
                 else
                 {
+                    result.AddMessage($"CheckOnly {CheckOnly}");
                     if (CheckOnly)
                     {
-                        result.AddMessage("git reset");
-                        Reset();
+                        Reset(result);
                     }
                     else
                     {
                         if (!(mergeResult.Commit == null || mergeResult.Status == MergeStatus.UpToDate))
                         {
-                            result.AddMessage($"git push");
                             bool pushSuccess = false;
                             try
                             {
-                                Push();
+                                Merge(result, true);
+                                Push(result);
                                 pushSuccess = true;
                             }
                             catch (Exception ex)
                             {
-                                Reset();
+                                Reset(result);
                                 throw ex;
                             }
                             finally
@@ -112,39 +99,34 @@ namespace TqLib.ccnet.Core.Tasks
             return true;
         }
 
-        private IList<Conflict> GetConflictsList()
+        private string GitClone(IIntegrationResult result)
         {
-            using (var repo = GetRepository())
-            {
-                var conflictList = repo.Index.Conflicts.ToList();
-                return conflictList;
-            }
-        }
-
-        private void Reset()
-        {
-            using (var repo = GetRepository())
-            {
-                Branch origin = repo.Branches[$"origin/{Branch}"];
-                repo.Reset(ResetMode.Hard, origin.Tip);
-            }
-        }
-
-        private string GitClone()
-        {
+            result.AddMessage($"git clone {gitUrl} {gitDirectory}");
             if (!Directory.Exists(gitDirectory))
             {
                 return Repository.Clone(gitUrl, gitDirectory, GetCloneOptions());
             }
-            else
-            {
-                FetchOrigin();
-            }
             return string.Empty;
         }
 
-        private Branch CheckoutOrSwitch()
+        private void Fetch(IIntegrationResult result)
         {
+            result.AddMessage("git fetch origin");
+            using (var repo = GetRepository())
+            {
+                string logMessage = "";
+                foreach (Remote remote in repo.Network.Remotes)
+                {
+                    IEnumerable<string> refSpecs = remote.FetchRefSpecs.Select(x => x.Specification);
+                    Commands.Fetch(repo, remote.Name, refSpecs, GetFetchOptions(), logMessage);
+                    result.AddMessage(logMessage);
+                }
+            }
+        }
+
+        private Branch CheckoutOrSwitch(IIntegrationResult result)
+        {
+            result.AddMessage($"git checkout {Branch}");
             using (var repo = GetRepository())
             {
                 Branch branch = repo.Branches[Branch];
@@ -162,48 +144,63 @@ namespace TqLib.ccnet.Core.Tasks
             }
         }
 
-        private MergeResult Pull()
+        private MergeResult Pull(IIntegrationResult result)
+        {
+            result.AddMessage("git pull");
+            MergeResult mergeResult;
+            using (var repo = GetRepository())
+            {
+                mergeResult = Commands.Pull(repo, GetSignature(), GetPullOptions());
+                result.AddMessage($"pull result : {mergeResult.Status}");
+            }
+            return mergeResult;
+        }
+
+        private IList<TreeEntryChanges> GetDiffList(IIntegrationResult result, string target)
+        {
+            result.AddMessage($"git diff {target}");
+            IList<TreeEntryChanges> diffList;
+            using (var repo = GetRepository())
+            {
+                diffList = repo.Diff.Compare<TreeChanges>(repo.Head.Tip.Tree, repo.Branches[target].Tip.Tree).ToList();
+            }
+            result.AddMessage($"diff list : {Environment.NewLine}{string.Join(Environment.NewLine, diffList.Select(t => t.Path))}");
+            return diffList;
+        }
+
+        private MergeResult Merge(IIntegrationResult result, bool commitOnSuccess = false)
         {
             using (var repo = GetRepository())
             {
-                return Commands.Pull(repo, GetSignature(), GetPullOptions());
+                return repo.Merge(repo.Branches["origin/" + StartBranch], GetSignature(), new MergeOptions() { CommitOnSuccess = commitOnSuccess });
             }
         }
 
-        private MergeResult Merge()
+        private void Reset(IIntegrationResult result)
         {
+            result.AddMessage("git reset");
             using (var repo = GetRepository())
             {
-                return repo.Merge(repo.Branches["origin/" + StartBranch], GetSignature());
+                Branch origin = repo.Branches[$"origin/{Branch}"];
+                repo.Reset(ResetMode.Hard, origin.Tip);
             }
         }
 
-        private void Push()
+        private void Push(IIntegrationResult result)
         {
+            result.AddMessage("git push");
             using (var repo = GetRepository())
             {
                 repo.Network.Push(repo.Branches["dev"], GetPushOptions());
             }
         }
 
-        private IList<TreeEntryChanges> GetDiffList()
+        private IList<Conflict> GetConflictsList()
         {
             using (var repo = GetRepository())
             {
-                return repo.Diff.Compare<TreeChanges>(repo.Head.Tip.Tree, repo.Branches["origin/" + StartBranch].Tip.Tree).ToList();
-            }
-        }
-
-        private void FetchOrigin()
-        {
-            using (var repo = GetRepository())
-            {
-                foreach (Remote remote in repo.Network.Remotes)
-                {
-                    string logMessage = "";
-                    IEnumerable<string> refSpecs = remote.FetchRefSpecs.Select(x => x.Specification);
-                    Commands.Fetch(repo, remote.Name, refSpecs, GetFetchOptions(), logMessage);
-                }
+                var conflictList = repo.Index.Conflicts.ToList();
+                return conflictList;
             }
         }
 
