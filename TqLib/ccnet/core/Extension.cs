@@ -6,7 +6,7 @@ namespace TqLib.ccnet.Core
     {
         public static void AddMessage(this IIntegrationResult result, string message)
         {
-            result.AddTaskResult(System.Environment.NewLine + message);
+            result.AddTaskResult(message + System.Environment.NewLine);
         }
     }
 }

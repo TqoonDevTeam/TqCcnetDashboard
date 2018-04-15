@@ -1,28 +1,8 @@
 ﻿define(['app', 'guid', 'urijs/URI',
 'controller/project/modules/svc'], function (app, guid, URI) {
-    var sourcecontrolDesc = {
-        'svn': function (item) {
-            return item.trunkUrl;
-        },
-        'git': function (item) {
-            return item.repository + ' ' + item.branch;
-        },
-        'multi': function (item) {
-            var kv = {};
-            var k;
-            _.each(item.sourceControls, function (v) {
-                k = v['@type'];
-                kv[k] = (kv[k] || 0) + 1;
-            });
-            return _.map(kv, function (v, p) {
-                return p + '(' + v + ')';
-            }).join(', ');
-        }
-    }
-
-    app.controller('project.step2.ctrl', ['$scope', '$uibModal', 'pathUtil', function ($scope, $uibModal, pathUtil) {
-        this.getDesc = function (sc) {
-            return sourcecontrolDesc[sc['@type']](sc);
+    app.controller('project.step2.ctrl', ['$scope', '$uibModal', 'pathUtil', 'projectDesc', function ($scope, $uibModal, pathUtil, projectDesc) {
+        this.getDesc = function (item) {
+            return (projectDesc[item['@type']] || projectDesc['default'])(item);
         }
 
         this.onScAddClick = function () {
@@ -33,15 +13,16 @@
             }
 
             var instance = $uibModal.open({
-                templateUrl: pathUtil.GetTemplate('/project/step2/sc.add.tmpl.html'),
-                controller: 'project.step2.sc.add.ctrl',
+                templateUrl: pathUtil.GetTemplate('project/plugins.tmpl.html'),
+                controller: 'project.plugins.ctrl',
                 controllerAs: 'ctrl',
                 scope: $scope,
                 size: 'lg', backdrop: 'static',
                 resolve: {
                     items: function () {
                         return {
-                            mode: 'new'
+                            mode: 'new',
+                            pluginType: 'sc',
                         };
                     }
                 }
@@ -68,14 +49,15 @@
         }
         this.onScModClick = function (item) {
             var instance = $uibModal.open({
-                templateUrl: pathUtil.GetTemplate('/project/step2/sc.add.tmpl.html'),
-                controller: 'project.step2.sc.add.ctrl',
+                templateUrl: pathUtil.GetTemplate('project/plugins.tmpl.html'),
+                controller: 'project.plugins.ctrl',
                 controllerAs: 'ctrl',
                 size: 'lg', backdrop: 'static',
                 resolve: {
                     items: function () {
                         return {
                             mode: 'mod',
+                            pluginType: 'sc',
                             item: angular.copy(item)
                         };
                     }
@@ -86,7 +68,6 @@
             }, function () { });
         }
     }]);
-    var scPlugins = [];
     app.controller('project.step2.sc.add.ctrl', ['$scope', '$uibModalInstance', 'items', 'project.svc', 'pathUtil', function ($scope, $uibModalInstance, items, svc, pathUtil) {
         var forceTemplateLoad = false;
         $scope.mode = items.mode;

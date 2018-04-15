@@ -44,7 +44,7 @@ namespace TqLib.ccnet.Core.Publishers
         [ReflectorProperty("AppendTaskResult", Required = false)]
         public bool AppendTaskResult { get; set; } = false;
 
-        [ReflectorProperty("MessageAppendTaskResult", Required = false)]
+        [ReflectorProperty("TaskResultFilter", Required = false)]
         public string TaskResultFilter { get; set; } = string.Empty;
 
         protected override bool Execute(IIntegrationResult result)
@@ -113,7 +113,7 @@ namespace TqLib.ccnet.Core.Publishers
                         msg = (taskResult as string);
                     }
 
-                    if (msg.Contains(TaskResultFilter))
+                    if (msg.StartsWith(TaskResultFilter))
                     {
                         sb.AppendLine(msg);
                     }

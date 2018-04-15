@@ -13,6 +13,7 @@
     app.value('project.value', {
         taskPlugins: [],
         publishPlugins: [],
+        scPlugins: [],
         toggle: {
             all_attrs: false,
             task_debug: false
@@ -20,6 +21,23 @@
     });
     app.service('projectDesc', function () {
         return {
+            'svn': function (item) {
+                return item.trunkUrl;
+            },
+            'git': function (item) {
+                return item.repository + ' ' + item.branch;
+            },
+            'multi': function (item) {
+                var kv = {};
+                var k;
+                _.each(item.sourceControls, function (v) {
+                    k = v['@type'];
+                    kv[k] = (kv[k] || 0) + 1;
+                });
+                return _.map(kv, function (v, p) {
+                    return p + '(' + v + ')';
+                }).join(', ');
+            },
             'TqForeachFromDB': function (item) {
                 var kv = {};
                 var k;
@@ -75,9 +93,17 @@
                     });
                 }
             }
+            if ($scope.config.pluginType == 'sc') {
+                if (_.isEmpty(ctrl.val.publishPlugins)) {
+                    svc.PluginHelp.GetScPlugins().then(function (res) {
+                        ctrl.val.scPlugins = res.data;
+                    });
+                }
+            }
         }
         ctrl.getPlugins = function () {
             if ($scope.config.pluginType == 'task') return ctrl.val.taskPlugins;
+            if ($scope.config.pluginType == 'sc') return ctrl.val.scPlugins;
             return ctrl.val.publishPlugins;
         }
 
