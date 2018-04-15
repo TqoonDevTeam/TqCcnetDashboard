@@ -155,8 +155,8 @@
             on_defaultValueSet();
         }
         function customCompile() {
-            require([pathUtil.GetCustomTaskJsPath($scope.task['@type'])], function () {
-                $scope.dynamicCtrl.compile('project.plugins.' + $scope.task['@type'] + '.customctrl');
+            require([pathUtil.GetCustomTaskJsPath($scope.sc['@type'])], function () {
+                $scope.dynamicCtrl.compile('project.plugins.' + $scope.sc['@type'] + '.customctrl');
                 onCustomSetting();
             }, function () {
                 $scope.dynamicCtrl.compile('project.plugins.abstract.customctrl');
