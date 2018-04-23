@@ -37,37 +37,25 @@ namespace TqLib.ccnet.Core.Publishers
         [ReflectorProperty("StickerId", Required = false)]
         public int StickerId { get; set; }
 
-        [DataType("Select")]
-        [ReflectorProperty("SendCondition", Required = false)]
-        public SendConditions SendCondition { get; set; } = SendConditions.FALSE;
-
-        [ReflectorProperty("AppendTaskResult", Required = false)]
-        public bool AppendTaskResult { get; set; } = false;
-
-        [ReflectorProperty("TaskResultFilter", Required = false)]
-        public string TaskResultFilter { get; set; } = string.Empty;
+        [ReflectorProperty("MessageTemplate", Required = false)]
+        public string MessageTemplate { get; set; } = string.Empty;
 
         protected override bool Execute(IIntegrationResult result)
         {
-            if (SendCondition == SendConditions.ALL || SendCondition.ToString() == result.Succeeded.ToString().ToUpper())
-            {
-                string message = GetMessage(result);
-                if (!string.IsNullOrEmpty(message))
-                {
-                    using (var clinet = new HttpClient())
-                    using (var content = GetContent(result, message))
-                    {
-                        clinet.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
-                        clinet.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("multipart/form-data"));
+            string message = GetMessage(result);
 
-                        var response = clinet.PostAsync(ApiUrl, content).Result;
-                        var responseString = response.Content.ReadAsStringAsync().Result;
-                        if (!response.IsSuccessStatusCode)
-                        {
-                            result.AddTaskResult($"[LineMessagePublisher] {responseString}");
-                            return false;
-                        }
-                    }
+            using (var clinet = new HttpClient())
+            using (var content = GetContent(result, message))
+            {
+                clinet.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token);
+                clinet.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("multipart/form-data"));
+
+                var response = clinet.PostAsync(ApiUrl, content).Result;
+                var responseString = response.Content.ReadAsStringAsync().Result;
+                if (!response.IsSuccessStatusCode)
+                {
+                    result.AddTaskResult($"[LineMessagePublisher] {responseString}");
+                    return false;
                 }
             }
             return true;
@@ -98,34 +86,67 @@ namespace TqLib.ccnet.Core.Publishers
 
         private string GetMessage(IIntegrationResult result)
         {
-            if (AppendTaskResult)
+            string group = result.GetParameters("$TqBuild_group") ?? string.Empty;
+            string project = result.GetParameters("$TqBuild_project") ?? string.Empty;
+            string branch = result.GetParameters("$TqBuild_branch") ?? string.Empty;
+
+            StringBuilder msg = new StringBuilder();
+
+            switch (MessageTemplate)
             {
-                StringBuilder sb = new StringBuilder(Message);
-                string msg;
-                foreach (object taskResult in result.TaskResults)
-                {
-                    if (taskResult is ITaskResult)
+                case "TqGitCI":
+                    msg.AppendLine($"[TqGitCI] group:{group}, project:{project}, branch:{branch}");
+
+                    if (result.Succeeded)
                     {
-                        msg = (taskResult as ITaskResult).Data;
+                        msg.AppendLine($"CI Success");
+                        return string.Empty;
                     }
                     else
                     {
-                        msg = (taskResult as string);
+                        msg.AppendLine($"CI Failure");
+
+                        var errMsg = result.GetSourceData("$TqGitCI_mergeResult") ?? string.Empty;
+                        if (!string.IsNullOrEmpty(errMsg)) msg.AppendLine(errMsg);
+                        errMsg = result.GetSourceData("$TqGitCI_mergeExceptionMessage") ?? string.Empty;
+                        if (!string.IsNullOrEmpty(errMsg)) msg.AppendLine(errMsg);
+                        msg.Append(GetFailureTaskMessage(result));
+                        return msg.ToString();
                     }
 
-                    if (msg.StartsWith(TaskResultFilter))
+                case "TqBuild":
+                    msg.AppendLine($"[TqBuild] group:{group}, project:{project}, branch:{branch}");
+                    if (result.Succeeded)
                     {
-                        sb.AppendLine(msg);
+                        msg.AppendLine($"Build And Deploy Success");
+                        return msg.ToString();
                     }
-                }
-                return sb.ToString();
+                    else
+                    {
+                        msg.AppendLine($"Build And Deploy Failure");
+                        msg.Append(GetFailureTaskMessage(result));
+                        return string.Empty;
+                    }
+
+                default:
+                    msg.AppendLine(Message);
+                    msg.Append(GetFailureTaskMessage(result));
+                    return msg.ToString();
             }
-            return Message;
         }
 
-        public enum SendConditions
+        private string GetFailureTaskMessage(IIntegrationResult result)
         {
-            ALL, TRUE, FALSE
+            if (result.Succeeded) return string.Empty;
+
+            StringBuilder msg = new StringBuilder();
+            msg.AppendLine("FailureTasks");
+            foreach (var task in result.FailureTasks)
+            {
+                msg.AppendLine(task.ToString());
+            }
+            if (result.ExceptionResult != null) msg.AppendLine(result.ExceptionResult.Message);
+            return msg.ToString();
         }
     }
 }
