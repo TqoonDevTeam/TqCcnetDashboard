@@ -30,10 +30,12 @@ namespace TqLib.ccnet.Core.Tasks
             {
                 var mergeResult = git.Merge(result, startBranch);
                 result.SetSourceData("$TqGitCI_mergeResult", mergeResult.Status.ToString());
+                result.SetParameters("$TqGitCI_mergeResult", mergeResult.Status.ToString());
                 if (mergeResult.Status == MergeStatus.Conflicts)
                 {
                     var conflictsList = git.GetConflictsList(result);
                     result.SetSourceData("$TqGitCI_mergeExceptionMessage", $"{projectName} Conflicts({conflictsList.Count}) {branch} <- {startBranch}");
+                    result.SetParameters("$TqGitCI_mergeExceptionMessage", $"{projectName} Conflicts({conflictsList.Count}) {branch} <- {startBranch}");
                     return false;
                 }
             }

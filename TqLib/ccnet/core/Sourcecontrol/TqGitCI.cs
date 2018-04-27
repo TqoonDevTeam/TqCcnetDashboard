@@ -104,8 +104,10 @@ namespace TqLib.ccnet.Core.Sourcecontrol
             to.SetSourceData("$TqGitCI_hasDiffOrigin2", (diffOriginStartBranch.Count > 0).ToString());
             to.SetSourceData("$TqGitCI_pullResult2", startBranchPullResult.Status.ToString());
             to.SetSourceData("$TqGitCI_lastCommitter2", startBranchPullResult?.Commit?.Author.Name ?? string.Empty);
+
             to.SetParameters("$TqGitCI_gitUserId", GitUserId);
             to.SetParameters("$TqGitCI_gitUserPassword", GitUserPassword);
+
             return changeList.ToArray();
         }
 

@@ -106,9 +106,9 @@ namespace TqLib.ccnet.Core.Publishers
                     {
                         msg.AppendLine($"CI Failure");
 
-                        var errMsg = result.GetSourceData("$TqGitCI_mergeResult") ?? string.Empty;
+                        var errMsg = result.GetParameters("$TqGitCI_mergeResult") ?? string.Empty;
                         if (!string.IsNullOrEmpty(errMsg)) msg.AppendLine(errMsg);
-                        errMsg = result.GetSourceData("$TqGitCI_mergeExceptionMessage") ?? string.Empty;
+                        errMsg = result.GetParameters("$TqGitCI_mergeExceptionMessage") ?? string.Empty;
                         if (!string.IsNullOrEmpty(errMsg)) msg.AppendLine(errMsg);
                         msg.Append(GetFailureTaskMessage(result));
                         return msg.ToString();
