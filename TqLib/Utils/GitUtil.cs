@@ -92,18 +92,40 @@ namespace TqLib.Utils
             return task.Result;
         }
 
-        public MergeResult Pull(IIntegrationResult result)
+        public Tuple<MergeResult, IList<Modification>> Pull(IIntegrationResult result)
         {
             result.AddMessage("#Pull");
             var task = Task.Run(() =>
             {
                 MergeResult mergeResult;
+                IList<Modification> changeList = new List<Modification>();
                 using (var repo = GetRepository())
                 {
                     mergeResult = Commands.Pull(repo, GetSignature(), GetPullOptions());
                     result.AddMessage($"pullresult : {mergeResult.Status}");
+
+                    if (mergeResult.Commit != null)
+                    {
+                        foreach (var parent in mergeResult.Commit.Parents)
+                        {
+                            foreach (var change in repo.Diff.Compare<TreeChanges>(parent.Tree, mergeResult.Commit.Tree))
+                            {
+                                changeList.Add(new Modification
+                                {
+                                    ChangeNumber = parent.Sha,
+                                    Comment = parent.MessageShort,
+                                    FileName = Path.GetFileName(change.Path),
+                                    FolderName = Path.GetDirectoryName(change.Path),
+                                    ModifiedTime = parent.Committer.When.DateTime,
+                                    EmailAddress = parent.Committer.Email,
+                                    UserName = parent.Author.Name,
+                                    Type = change.Status.ToString()
+                                });
+                            }
+                        }
+                    }
                 }
-                return mergeResult;
+                return new Tuple<MergeResult, IList<Modification>>(mergeResult, changeList);
             });
 
             task.Wait();
@@ -193,41 +215,6 @@ namespace TqLib.Utils
                     result.AddMessage(string.Join(Environment.NewLine, conflictList.Select(t => t.Ours.Path)));
                 }
                 return conflictList;
-            });
-
-            task.Wait();
-            return task.Result;
-        }
-
-        public IList<Modification> GetChangeList(MergeResult pullResult)
-        {
-            var task = Task.Run(() =>
-            {
-                IList<Modification> changeList = new List<Modification>();
-                using (var repo = GetRepository())
-                {
-                    if (pullResult.Commit != null)
-                    {
-                        foreach (var parent in pullResult.Commit.Parents)
-                        {
-                            foreach (var change in repo.Diff.Compare<TreeChanges>(parent.Tree, pullResult.Commit.Tree))
-                            {
-                                changeList.Add(new Modification
-                                {
-                                    ChangeNumber = parent.Sha,
-                                    Comment = parent.MessageShort,
-                                    FileName = Path.GetFileName(change.Path),
-                                    FolderName = Path.GetDirectoryName(change.Path),
-                                    ModifiedTime = parent.Committer.When.DateTime,
-                                    EmailAddress = parent.Committer.Email,
-                                    UserName = parent.Author.Name,
-                                    Type = change.Status.ToString()
-                                });
-                            }
-                        }
-                    }
-                }
-                return changeList;
             });
 
             task.Wait();

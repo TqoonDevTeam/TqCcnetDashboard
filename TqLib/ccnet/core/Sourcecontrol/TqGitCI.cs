@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using ThoughtWorks.CruiseControl.Core;
 using ThoughtWorks.CruiseControl.Core.Sourcecontrol;
 using ThoughtWorks.CruiseControl.Remote;
@@ -43,6 +42,7 @@ namespace TqLib.ccnet.Core.Sourcecontrol
         public override Modification[] GetModifications(IIntegrationResult from, IIntegrationResult to)
         {
             Dictionary<string, string> dictionary = NameValuePair.ToDictionary(from.SourceControlData);
+            IList<Modification> changeList = new List<Modification>();
 
             InitProcessData(to);
             InitGitRepository(to);
@@ -56,26 +56,28 @@ namespace TqLib.ccnet.Core.Sourcecontrol
             git.Checkout(to, StartBranch);
             var diffOriginStartBranch = git.GetDiffList(to, $"origin/{StartBranch}");
             var startBranchPullResult = git.Pull(to);
-
-            if (startBranchPullResult.Commit != null)
+            foreach (var item in startBranchPullResult.Item2)
             {
-                Thread.Sleep(1500);
+                changeList.Add(item);
             }
 
             // Branch
             git.Checkout(to, Branch);
             var diffOriginBranch = git.GetDiffList(to, $"origin/{Branch}");
             var branchPullResult = git.Pull(to);
+            foreach (var item in branchPullResult.Item2)
+            {
+                changeList.Add(item);
+            }
 
-            IList<Modification> changeList = new List<Modification>();
-            foreach (var item in git.GetChangeList(branchPullResult))
+            if (changeList.Count == 0 && from.LastBuildStatus != IntegrationStatus.Success)
             {
-                changeList.Add(item);
+                foreach (var change in from.Modifications)
+                {
+                    changeList.Add(change);
+                }
             }
-            foreach (var item in git.GetChangeList(startBranchPullResult))
-            {
-                changeList.Add(item);
-            }
+
             if (isFirstRun || from.LastBuildStatus != IntegrationStatus.Success)
             {
                 if (changeList.Count == 0)
@@ -102,11 +104,11 @@ namespace TqLib.ccnet.Core.Sourcecontrol
             to.SetSourceData("$TqGitCI_startBranch", StartBranch);
             to.SetSourceData("$TqGitCI_projectName", projectName);
             to.SetSourceData("$TqGitCI_hasDiffOrigin1", (diffOriginBranch.Count > 0).ToString());
-            to.SetSourceData("$TqGitCI_pullResult1", branchPullResult.Status.ToString());
-            to.SetSourceData("$TqGitCI_lastCommitter1", branchPullResult?.Commit?.Author.Name ?? string.Empty);
+            to.SetSourceData("$TqGitCI_pullResult1", branchPullResult.Item1.Status.ToString());
+            to.SetSourceData("$TqGitCI_lastCommitter1", branchPullResult.Item2.LastOrDefault()?.UserName ?? string.Empty);
             to.SetSourceData("$TqGitCI_hasDiffOrigin2", (diffOriginStartBranch.Count > 0).ToString());
-            to.SetSourceData("$TqGitCI_pullResult2", startBranchPullResult.Status.ToString());
-            to.SetSourceData("$TqGitCI_lastCommitter2", startBranchPullResult?.Commit?.Author.Name ?? string.Empty);
+            to.SetSourceData("$TqGitCI_pullResult2", startBranchPullResult.Item1.Status.ToString());
+            to.SetSourceData("$TqGitCI_lastCommitter2", startBranchPullResult.Item2.LastOrDefault()?.UserName ?? string.Empty);
 
             to.SetParameters("$TqGitCI_gitUserId", GitUserId);
             to.SetParameters("$TqGitCI_gitUserPassword", GitUserPassword);
