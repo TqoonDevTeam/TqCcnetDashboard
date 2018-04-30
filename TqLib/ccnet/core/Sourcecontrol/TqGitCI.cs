@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using ThoughtWorks.CruiseControl.Core;
 using ThoughtWorks.CruiseControl.Core.Sourcecontrol;
 using ThoughtWorks.CruiseControl.Remote;
@@ -51,18 +52,20 @@ namespace TqLib.ccnet.Core.Sourcecontrol
 
             git.FetchOrigin(to);
 
-            // Branch
-            git.Checkout(to, Branch);
-            var diffOriginBranch = git.GetDiffList(to, $"origin/{Branch}");
-            var branchPullResult = git.Pull(to);
-
             // StartBranch
             git.Checkout(to, StartBranch);
             var diffOriginStartBranch = git.GetDiffList(to, $"origin/{StartBranch}");
             var startBranchPullResult = git.Pull(to);
 
+            if (startBranchPullResult.Commit != null)
+            {
+                Thread.Sleep(1500);
+            }
+
             // Branch
             git.Checkout(to, Branch);
+            var diffOriginBranch = git.GetDiffList(to, $"origin/{Branch}");
+            var branchPullResult = git.Pull(to);
 
             IList<Modification> changeList = new List<Modification>();
             foreach (var item in git.GetChangeList(branchPullResult))

@@ -86,17 +86,12 @@ namespace TqLib.ccnet.Core.Publishers
 
         private string GetMessage(IIntegrationResult result)
         {
-            string group = result.GetParameters("$TqBuild_group") ?? string.Empty;
-            string project = result.GetParameters("$TqBuild_project") ?? string.Empty;
-            string branch = result.GetParameters("$TqBuild_branch") ?? string.Empty;
-
-            StringBuilder msg = new StringBuilder();
+            StringBuilder msg = new StringBuilder(Message);
+            msg.AppendLine();
 
             switch (MessageTemplate)
             {
                 case "TqGitCI":
-                    msg.AppendLine($"[TqGitCI] group:{group}, project:{project}, branch:{branch}");
-
                     if (result.Succeeded)
                     {
                         msg.AppendLine($"CI Success");
@@ -115,7 +110,6 @@ namespace TqLib.ccnet.Core.Publishers
                     }
 
                 case "TqBuild":
-                    msg.AppendLine($"[TqBuild] group:{group}, project:{project}, branch:{branch}");
                     if (result.Succeeded)
                     {
                         msg.AppendLine($"Build And Deploy Success");
@@ -129,7 +123,6 @@ namespace TqLib.ccnet.Core.Publishers
                     }
 
                 default:
-                    msg.AppendLine(Message);
                     msg.Append(GetFailureTaskMessage(result));
                     return msg.ToString();
             }
